@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>টেলিগ্রাম বট অর্ডার সিস্টেম</title>
+    <style>
+        /* ওয়েবসাইটের সাধারণ একটি ডিজাইন (CSS) */
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f9;}
+        .form-container { max-width: 400px; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        input, button { width: 100%; padding: 10px; margin: 8px 0 15px 0; box-sizing: border-box; border: 1px solid #ccc; border-radius: 5px;}
+        button { background-color: #28a745; color: white; border: none; cursor: pointer; font-size: 16px; font-weight: bold;}
+        button:hover { background-color: #218838; }
+    </style>
+</head>
+<body>
+
+    <div class="form-container">
+        <h2>অর্ডার কনফার্ম করুন</h2>
+        <form id="orderForm">
+            <label>আপনার নাম:</label>
+            <input type="text" id="name" placeholder="আপনার নাম লিখুন" required>
+
+            <label>প্রোডাক্টের নাম:</label>
+            <input type="text" id="product" value="কালো সুতির টি-শার্ট (৳৫০০)" readonly>
+
+            <label>ফোন নাম্বার:</label>
+            <input type="text" id="phone" placeholder="০১৭XXXXXXXX" required>
+
+            <label>ডেলিভারি ঠিকানা:</label>
+            <input type="text" id="address" placeholder="সম্পূর্ণ ঠিকানা লিখুন" required>
+
+            <button type="submit">অর্ডার করুন</button>
+        </form>
+    </div>
+
+    <script>
+        // ১. এখানে আপনার টেলিগ্রাম বটের তথ্য দিন (উদ্ধৃতি চিহ্নের ভেতরে)
+        const botToken = "আপনার_বট_টোকেন_এখানে_দিন"; 
+        const chatId = "আপনার_চ্যাট_আইডি_এখানে_দিন";
+
+        document.getElementById("orderForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // ফর্ম সাবমিট হলে পেজ রিলোড হওয়া বন্ধ করবে
+
+            // ২. ফর্ম থেকে কাস্টমারের দেওয়া ডেটাগুলো সংগ্রহ করা
+            const name = document.getElementById("name").value;
+            const product = document.getElementById("product").value;
+            const phone = document.getElementById("phone").value;
+            const address = document.getElementById("address").value;
+
+            // ৩. টেলিগ্রামে পাঠানোর জন্য মেসেজ সাজানো
+            const message = `🛒 নতুন অর্ডার এসেছে!\n\n👤 নাম: ${name}\n🛍️ প্রোডাক্ট: ${product}\n📞 ফোন: ${phone}\n📍 ঠিকানা: ${address}`;
+
+            // ৪. টেলিগ্রাম API URL তৈরি
+            const url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
+
+            // ৫. Fetch API ব্যবহার করে টেলিগ্রামে মেসেজ পাঠানো
+            fetch(url)
+                .then(response => {
+                    if(response.ok) {
+                        alert("ধন্যবাদ! আপনার অর্ডারটি সফলভাবে সম্পন্ন হয়েছে।");
+                        document.getElementById("orderForm").reset(); // ফর্ম খালি করে দেওয়া
+                    } else {
+                        alert("অর্ডার পাঠাতে সমস্যা হয়েছে। আবার চেষ্টা করুন।");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("নেটওয়ার্ক সমস্যা! ইন্টারনেট কানেকশন চেক করুন।");
+                });
+        });
+    </script>
+</body>
+</html>
