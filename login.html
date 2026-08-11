@@ -24,28 +24,24 @@
 </head>
 <body>
 
-    <!-- Navigation Bar -->
     <nav class="navbar">
         <div class="logo">
             <a href="index.html" style="color: white; text-decoration: none;">AmarDaraz</a>
         </div>
     </nav>
 
-    <!-- Login / Signup Box -->
     <div class="auth-container">
         <div class="auth-tabs">
             <h3 id="tab-login" class="active" onclick="switchTab('login')">লগইন</h3>
             <h3 id="tab-signup" onclick="switchTab('signup')">সাইন আপ</h3>
         </div>
 
-        <!-- Login Form -->
         <form id="login-form" class="auth-form">
             <input type="email" id="login-email" placeholder="আপনার ইমেইল অ্যাড্রেস" required>
             <input type="password" id="login-password" placeholder="পাসওয়ার্ড" required>
             <button type="submit" class="auth-btn" id="login-btn">লগইন করুন</button>
         </form>
 
-        <!-- Signup Form -->
         <form id="signup-form" class="auth-form">
             <input type="text" id="signup-name" placeholder="আপনার সম্পূর্ণ নাম" required>
             <input type="email" id="signup-email" placeholder="ইমেইল অ্যাড্রেস" required>
@@ -54,7 +50,6 @@
         </form>
     </div>
 
-    <!-- UI Tab Switcher -->
     <script>
         function switchTab(tab) {
             document.getElementById('login-form').style.display = tab === 'login' ? 'flex' : 'none';
@@ -64,51 +59,46 @@
         }
     </script>
 
-    <!-- Firebase Authentication Javascript -->
     <script type="module">
-        // Firebase SDKs (Version 12.17.1)
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-analytics.js";
-        // Authentication এর জন্য প্রয়োজনীয় SDK যুক্ত করা হলো
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
-        // আপনার দেওয়া Firebase কনফিগারেশন
         const firebaseConfig = {
             apiKey: "AIzaSyBZNrrK7MLGIZoPakMgj2yFEX7iCVYYhlg",
             authDomain: "amrdraz-d0682.firebaseapp.com",
             projectId: "amrdraz-d0682",
             storageBucket: "amrdraz-d0682.firebasestorage.app",
             messagingSenderId: "690289096145",
-            appId: "1:690289096145:web:dbebaa4e60203a7922dcf0",
-            measurementId: "G-XX7GVSTTCH"
+            appId: "1:690289096145:web:dbebaa4e60203a7922dcf0"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
         const auth = getAuth(app);
 
-        // সাইন আপ (Sign Up) ফাংশন
+        // সাইন আপ ফাংশন (Alert সরানো হয়েছে)
         document.getElementById('signup-form').addEventListener('submit', (e) => {
             e.preventDefault();
             const email = document.getElementById('signup-email').value;
             const password = document.getElementById('signup-password').value;
             const btn = document.getElementById('signup-btn');
             
-            btn.innerText = "অ্যাকাউন্ট তৈরি হচ্ছে...";
+            btn.innerText = "প্রসেস হচ্ছে...";
 
             createUserWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
-                    alert("🎉 সফলভাবে অ্যাকাউন্ট তৈরি হয়েছে!");
-                    window.location.href = "index.html"; 
+                    btn.innerText = "✔ অ্যাকাউন্ট তৈরি হয়েছে!";
+                    btn.style.backgroundColor = "#28a745"; // সবুজ রং
+                    setTimeout(() => {
+                        window.location.href = "index.html"; 
+                    }, 1000); // ১ সেকেন্ড পর হোমপেজে যাবে
                 })
                 .catch((error) => {
-                    alert("সমস্যা হয়েছে: " + error.message);
-                    btn.innerText = "অ্যাকাউন্ট খুলুন";
+                    btn.innerText = "❌ সমস্যা হয়েছে!";
+                    setTimeout(() => { btn.innerText = "অ্যাকাউন্ট খুলুন"; }, 2000);
                 });
         });
 
-        // লগইন (Login) ফাংশন
+        // লগইন ফাংশন (Alert সরানো হয়েছে)
         document.getElementById('login-form').addEventListener('submit', (e) => {
             e.preventDefault();
             const email = document.getElementById('login-email').value;
@@ -119,12 +109,15 @@
 
             signInWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
-                    alert("✅ লগইন সফল হয়েছে!");
-                    window.location.href = "index.html"; 
+                    btn.innerText = "✔ লগইন সফল!";
+                    btn.style.backgroundColor = "#28a745"; // সবুজ রং
+                    setTimeout(() => {
+                        window.location.href = "index.html"; 
+                    }, 1000); // ১ সেকেন্ড পর হোমপেজে যাবে
                 })
                 .catch((error) => {
-                    alert("ইমেইল বা পাসওয়ার্ড ভুল হয়েছে!");
-                    btn.innerText = "লগইন করুন";
+                    btn.innerText = "❌ ইমেইল বা পাসওয়ার্ড ভুল!";
+                    setTimeout(() => { btn.innerText = "লগইন করুন"; }, 2000);
                 });
         });
     </script>
