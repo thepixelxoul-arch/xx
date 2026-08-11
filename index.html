@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>আমার দারাজ - হোম</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        .buy-btn { background-color: #f85606; color: white; padding: 10px 0; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 14px; width: 100%; margin-top: 10px;}
+        .buy-btn:hover { background-color: #d84a05; }
+        
+        .product-card img, .product-card h3 { cursor: pointer; transition: 0.3s; }
+        .product-card img:hover { opacity: 0.8; }
+        .product-card h3:hover { color: #f85606; }
+
+        /* Quick View Modal Design */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: 25px; border-radius: 8px; max-width: 350px; width: 90%; text-align: center; position: relative; box-shadow: 0 5px 20px rgba(0,0,0,0.2); animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        
+        .close-btn { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; color: #777; transition: 0.3s; }
+        .close-btn:hover { color: #f85606; }
+        
+        .modal-img { width: 100%; max-height: 220px; object-fit: cover; margin-bottom: 15px; border-radius: 5px; }
+        .modal-price { color: #f85606; font-size: 20px; font-weight: bold; margin: 10px 0; }
+        
+        .btn-group { display: flex; gap: 10px; margin-top: 15px; }
+        .btn-group button { flex: 1; padding: 10px 0; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; transition: 0.3s; color: white; font-size: 14px; }
+        .add-btn { background-color: #ff9900; }
+        .add-btn:hover { background-color: #e68a00; }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="logo">AmarDaraz</div>
+        <div class="search-bar">
+            <input type="text" placeholder="প্রোডাক্ট খুঁজুন...">
+            <button>Search</button>
+        </div>
+        <div class="nav-links">
+            <!-- আইডি ঠিক রাখা হয়েছে, নাম ও লিংক জাভাস্ক্রিপ্ট দিয়ে পরিবর্তন হবে -->
+            <a href="login.html" id="auth-link">Login / Signup</a>
+            <a href="checkout.html" id="cart-link">🛒 Cart (0)</a>
+        </div>
+    </nav>
+
+    <!-- Banner Section -->
+    <div class="banner">
+        <h2>🔥 ধামাকা অফার! সব প্রোডাক্টে ২০% ছাড়! 🔥</h2>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <h2 class="section-title">Just For You</h2>
+        
+        <div class="product-grid">
+            
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1598327105666-5b89351cb31b?w=300&q=80" alt="Smartphone" class="clickable-item">
+                <h3 class="clickable-item">স্মার্টফোন (6GB RAM, 128GB)</h3>
+                <div class="product-price">৳ ১২৫০০</div>
+                <button class="buy-btn direct-buy-btn">Buy Now</button>
+            </div>
+            
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1581655353564-df123a1eb820?w=300&q=80" alt="T-Shirt" class="clickable-item">
+                <h3 class="clickable-item">সলিড সাদা কটন টি-শার্ট</h3>
+                <div class="product-price">৳ ৩৫০</div>
+                <button class="buy-btn direct-buy-btn">Buy Now</button>
+            </div>
+            
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=300&q=80" alt="Headphone" class="clickable-item">
+                <h3 class="clickable-item">ওয়্যারলেস ব্লুটুথ হেডফোন</h3>
+                <div class="product-price">৳ ১২০০</div>
+                <button class="buy-btn direct-buy-btn">Buy Now</button>
+            </div>
+            
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=300&q=80" alt="Smart Watch" class="clickable-item">
+                <h3 class="clickable-item">ডিজিটাল স্মার্ট ওয়াচ</h3>
+                <div class="product-price">৳ ৮৫০</div>
+                <button class="buy-btn direct-buy-btn">Buy Now</button>
+            </div>
+
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=300&q=80" alt="Sneakers" class="clickable-item">
+                <h3 class="clickable-item">স্টাইলিশ স্নিকার্স জুতো</h3>
+                <div class="product-price">৳ ১৫০০</div>
+                <button class="buy-btn direct-buy-btn">Buy Now</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Quick View Modal -->
+    <div class="modal-overlay" id="quickViewModal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeModal">&times;</span>
+            <img src="" id="modalImg" class="modal-img">
+            <h3 id="modalTitle">Product Name</h3>
+            <div class="modal-price" id="modalPrice">৳ 0</div>
+            <div class="btn-group">
+                <button class="add-btn" id="modalAddBtn">Add to Cart</button>
+                <button class="buy-btn" style="margin-top: 0;" id="modalBuyBtn">Buy Now</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase & JavaScript -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+        // লগআউট (signOut) এখন আর এই পেজে দরকার নেই, প্রোফাইল পেজে থাকবে
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBZNrrK7MLGIZoPakMgj2yFEX7iCVYYhlg",
+            authDomain: "amrdraz-d0682.firebaseapp.com",
+            projectId: "amrdraz-d0682",
+            storageBucket: "amrdraz-d0682.firebasestorage.app",
+            messagingSenderId: "690289096145",
+            appId: "1:690289096145:web:dbebaa4e60203a7922dcf0"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const authLink = document.getElementById("auth-link");
+
+        // 유জার লগইন চেক
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // ইউজার লগইন করা থাকলে প্রোফাইল দেখাবে
+                authLink.innerText = "👤 Profile";
+                authLink.href = "profile.html"; 
+            } else {
+                // ইউজার লগইন করা না থাকলে Login / Signup দেখাবে
+                authLink.innerText = "Login / Signup";
+                authLink.href = "login.html";
+            }
+        });
+
+        // 🛒 Cart System
+        let cart = JSON.parse(localStorage.getItem("amarDarazCart")) || [];
+        const cartLink = document.getElementById("cart-link");
+
+        function updateCartCount() {
+            cartLink.innerText = `🛒 Cart (${cart.length})`;
+        }
+        updateCartCount(); 
+
+        document.querySelectorAll(".direct-buy-btn").forEach(button => {
+            button.addEventListener("click", function(event) {
+                const productCard = event.target.closest(".product-card");
+                const name = productCard.querySelector("h3").innerText;
+                const price = productCard.querySelector(".product-price").innerText;
+
+                cart.push({ name, price });
+                localStorage.setItem("amarDarazCart", JSON.stringify(cart));
+                window.location.href = "checkout.html";
+            });
+        });
+
+        const modal = document.getElementById('quickViewModal');
+        let selectedProduct = null;
+
+        document.querySelectorAll(".clickable-item").forEach(item => {
+            item.addEventListener("click", function(event) {
+                const productCard = event.target.closest(".product-card");
+                const name = productCard.querySelector("h3").innerText;
+                const price = productCard.querySelector(".product-price").innerText;
+                const imgSrc = productCard.querySelector("img").src;
+
+                document.getElementById("modalImg").src = imgSrc;
+                document.getElementById("modalTitle").innerText = name;
+                document.getElementById("modalPrice").innerText = price;
+                
+                selectedProduct = { name, price };
+                modal.style.display = 'flex'; 
+            });
+        });
+
+        document.getElementById('closeModal').addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) modal.style.display = 'none';
+        });
+
+        document.getElementById('modalAddBtn').addEventListener('click', (e) => {
+            if(selectedProduct) {
+                cart.push(selectedProduct);
+                localStorage.setItem("amarDarazCart", JSON.stringify(cart));
+                updateCartCount();
+
+                const btn = e.target;
+                const originalText = btn.innerText;
+                btn.innerText = "✔ যোগ হয়েছে!";
+                btn.style.backgroundColor = "#28a745"; 
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.style.backgroundColor = "#ff9900"; 
+                }, 1500);
+            }
+        });
+
+        document.getElementById('modalBuyBtn').addEventListener('click', () => {
+            if(selectedProduct) {
+                cart.push(selectedProduct);
+                localStorage.setItem("amarDarazCart", JSON.stringify(cart));
+                window.location.href = "checkout.html";
+            }
+        });
+    </script>
+</body>
+</html>
