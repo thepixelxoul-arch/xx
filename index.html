@@ -25,7 +25,11 @@
         .search-bar input { flex: 1; height: 100%; padding: 0 15px; border: none; border-radius: 4px 0 0 4px; outline: none; font-size: 15px; color: #333; background: transparent; }
         .search-bar button { width: 50px; height: 100%; background: #ffece1; border: none; border-radius: 0 4px 4px 0; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.3s; }
         .search-bar button:hover { background: #ffd1b3; }
-        .search-bar button svg { width: 28px !important; height: 28px !important; }
+        
+        .search-bar button svg {
+            width: 28px !important;
+            height: 28px !important;
+        }
         
         .suggestions-box { position: absolute; top: 100%; left: 0; width: calc(100% - 50px); background: white; border-radius: 0 0 8px 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-height: 250px; overflow-y: auto; z-index: 2000; display: none; margin-top: 2px; }
         .suggestion-item { padding: 12px 15px; cursor: pointer; color: #333; font-size: 14px; text-align: left; border-bottom: 1px solid #f1f1f1; display: flex; justify-content: space-between; align-items: center; }
@@ -56,18 +60,21 @@
         .footer-col ul li { margin-bottom: 10px; }
         .footer-col ul li a { text-decoration: none; color: #0f136d; font-size: 13px; transition: 0.3s; }
         .footer-col ul li a:hover { text-decoration: underline; color: #f85606; }
+        
         .app-download-box { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
         .app-icon { background: #f85606; color: white; width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; border-radius: 8px; font-size: 20px; font-weight: bold;}
         .app-text { font-size: 14px; }
         .app-text span { color: #f85606; font-size: 15px; }
+        
         .store-logos { display: flex; flex-direction: column; gap: 10px; }
         .store-logos img { height: 35px; cursor: pointer; }
+        
         .payment-logos { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
         .payment-logos span { background: white; padding: 5px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; font-weight: bold; color: #333; }
 
         #balance-link { color: #ffcc00 !important; font-weight: bold; }
 
-        /* Profile Dropdown Menu */
+        /* Profile Dropdown Menu - এখন শুধু ক্লিকেই ওপেন হবে */
         .profile-menu { position: relative; display: inline-block; }
         .profile-dropdown { 
             display: none; 
@@ -97,8 +104,7 @@
         .profile-dropdown a:last-child { border-bottom: none; }
         .profile-dropdown a:hover { background-color: #f9f9f9; color: #f85606 !important; }
         
-        /* 🌟 পিসির জন্য হোভার এবং মোবাইলের জন্য জাভাস্ক্রিপ্ট ক্লাস (show) */
-        .profile-menu.logged-in:hover .profile-dropdown,
+        /* জাভাস্ক্রিপ্ট 'show' ক্লাস যোগ করলে তবেই মেনু দেখাবে */
         .profile-dropdown.show { 
             display: block; 
         }
@@ -113,7 +119,7 @@
         <div class="search-bar">
             <input type="text" id="search-input" placeholder="Search in Daraz">
             <button id="search-btn">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#f85606" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <svg style="width: 26px !important; height: 26px !important; transform: scale(1.4); display: block;" viewBox="0 0 24 24" fill="none" stroke="#f85606" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="11" cy="11" r="8"></circle>
                     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                 </svg>
@@ -130,7 +136,7 @@
                 
                 <div class="profile-dropdown" id="profile-dropdown">
                     <a href="profile.html">👤 Profile</a>
-                    <a href="#">💳 Add Fund</a>
+                    <a href="addfund.html">💳 Add Fund</a>
                 </div>
             </div>
         </div>
@@ -157,7 +163,6 @@
 
     <!-- Footer Section -->
     <footer class="footer">
-        <!-- ... (Footer content remains same) ... -->
         <div class="footer-top">
             <div class="footer-col">
                 <h4>Customer Care</h4>
@@ -227,13 +232,12 @@
             if (user) {
                 authLink.innerText = "👤 Profile ▾";
                 authLink.href = "#"; 
-                profileMenuContainer.classList.add("logged-in");
                 
                 balanceLink.style.display = "inline-block";
                 let currentBalance = localStorage.getItem("amarDarazBalance") || 0;
                 balanceLink.innerText = `💰 Balance: ৳ ${currentBalance}`;
 
-                // 🌟 মোবাইল বা পিসিতে ক্লিক করলে ড্রপডাউন ওপেন/ক্লোজ হবে
+                // ক্লিকে ড্রপডাউন মেনু কাজ করবে
                 authLink.onclick = function(e) {
                     e.preventDefault();
                     profileDropdown.classList.toggle("show");
@@ -241,20 +245,17 @@
             } else {
                 authLink.innerText = "Login / Signup";
                 authLink.href = "login.html";
-                authLink.onclick = null; // লগআউট থাকলে ক্লিক ইভেন্ট বন্ধ
-                profileMenuContainer.classList.remove("logged-in");
+                authLink.onclick = null; 
                 balanceLink.style.display = "none";
                 profileDropdown.classList.remove("show");
             }
         });
 
-        // 🌟 স্ক্রিনের অন্য কোথাও ক্লিক করলে ড্রপডাউন এবং সাজেশন বক্স বন্ধ হয়ে যাবে
+        // স্ক্রিনের অন্য কোথাও ক্লিক করলে ড্রপডাউন বন্ধ হয়ে যাবে
         document.addEventListener('click', function(e) {
-            // Search logic
             if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) { 
                 suggestionsBox.style.display = 'none'; 
             }
-            // Dropdown logic
             if (!profileMenuContainer.contains(e.target)) {
                 profileDropdown.classList.remove("show");
             }
