@@ -13,6 +13,7 @@
         .product-card img, .product-card h3 { cursor: pointer; transition: 0.3s; }
         .product-card img:hover { opacity: 0.8; }
         .product-card h3:hover { color: #f85606; }
+        .product-card h3 { font-size: 15px; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         /* Quick View Modal Design */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; }
@@ -41,7 +42,6 @@
             <button>Search</button>
         </div>
         <div class="nav-links">
-            <!-- এখানে Cart বামে এবং Profile ডানে দেওয়া হলো -->
             <a href="checkout.html" id="cart-link">🛒 Cart (0)</a>
             <a href="login.html" id="auth-link">Login / Signup</a>
         </div>
@@ -56,43 +56,9 @@
     <div class="main-container">
         <h2 class="section-title">Just For You</h2>
         
-        <div class="product-grid">
-            
-            <div class="product-card">
-                <img src="https://images.unsplash.com/photo-1598327105666-5b89351cb31b?w=300&q=80" alt="Smartphone" class="clickable-item">
-                <h3 class="clickable-item">স্মার্টফোন (6GB RAM, 128GB)</h3>
-                <div class="product-price">৳ ১২৫০০</div>
-                <button class="buy-btn direct-buy-btn">Buy Now</button>
-            </div>
-            
-            <div class="product-card">
-                <img src="https://images.unsplash.com/photo-1581655353564-df123a1eb820?w=300&q=80" alt="T-Shirt" class="clickable-item">
-                <h3 class="clickable-item">সলিড সাদা কটন টি-শার্ট</h3>
-                <div class="product-price">৳ ৩৫০</div>
-                <button class="buy-btn direct-buy-btn">Buy Now</button>
-            </div>
-            
-            <div class="product-card">
-                <img src="https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=300&q=80" alt="Headphone" class="clickable-item">
-                <h3 class="clickable-item">ওয়্যারলেস ব্লুটুথ হেডফোন</h3>
-                <div class="product-price">৳ ১২০০</div>
-                <button class="buy-btn direct-buy-btn">Buy Now</button>
-            </div>
-            
-            <div class="product-card">
-                <img src="https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=300&q=80" alt="Smart Watch" class="clickable-item">
-                <h3 class="clickable-item">ডিজিটাল স্মার্ট ওয়াচ</h3>
-                <div class="product-price">৳ ৮৫০</div>
-                <button class="buy-btn direct-buy-btn">Buy Now</button>
-            </div>
-
-            <div class="product-card">
-                <img src="https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=300&q=80" alt="Sneakers" class="clickable-item">
-                <h3 class="clickable-item">স্টাইলিশ স্নিকার্স জুতো</h3>
-                <div class="product-price">৳ ১৫০০</div>
-                <button class="buy-btn direct-buy-btn">Buy Now</button>
-            </div>
-
+        <!-- HTML ফাঁকা! জাভাস্ক্রিপ্ট এখানে ১০০ প্রোডাক্ট বসিয়ে দেবে -->
+        <div class="product-grid" id="dynamic-product-grid">
+            <!-- Products will be generated here -->
         </div>
     </div>
 
@@ -128,7 +94,6 @@
         const auth = getAuth(app);
         const authLink = document.getElementById("auth-link");
 
-        // 유জার লগইন চেক
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 authLink.innerText = "👤 Profile";
@@ -139,20 +104,66 @@
             }
         });
 
-        // 🛒 Cart System
+        // 🛒 Cart System (UI Update)
         let cart = JSON.parse(localStorage.getItem("amarDarazCart")) || [];
         const cartLink = document.getElementById("cart-link");
-
         function updateCartCount() {
             cartLink.innerText = `🛒 Cart (${cart.length})`;
         }
         updateCartCount(); 
 
+        // ==========================================
+        // 🌟 স্মার্ট প্রোডাক্ট ডেটাবেস (Array)
+        // ১০০টি প্রোডাক্ট আপনি এখানে এক লাইনে এক লাইনে লিখবেন!
+        // ==========================================
+        const productsDatabase = [
+            { name: "স্মার্টফোন (6GB RAM, 128GB)", price: "১২৫০০", img: "https://images.unsplash.com/photo-1598327105666-5b89351cb31b?w=300&q=80" },
+            { name: "সলিড সাদা কটন টি-শার্ট", price: "৩৫০", img: "https://images.unsplash.com/photo-1581655353564-df123a1eb820?w=300&q=80" },
+            { name: "ওয়্যারলেস ব্লুটুথ হেডফোন", price: "১২০০", img: "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=300&q=80" },
+            { name: "ডিজিটাল স্মার্ট ওয়াচ", price: "৮৫০", img: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=300&q=80" },
+            { name: "স্টাইলিশ স্নিকার্স জুতো", price: "১৫০০", img: "https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=300&q=80" },
+            { name: "গেমিং ল্যাপটপ কোর আই ৭", price: "৮৫০০০", img: "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=300&q=80" },
+            { name: "অফিসিয়াল লেদার ব্যাগ", price: "২৫০০", img: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300&q=80" },
+            { name: "প্রিমিয়াম সানগ্লাস মেনজ", price: "৪৫০", img: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=300&q=80" },
+            { name: "গেমিং মাউস আরজিবি", price: "৭০০", img: "https://images.unsplash.com/photo-1527219525722-f9767a7afc81?w=300&q=80" },
+            { name: "মেকানিক্যাল কীবোর্ড", price: "২০০০", img: "https://images.unsplash.com/photo-1595225476474-87563907a212?w=300&q=80" },
+            { name: "মেনজ বডি পারফিউম", price: "৫৫০", img: "https://images.unsplash.com/photo-1523293115678-efa30dbb3a0c?w=300&q=80" },
+            { name: "রিচার্জেবল ট্রিমার", price: "৬৫০", img: "https://images.unsplash.com/photo-1621607512214-68297480165e?w=300&q=80" },
+            { name: "ফাস্ট চার্জিং পাওয়ার ব্যাংক", price: "১১০০", img: "https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=300&q=80" },
+            { name: "মিনি ব্লুটুথ স্পিকার", price: "৪০০", img: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=300&q=80" },
+            { name: "স্টাডি ডেস্ক ল্যাম্প", price: "৩০০", img: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=300&q=80" }
+            
+            // ১০০টি প্রোডাক্ট বানাতে চাইলে ঠিক এভাবেই কমা (,) দিয়ে নিচে নিচে লাইন বাড়াতে থাকবেন:
+            // { name: "প্রোডাক্টের নাম", price: "দাম", img: "ছবির লিংক" },
+        ];
+
+        // 🌟 ম্যাজিক: ডেটাবেস থেকে অটোমেটিক HTML তৈরি করা
+        const productGrid = document.getElementById("dynamic-product-grid");
+        let htmlContent = "";
+
+        productsDatabase.forEach((product) => {
+            htmlContent += `
+                <div class="product-card">
+                    <img src="${product.img}" alt="Product" class="clickable-item">
+                    <h3 class="clickable-item">${product.name}</h3>
+                    <div class="product-price">৳ ${product.price}</div>
+                    <button class="buy-btn direct-buy-btn">Buy Now</button>
+                </div>
+            `;
+        });
+        // সব প্রোডাক্ট একসাথে ওয়েবসাইটে বসিয়ে দেওয়া হলো
+        productGrid.innerHTML = htmlContent;
+
+        // ==========================================
+        // ফাংশনালিটি (Buy Now & Quick View)
+        // ==========================================
+        
+        // ১. কার্ড থেকে সরাসরি Buy Now
         document.querySelectorAll(".direct-buy-btn").forEach(button => {
             button.addEventListener("click", function(event) {
                 const productCard = event.target.closest(".product-card");
                 const name = productCard.querySelector("h3").innerText;
-                const price = productCard.querySelector(".product-price").innerText;
+                const price = productCard.querySelector(".product-price").innerText.replace("৳ ", ""); // ৳ চিহ্ন বাদ দিয়ে সেভ হবে
 
                 cart.push({ name, price });
                 localStorage.setItem("amarDarazCart", JSON.stringify(cart));
@@ -160,6 +171,7 @@
             });
         });
 
+        // ২. Quick View Modal
         const modal = document.getElementById('quickViewModal');
         let selectedProduct = null;
 
@@ -167,12 +179,12 @@
             item.addEventListener("click", function(event) {
                 const productCard = event.target.closest(".product-card");
                 const name = productCard.querySelector("h3").innerText;
-                const price = productCard.querySelector(".product-price").innerText;
+                const price = productCard.querySelector(".product-price").innerText.replace("৳ ", "");
                 const imgSrc = productCard.querySelector("img").src;
 
                 document.getElementById("modalImg").src = imgSrc;
                 document.getElementById("modalTitle").innerText = name;
-                document.getElementById("modalPrice").innerText = price;
+                document.getElementById("modalPrice").innerText = `৳ ${price}`;
                 
                 selectedProduct = { name, price };
                 modal.style.display = 'flex'; 
@@ -186,6 +198,7 @@
             if (e.target === modal) modal.style.display = 'none';
         });
 
+        // মডাল থেকে Add to Cart
         document.getElementById('modalAddBtn').addEventListener('click', (e) => {
             if(selectedProduct) {
                 cart.push(selectedProduct);
@@ -203,6 +216,7 @@
             }
         });
 
+        // মডাল থেকে Buy Now
         document.getElementById('modalBuyBtn').addEventListener('click', () => {
             if(selectedProduct) {
                 cart.push(selectedProduct);
