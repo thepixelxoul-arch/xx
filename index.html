@@ -25,11 +25,7 @@
         .search-bar input { flex: 1; height: 100%; padding: 0 15px; border: none; border-radius: 4px 0 0 4px; outline: none; font-size: 15px; color: #333; background: transparent; }
         .search-bar button { width: 50px; height: 100%; background: #ffece1; border: none; border-radius: 0 4px 4px 0; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.3s; }
         .search-bar button:hover { background: #ffd1b3; }
-        
-        .search-bar button svg {
-            width: 28px !important;
-            height: 28px !important;
-        }
+        .search-bar button svg { width: 28px !important; height: 28px !important; }
         
         .suggestions-box { position: absolute; top: 100%; left: 0; width: calc(100% - 50px); background: white; border-radius: 0 0 8px 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-height: 250px; overflow-y: auto; z-index: 2000; display: none; margin-top: 2px; }
         .suggestion-item { padding: 12px 15px; cursor: pointer; color: #333; font-size: 14px; text-align: left; border-bottom: 1px solid #f1f1f1; display: flex; justify-content: space-between; align-items: center; }
@@ -60,22 +56,51 @@
         .footer-col ul li { margin-bottom: 10px; }
         .footer-col ul li a { text-decoration: none; color: #0f136d; font-size: 13px; transition: 0.3s; }
         .footer-col ul li a:hover { text-decoration: underline; color: #f85606; }
-        
         .app-download-box { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
         .app-icon { background: #f85606; color: white; width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; border-radius: 8px; font-size: 20px; font-weight: bold;}
         .app-text { font-size: 14px; }
         .app-text span { color: #f85606; font-size: 15px; }
-        
         .store-logos { display: flex; flex-direction: column; gap: 10px; }
         .store-logos img { height: 35px; cursor: pointer; }
-        
         .payment-logos { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
         .payment-logos span { background: white; padding: 5px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; font-weight: bold; color: #333; }
 
-        /* ব্যালেন্স অপশনের স্টাইল */
-        #balance-link {
-            color: #ffcc00 !important; 
-            font-weight: bold;
+        #balance-link { color: #ffcc00 !important; font-weight: bold; }
+
+        /* Profile Dropdown Menu */
+        .profile-menu { position: relative; display: inline-block; }
+        .profile-dropdown { 
+            display: none; 
+            position: absolute; 
+            right: 0; 
+            top: 100%; 
+            background: white; 
+            min-width: 150px; 
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1); 
+            border-radius: 5px; 
+            overflow: hidden; 
+            z-index: 2000; 
+            margin-top: 10px; 
+            border: 1px solid #eee;
+        }
+        .profile-dropdown a { 
+            display: block !important; 
+            color: #333 !important; 
+            padding: 12px 15px !important; 
+            text-decoration: none; 
+            font-size: 14px !important; 
+            font-weight: normal !important; 
+            text-align: left; 
+            border-bottom: 1px solid #f1f1f1; 
+            margin: 0 !important;
+        }
+        .profile-dropdown a:last-child { border-bottom: none; }
+        .profile-dropdown a:hover { background-color: #f9f9f9; color: #f85606 !important; }
+        
+        /* 🌟 পিসির জন্য হোভার এবং মোবাইলের জন্য জাভাস্ক্রিপ্ট ক্লাস (show) */
+        .profile-menu.logged-in:hover .profile-dropdown,
+        .profile-dropdown.show { 
+            display: block; 
         }
     </style>
 </head>
@@ -88,7 +113,7 @@
         <div class="search-bar">
             <input type="text" id="search-input" placeholder="Search in Daraz">
             <button id="search-btn">
-                <svg style="width: 26px !important; height: 26px !important; transform: scale(1.4); display: block;" viewBox="0 0 24 24" fill="none" stroke="#f85606" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#f85606" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="11" cy="11" r="8"></circle>
                     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                 </svg>
@@ -97,11 +122,17 @@
         </div>
 
         <div class="nav-links">
-            <!-- 🌟 নতুন: ব্যালেন্স অপশন (লগইন ছাড়া লুকানো থাকবে) -->
-            <a href="#" id="balance-link" style="display: none;">💰 ৳ 0</a>
-            
+            <a href="#" id="balance-link" style="display: none;">💰 Balance: ৳ 0</a>
             <a href="checkout.html" id="cart-link">🛒 Cart (0)</a>
-            <a href="login.html" id="auth-link">Login / Signup</a>
+            
+            <div class="profile-menu" id="profile-menu-container">
+                <a href="login.html" id="auth-link">Login / Signup</a>
+                
+                <div class="profile-dropdown" id="profile-dropdown">
+                    <a href="profile.html">👤 Profile</a>
+                    <a href="#">💳 Add Fund</a>
+                </div>
+            </div>
         </div>
     </nav>
 
@@ -126,38 +157,19 @@
 
     <!-- Footer Section -->
     <footer class="footer">
+        <!-- ... (Footer content remains same) ... -->
         <div class="footer-top">
             <div class="footer-col">
                 <h4>Customer Care</h4>
-                <ul>
-                    <li><a href="#">Help Center</a></li>
-                    <li><a href="#">How to Buy</a></li>
-                    <li><a href="#">Returns & Refunds</a></li>
-                    <li><a href="#">Contact Us</a></li>
-                    <li><a href="#">Terms & Conditions</a></li>
-                </ul>
+                <ul><li><a href="#">Help Center</a></li><li><a href="#">How to Buy</a></li><li><a href="#">Returns & Refunds</a></li><li><a href="#">Contact Us</a></li><li><a href="#">Terms & Conditions</a></li></ul>
             </div>
-            
             <div class="footer-col">
                 <h4>AmarDaraz</h4>
-                <ul>
-                    <li><a href="#">About Us</a></li>
-                    <li><a href="#">Digital Payments</a></li>
-                    <li><a href="#">Privacy Policy</a></li>
-                    <li><a href="#">AmarDaraz App</a></li>
-                </ul>
+                <ul><li><a href="#">About Us</a></li><li><a href="#">Digital Payments</a></li><li><a href="#">Privacy Policy</a></li><li><a href="#">AmarDaraz App</a></li></ul>
             </div>
-            
             <div class="footer-col">
-                <div class="app-download-box">
-                    <div class="app-icon">A</div>
-                    <div class="app-text">
-                        <span>Happy Shopping</span><br>
-                        Download App
-                    </div>
-                </div>
+                <div class="app-download-box"><div class="app-icon">A</div><div class="app-text"><span>Happy Shopping</span><br>Download App</div></div>
             </div>
-            
             <div class="footer-col">
                 <div class="store-logos">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg" alt="App Store">
@@ -165,28 +177,13 @@
                 </div>
             </div>
         </div>
-        
         <div class="footer-bottom">
             <div class="footer-col" style="flex: 2;">
                 <h4>Payment Methods</h4>
-                <div class="payment-logos">
-                    <span>💳 Visa</span>
-                    <span>💳 MasterCard</span>
-                    <span>📱 bKash</span>
-                    <span>📱 Nagad</span>
-                    <span>💵 Cash on Delivery</span>
-                </div>
+                <div class="payment-logos"><span>💳 Visa</span><span>💳 MasterCard</span><span>📱 bKash</span><span>📱 Nagad</span><span>💵 Cash on Delivery</span></div>
             </div>
-            
-            <div class="footer-col">
-                <h4>Verified by</h4>
-                <p style="font-size: 13px; font-weight: bold; color: #28a745;">✅ PCI DSS Compliant</p>
-            </div>
-            
-            <div class="footer-col">
-                <h4>DBID</h4>
-                <p style="font-size: 13px; color: #777;">Registration ID : <br> 123456789</p>
-            </div>
+            <div class="footer-col"><h4>Verified by</h4><p style="font-size: 13px; font-weight: bold; color: #28a745;">✅ PCI DSS Compliant</p></div>
+            <div class="footer-col"><h4>DBID</h4><p style="font-size: 13px; color: #777;">Registration ID : <br> 123456789</p></div>
         </div>
     </footer>
 
@@ -220,26 +217,46 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        
         const authLink = document.getElementById("auth-link");
         const balanceLink = document.getElementById("balance-link");
+        const profileMenuContainer = document.getElementById("profile-menu-container");
+        const profileDropdown = document.getElementById("profile-dropdown");
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                authLink.innerText = "👤 Profile";
-                authLink.href = "profile.html"; 
+                authLink.innerText = "👤 Profile ▾";
+                authLink.href = "#"; 
+                profileMenuContainer.classList.add("logged-in");
                 
-                // ইউজার লগইন থাকলে ব্যালেন্স দেখাবে
                 balanceLink.style.display = "inline-block";
-                
-                // লোকাল স্টোরেজ থেকে ব্যালেন্স চেক করা, না থাকলে 0 দেখাবে
                 let currentBalance = localStorage.getItem("amarDarazBalance") || 0;
-                balanceLink.innerText = `💰 ৳ ${currentBalance}`;
+                balanceLink.innerText = `💰 Balance: ৳ ${currentBalance}`;
+
+                // 🌟 মোবাইল বা পিসিতে ক্লিক করলে ড্রপডাউন ওপেন/ক্লোজ হবে
+                authLink.onclick = function(e) {
+                    e.preventDefault();
+                    profileDropdown.classList.toggle("show");
+                };
             } else {
                 authLink.innerText = "Login / Signup";
                 authLink.href = "login.html";
-                
-                // লগআউট থাকলে ব্যালেন্স হাইড হয়ে যাবে
+                authLink.onclick = null; // লগআউট থাকলে ক্লিক ইভেন্ট বন্ধ
+                profileMenuContainer.classList.remove("logged-in");
                 balanceLink.style.display = "none";
+                profileDropdown.classList.remove("show");
+            }
+        });
+
+        // 🌟 স্ক্রিনের অন্য কোথাও ক্লিক করলে ড্রপডাউন এবং সাজেশন বক্স বন্ধ হয়ে যাবে
+        document.addEventListener('click', function(e) {
+            // Search logic
+            if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) { 
+                suggestionsBox.style.display = 'none'; 
+            }
+            // Dropdown logic
+            if (!profileMenuContainer.contains(e.target)) {
+                profileDropdown.classList.remove("show");
             }
         });
 
@@ -324,10 +341,6 @@
                 renderCustomProducts(matches);
                 document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
             }
-        });
-
-        document.addEventListener('click', function(e) {
-            if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) { suggestionsBox.style.display = 'none'; }
         });
 
         document.querySelectorAll('.cat-btn').forEach(btn => {
