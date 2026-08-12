@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>অ্যাডমিন প্যানেল - আমার দারাজ</title>
+    
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; background: #f4f7f6; display: flex; height: 100vh; overflow: hidden; }
+        
+        /* 🌟 Sidebar Design */
+        .sidebar { width: 250px; background: #2c3e50; color: white; padding-top: 20px; display: flex; flex-direction: column; }
+        .sidebar h2 { text-align: center; color: #f85606; margin-bottom: 30px; letter-spacing: 1px; }
+        .sidebar button { background: transparent; color: white; border: none; padding: 15px 20px; text-align: left; font-size: 16px; cursor: pointer; transition: 0.3s; width: 100%; border-left: 4px solid transparent; }
+        .sidebar button:hover, .sidebar button.active { background: #34495e; border-left: 4px solid #f85606; }
+        .logout-btn { margin-top: auto; background: #e74c3c !important; text-align: center !important; }
+        .logout-btn:hover { background: #c0392b !important; }
+
+        /* 🌟 Main Content Design */
+        .main-content { flex: 1; display: flex; flex-direction: column; }
+        .header { background: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .content-area { padding: 30px; overflow-y: auto; flex: 1; }
+        
+        .card { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .card h3 { margin-top: 0; color: #333; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+
+        /* Form Design */
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; color: #555; font-weight: bold; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
+        .submit-btn { background: #f85606; color: white; padding: 12px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold; width: 100%; }
+        .submit-btn:hover { background: #d84a05; }
+
+        /* Section Toggling */
+        .section { display: none; animation: fadeIn 0.3s; }
+        .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Protection Overlay */
+        #protection-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: white; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .loader { border: 5px solid #f3f3f3; border-top: 5px solid #f85606; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 15px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <!-- Security Loading Screen -->
+    <div id="protection-overlay">
+        <div class="loader"></div>
+        <h3 style="color: #555;">অ্যাডমিন চেক করা হচ্ছে...</h3>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>Admin Panel</h2>
+        <button class="nav-btn active" onclick="showSection('dashboard')">📊 Dashboard</button>
+        <button class="nav-btn" onclick="showSection('add-product')">📦 Add Product</button>
+        <button class="nav-btn" onclick="showSection('orders')">🛒 Manage Orders</button>
+        <button class="nav-btn" onclick="showSection('users')">👥 User Balance</button>
+        
+        <button class="logout-btn" id="admin-logout">🚪 Logout</button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <h2>আমার দারাজ কন্ট্রোল রুম</h2>
+            <div id="admin-email-display" style="font-weight: bold; color: #f85606;">লোড হচ্ছে...</div>
+        </div>
+
+        <div class="content-area">
+            
+            <!-- Dashboard Section -->
+            <div id="dashboard" class="section active">
+                <div class="card">
+                    <h3>স্বাগতম, বস! 🚀</h3>
+                    <p>এখান থেকে আপনি আপনার ওয়েবসাইটের সবকিছু কন্ট্রোল করতে পারবেন। বামপাশের মেনু থেকে অপশন সিলেক্ট করুন।</p>
+                </div>
+                <div style="display: flex; gap: 20px;">
+                    <div class="card" style="flex: 1; text-align: center;">
+                        <h1 style="color: #2ecc71; margin: 0; font-size: 40px;">0</h1>
+                        <p style="color: #777; margin-top: 5px;">মোট অর্ডার</p>
+                    </div>
+                    <div class="card" style="flex: 1; text-align: center;">
+                        <h1 style="color: #3498db; margin: 0; font-size: 40px;">0</h1>
+                        <p style="color: #777; margin-top: 5px;">মোট ইউজার</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Product Section -->
+            <div id="add-product" class="section">
+                <div class="card">
+                    <h3>নতুন প্রোডাক্ট যোগ করুন</h3>
+                    <form id="add-product-form">
+                        <div class="form-group">
+                            <label>প্রোডাক্টের নাম:</label>
+                            <input type="text" id="p-name" placeholder="যেমন: Free Fire 115 Diamonds" required>
+                        </div>
+                        <div class="form-group">
+                            <label>দাম (৳):</label>
+                            <input type="number" id="p-price" placeholder="যেমন: 85" required>
+                        </div>
+                        <div class="form-group">
+                            <label>ছবির লিংক (URL):</label>
+                            <input type="text" id="p-img" placeholder="https://example.com/image.jpg" required>
+                        </div>
+                        <div class="form-group">
+                            <label>ক্যাটাগরি:</label>
+                            <select id="p-category">
+                                <option value="topup">Topup</option>
+                                <option value="subscription">Subscription</option>
+                                <option value="card">Gift Card</option>
+                                <option value="panel">Panel / SMM</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="submit-btn">প্রোডাক্ট সেভ করুন</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Manage Orders Section -->
+            <div id="orders" class="section">
+                <div class="card">
+                    <h3>গ্রাহকদের অর্ডারসমূহ</h3>
+                    <p style="color: #777;">(ফায়ারবেস ডাটাবেস কানেক্ট করার পর এখানে অর্ডার লিস্ট দেখা যাবে)</p>
+                </div>
+            </div>
+
+            <!-- User Balance Section -->
+            <div id="users" class="section">
+                <div class="card">
+                    <h3>ইউজার ব্যালেন্স কন্ট্রোল</h3>
+                    <p style="color: #777;">(এখান থেকে আপনি ইউজারদের অ্যাকাউন্টে টাকা অ্যাড করতে পারবেন)</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Firebase & JavaScript -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBZNrrK7MLGIZoPakMgj2yFEX7iCVYYhlg",
+            authDomain: "amrdraz-d0682.firebaseapp.com",
+            projectId: "amrdraz-d0682",
+            storageBucket: "amrdraz-d0682.firebasestorage.app",
+            messagingSenderId: "690289096145",
+            appId: "1:690289096145:web:dbebaa4e60203a7922dcf0"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // 🛑 সিকিউরিটি রুলস: শুধু এই ইমেইলটিই অ্যাডমিন প্যানেলে ঢুকতে পারবে (আপনার দেওয়া ইমেইল)
+        const ADMIN_EMAIL = "sakibbinsalam.cs@gmail.com"; 
+
+        onAuthStateChanged(auth, (user) => {
+            const overlay = document.getElementById("protection-overlay");
+            
+            if (user && user.email === ADMIN_EMAIL) {
+                // ইউজার যদি লগইন করা থাকে এবং তার ইমেইল যদি আপনার ইমেইল হয়
+                overlay.style.display = "none";
+                document.getElementById("admin-email-display").innerText = user.email;
+            } else {
+                // অন্য কেউ হলে লাথি মেরে হোমপেজে পাঠিয়ে দেবে!
+                alert("দুঃখিত! এই পেজে ঢোকার পারমিশন আপনার নেই।");
+                window.location.href = "index.html";
+            }
+        });
+
+        // লগআউট সিস্টেম
+        document.getElementById('admin-logout').addEventListener('click', () => {
+            signOut(auth).then(() => {
+                window.location.href = "login.html";
+            });
+        });
+
+        // মেনু পরিবর্তনের ফাংশন
+        window.showSection = function(sectionId) {
+            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+        };
+
+        // ফর্ম সাবমিট
+        document.getElementById("add-product-form").addEventListener("submit", function(e) {
+            e.preventDefault();
+            alert("দারুণ! ডাটাবেস কানেক্ট করার পর এই প্রোডাক্টটি আপনার হোমপেজে শো করবে।");
+        });
+    </script>
+</body>
+</html>
