@@ -15,14 +15,24 @@
         .product-card h3:hover { color: #f85606; }
         .product-card h3 { font-size: 15px; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        /* 🌟 নতুন: ক্যাটাগরি মেনুর ডিজাইন */
         .category-nav { display: flex; justify-content: center; gap: 10px; margin: 20px 10px; flex-wrap: wrap; }
         .cat-btn { padding: 10px 20px; background: #eee; border: none; border-radius: 25px; cursor: pointer; font-weight: bold; color: #555; transition: 0.3s; font-size: 14px; }
         .cat-btn:hover { background: #ffd1b3; color: #f85606; }
         .cat-btn.active { background: #f85606; color: white; box-shadow: 0 4px 10px rgba(248, 86, 6, 0.3); }
 
+        /* 🌟 নতুন: Search Bar & Suggestions Design */
+        .search-bar { position: relative; flex: 1; max-width: 500px; display: flex; align-items: center; }
+        .search-bar input { flex: 1; padding: 10px 15px; border: none; border-radius: 4px 0 0 4px; outline: none; }
+        .search-bar button { padding: 10px 20px; background: #f85606; color: white; border: none; border-radius: 0 4px 4px 0; cursor: pointer; font-weight: bold; }
+        
+        .suggestions-box { position: absolute; top: 100%; left: 0; width: calc(100% - 70px); background: white; border-radius: 0 0 8px 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-height: 250px; overflow-y: auto; z-index: 2000; display: none; margin-top: 2px; }
+        .suggestion-item { padding: 12px 15px; cursor: pointer; color: #333; font-size: 14px; text-align: left; border-bottom: 1px solid #f1f1f1; display: flex; justify-content: space-between; align-items: center; }
+        .suggestion-item:last-child { border-bottom: none; }
+        .suggestion-item:hover { background-color: #f9f9f9; color: #f85606; }
+        .suggestion-icon { color: #ccc; font-size: 16px; }
+
         /* Quick View Modal Design */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 3000; justify-content: center; align-items: center; }
         .modal-content { background: white; padding: 25px; border-radius: 8px; max-width: 350px; width: 90%; text-align: center; position: relative; box-shadow: 0 5px 20px rgba(0,0,0,0.2); animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         
@@ -43,10 +53,15 @@
     <!-- Navigation Bar -->
     <nav class="navbar">
         <div class="logo">AmarDaraz</div>
+        
+        <!-- 🌟 নতুন: Search Bar (সাজেশন বক্স সহ) -->
         <div class="search-bar">
-            <input type="text" placeholder="প্রোডাক্ট খুঁজুন...">
-            <button>Search</button>
+            <input type="text" id="search-input" placeholder="প্রোডাক্ট খুঁজুন... (যেমন: Free Fire)">
+            <button id="search-btn">Search</button>
+            <!-- সাজেশন ড্রপডাউন -->
+            <div id="search-suggestions" class="suggestions-box"></div>
         </div>
+
         <div class="nav-links">
             <a href="checkout.html" id="cart-link">🛒 Cart (0)</a>
             <a href="login.html" id="auth-link">Login / Signup</a>
@@ -58,7 +73,7 @@
         <h2>🔥 সুপার ডিজিটাল সেল! সব সার্ভিসে বিশেষ ছাড়! 🔥</h2>
     </div>
 
-    <!-- 🌟 নতুন: Category Navigation -->
+    <!-- Category Navigation -->
     <div class="category-nav">
         <button class="cat-btn active" data-filter="all">All</button>
         <button class="cat-btn" data-filter="card">Card</button>
@@ -69,8 +84,6 @@
 
     <!-- Main Content -->
     <div class="main-container">
-        
-        <!-- HTML ফাঁকা! জাভাস্ক্রিপ্ট এখানে প্রোডাক্ট বসিয়ে দেবে -->
         <div class="product-grid" id="dynamic-product-grid">
             <!-- Products will be generated here -->
         </div>
@@ -127,41 +140,28 @@
         updateCartCount(); 
 
         // ==========================================
-        // 🌟 স্মার্ট প্রোডাক্ট ডেটাবেস (Category সহ)
+        // প্রোডাক্ট ডেটাবেস
         // ==========================================
         const productsDatabase = [
-            // Topup Category
             { name: "Free Fire 115 Diamonds", price: "৮৫", img: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=300&q=80", category: "topup" },
             { name: "PUBG Mobile 60 UC", price: "১০০", img: "https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=300&q=80", category: "topup" },
-            
-            // Subscription Category
             { name: "Netflix Premium 1 Month", price: "৩৫০", img: "https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?w=300&q=80", category: "subscription" },
             { name: "Spotify Premium 1 Month", price: "১৫০", img: "https://images.unsplash.com/photo-1614680376573-df3480f0c6ff?w=300&q=80", category: "subscription" },
-            
-            // Card Category
             { name: "Google Play $10 Gift Card", price: "১১০০", img: "https://images.unsplash.com/photo-1610464627010-0935fbabceea?w=300&q=80", category: "card" },
             { name: "Apple iTunes $5 Card", price: "৫৫০", img: "https://images.unsplash.com/photo-1620189507195-68309c04c4d0?w=300&q=80", category: "card" },
-            
-            // Panel Category (SMM/Services)
             { name: "Instagram 1K Followers Panel", price: "২০০", img: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=300&q=80", category: "panel" },
             { name: "Facebook 1K Page Likes", price: "২৫০", img: "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=300&q=80", category: "panel" }
         ];
 
-        // 🌟 ম্যাজিক: ক্যাটাগরি অনুযায়ী প্রোডাক্ট দেখানোর ফাংশন
         const productGrid = document.getElementById("dynamic-product-grid");
 
-        function renderProducts(filterCategory) {
+        // প্রোডাক্ট স্ক্রিনে দেখানোর ফাংশন (কাস্টম অ্যারে রেন্ডার করার সুবিধা সহ)
+        function renderCustomProducts(productsArray) {
             let htmlContent = "";
-            
-            // ক্যাটাগরি অনুযায়ী ফিল্টার করা
-            const filteredProducts = filterCategory === "all" 
-                ? productsDatabase 
-                : productsDatabase.filter(product => product.category === filterCategory);
-
-            if(filteredProducts.length === 0) {
-                htmlContent = "<p style='text-align:center; width:100%; color:#777;'>এই ক্যাটাগরিতে কোনো প্রোডাক্ট নেই।</p>";
+            if(productsArray.length === 0) {
+                htmlContent = "<p style='text-align:center; width:100%; color:#777; margin-top:30px;'>দুঃখিত, কোনো প্রোডাক্ট পাওয়া যায়নি!</p>";
             } else {
-                filteredProducts.forEach((product) => {
+                productsArray.forEach((product) => {
                     htmlContent += `
                         <div class="product-card">
                             <img src="${product.img}" alt="Product" class="clickable-item">
@@ -173,33 +173,104 @@
                 });
             }
             productGrid.innerHTML = htmlContent;
-            
-            // নতুন করে ইভেন্ট লিসেনার যোগ করতে হবে, কারণ HTML নতুন করে তৈরি হয়েছে
             attachEvents(); 
         }
+
+        // ডিফল্ট ক্যাটাগরি রেন্ডার
+        function renderProducts(filterCategory) {
+            const filteredProducts = filterCategory === "all" 
+                ? productsDatabase 
+                : productsDatabase.filter(product => product.category === filterCategory);
+            renderCustomProducts(filteredProducts);
+        }
+
+        // ==========================================
+        // 🌟 ম্যাজিক: লাইভ সার্চ সাজেশন
+        // ==========================================
+        const searchInput = document.getElementById('search-input');
+        const searchBtn = document.getElementById('search-btn');
+        const suggestionsBox = document.getElementById('search-suggestions');
+
+        // ইউজার টাইপ করলে কী হবে
+        searchInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase().trim();
+            suggestionsBox.innerHTML = '';
+
+            if (query.length > 0) {
+                // ডেটাবেস থেকে মিল খোঁজা
+                const matches = productsDatabase.filter(product => 
+                    product.name.toLowerCase().includes(query)
+                );
+
+                if (matches.length > 0) {
+                    suggestionsBox.style.display = 'block';
+                    matches.forEach(match => {
+                        const suggestionDiv = document.createElement('div');
+                        suggestionDiv.className = 'suggestion-item';
+                        // ছবির মতো ছোট তীর চিহ্ন (↖) দেওয়া হলো
+                        suggestionDiv.innerHTML = `<span>${match.name}</span> <span class="suggestion-icon">↖</span>`;
+                        
+                        // সাজেশনে ক্লিক করলে কী হবে
+                        suggestionDiv.addEventListener('click', () => {
+                            searchInput.value = match.name;
+                            suggestionsBox.style.display = 'none';
+                            renderCustomProducts([match]); // শুধু ওই প্রোডাক্টটি স্ক্রিনে দেখাবে
+                            
+                            // ক্যাটাগরি বাটনগুলোর অ্যাকটিভ কালার রিমুভ করা
+                            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+                        });
+                        
+                        suggestionsBox.appendChild(suggestionDiv);
+                    });
+                } else {
+                    suggestionsBox.style.display = 'none';
+                }
+            } else {
+                suggestionsBox.style.display = 'none';
+                renderProducts("all"); // সার্চ বক্স খালি করলে সব প্রোডাক্ট দেখাবে
+            }
+        });
+
+        // সার্চ বাটনে ক্লিক করলে
+        searchBtn.addEventListener('click', () => {
+            const query = searchInput.value.toLowerCase().trim();
+            suggestionsBox.style.display = 'none';
+            if(query) {
+                const matches = productsDatabase.filter(product => product.name.toLowerCase().includes(query));
+                renderCustomProducts(matches);
+                document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+            }
+        });
+
+        // স্ক্রিনের অন্য কোথাও ক্লিক করলে সাজেশন বক্স বন্ধ হয়ে যাবে
+        document.addEventListener('click', function(e) {
+            if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+                suggestionsBox.style.display = 'none';
+            }
+        });
+
 
         // ক্যাটাগরি বাটনে ক্লিক করার সিস্টেম
         document.querySelectorAll('.cat-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                // আগের অ্যাকটিভ বাটন থেকে কালার সরানো
                 document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-                // যেটায় ক্লিক করেছে সেটাকে অ্যাকটিভ করা
                 e.target.classList.add('active');
                 
-                // ডেটা-ফিল্টার অনুযায়ী প্রোডাক্ট রি-রেন্ডার করা
                 const category = e.target.getAttribute('data-filter');
                 renderProducts(category);
+                
+                // ক্যাটাগরি বদলালে সার্চ বক্স খালি হয়ে যাবে
+                searchInput.value = '';
+                suggestionsBox.style.display = 'none';
             });
         });
 
-        // প্রথমবার পেজ লোড হলে সব (all) প্রোডাক্ট দেখাবে
         renderProducts("all");
 
         // ==========================================
         // ফাংশনালিটি (Buy Now & Quick View)
         // ==========================================
         function attachEvents() {
-            // ১. কার্ড থেকে সরাসরি Buy Now
             document.querySelectorAll(".direct-buy-btn").forEach(button => {
                 button.addEventListener("click", function(event) {
                     const productCard = event.target.closest(".product-card");
@@ -212,7 +283,6 @@
                 });
             });
 
-            // ২. Quick View Modal
             const modal = document.getElementById('quickViewModal');
 
             document.querySelectorAll(".clickable-item").forEach(item => {
@@ -232,16 +302,11 @@
             });
         }
 
-        // গ্লোবাল ভেরিয়েবল ফর মডাল
         let selectedProduct = null;
         const modal = document.getElementById('quickViewModal');
 
-        document.getElementById('closeModal').addEventListener('click', () => {
-            modal.style.display = 'none';
-        });
-        window.addEventListener('click', (e) => {
-            if (e.target === modal) modal.style.display = 'none';
-        });
+        document.getElementById('closeModal').addEventListener('click', () => { modal.style.display = 'none'; });
+        window.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
 
         document.getElementById('modalAddBtn').addEventListener('click', (e) => {
             if(selectedProduct) {
@@ -253,10 +318,7 @@
                 const originalText = btn.innerText;
                 btn.innerText = "✔ যোগ হয়েছে!";
                 btn.style.backgroundColor = "#28a745"; 
-                setTimeout(() => {
-                    btn.innerText = originalText;
-                    btn.style.backgroundColor = "#ff9900"; 
-                }, 1500);
+                setTimeout(() => { btn.innerText = originalText; btn.style.backgroundColor = "#ff9900"; }, 1500);
             }
         });
 
