@@ -20,34 +20,52 @@
         .cat-btn:hover { background: #ffd1b3; color: #f85606; }
         .cat-btn.active { background: #f85606; color: white; box-shadow: 0 4px 10px rgba(248, 86, 6, 0.3); }
 
-        /* 🌟 দারাজের মতো হুবহু Search Bar ডিজাইন */
+        /* Search Bar */
         .search-bar { position: relative; flex: 1; max-width: 600px; display: flex; align-items: center; background: white; border-radius: 4px; height: 42px; margin: 0 20px; }
         .search-bar input { flex: 1; height: 100%; padding: 0 15px; border: none; border-radius: 4px 0 0 4px; outline: none; font-size: 15px; color: #333; background: transparent; }
         .search-bar button { width: 50px; height: 100%; background: #ffece1; border: none; border-radius: 0 4px 4px 0; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.3s; }
         .search-bar button:hover { background: #ffd1b3; }
         
-        /* সাজেশন বক্স */
         .suggestions-box { position: absolute; top: 100%; left: 0; width: calc(100% - 50px); background: white; border-radius: 0 0 8px 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-height: 250px; overflow-y: auto; z-index: 2000; display: none; margin-top: 2px; }
         .suggestion-item { padding: 12px 15px; cursor: pointer; color: #333; font-size: 14px; text-align: left; border-bottom: 1px solid #f1f1f1; display: flex; justify-content: space-between; align-items: center; }
         .suggestion-item:last-child { border-bottom: none; }
         .suggestion-item:hover { background-color: #f9f9f9; color: #f85606; }
         .suggestion-icon { color: #ccc; font-size: 16px; font-weight: bold; }
 
-        /* Quick View Modal Design */
+        /* Quick View Modal */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 3000; justify-content: center; align-items: center; }
         .modal-content { background: white; padding: 25px; border-radius: 8px; max-width: 350px; width: 90%; text-align: center; position: relative; box-shadow: 0 5px 20px rgba(0,0,0,0.2); animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        
         .close-btn { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; color: #777; transition: 0.3s; }
         .close-btn:hover { color: #f85606; }
-        
         .modal-img { width: 100%; max-height: 220px; object-fit: cover; margin-bottom: 15px; border-radius: 5px; }
         .modal-price { color: #f85606; font-size: 20px; font-weight: bold; margin: 10px 0; }
-        
         .btn-group { display: flex; gap: 10px; margin-top: 15px; }
         .btn-group button { flex: 1; padding: 10px 0; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; transition: 0.3s; color: white; font-size: 14px; }
         .add-btn { background-color: #ff9900; }
         .add-btn:hover { background-color: #e68a00; }
+
+        /* 🌟 নতুন: Footer Design */
+        .footer { background-color: #f4f4f6; padding: 40px 20px; margin-top: 50px; color: #0f136d; font-family: Arial, sans-serif; }
+        .footer-top { display: flex; flex-wrap: wrap; justify-content: space-between; max-width: 1200px; margin: 0 auto; padding-bottom: 30px; border-bottom: 1px solid #ddd; }
+        .footer-bottom { display: flex; flex-wrap: wrap; justify-content: space-between; max-width: 1200px; margin: 30px auto 0; }
+        .footer-col { flex: 1; min-width: 200px; margin-bottom: 20px; }
+        .footer-col h4 { font-size: 16px; margin-bottom: 15px; color: #0f136d; font-weight: normal;}
+        .footer-col ul { list-style: none; padding: 0; margin: 0; }
+        .footer-col ul li { margin-bottom: 10px; }
+        .footer-col ul li a { text-decoration: none; color: #0f136d; font-size: 13px; transition: 0.3s; }
+        .footer-col ul li a:hover { text-decoration: underline; color: #f85606; }
+        
+        .app-download-box { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+        .app-icon { background: #f85606; color: white; width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; border-radius: 8px; font-size: 20px; font-weight: bold;}
+        .app-text { font-size: 14px; }
+        .app-text span { color: #f85606; font-size: 15px; }
+        
+        .store-logos { display: flex; flex-direction: column; gap: 10px; }
+        .store-logos img { height: 35px; cursor: pointer; }
+        
+        .payment-logos { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+        .payment-logos span { background: white; padding: 5px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; font-weight: bold; color: #333; }
     </style>
 </head>
 <body>
@@ -56,13 +74,10 @@
     <nav class="navbar">
         <div class="logo">AmarDaraz</div>
         
-        <!-- 🌟 अपडेट করা Search Bar -->
         <div class="search-bar">
-            <!-- লেখার জায়গায় 'Search in Daraz' বসানো হলো -->
             <input type="text" id="search-input" placeholder="Search in Daraz">
             <button id="search-btn">
-                <!-- ম্যাজিক: SVG দিয়ে দারাজের মতো আইকন তৈরি করা হলো -->
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f85606" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#f85606" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="11" cy="11" r="8"></circle>
                     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                 </svg>
@@ -94,6 +109,73 @@
     <div class="main-container">
         <div class="product-grid" id="dynamic-product-grid"></div>
     </div>
+
+    <!-- 🌟 নতুন: Footer Section -->
+    <footer class="footer">
+        <div class="footer-top">
+            <div class="footer-col">
+                <h4>Customer Care</h4>
+                <ul>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">How to Buy</a></li>
+                    <li><a href="#">Returns & Refunds</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">Terms & Conditions</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h4>AmarDaraz</h4>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Digital Payments</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">AmarDaraz App</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <div class="app-download-box">
+                    <div class="app-icon">A</div>
+                    <div class="app-text">
+                        <span>Happy Shopping</span><br>
+                        Download App
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-col">
+                <div class="store-logos">
+                    <!-- আসল স্টোরের ব্যাজগুলোর ছবি -->
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg" alt="App Store">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Google Play">
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <div class="footer-col" style="flex: 2;">
+                <h4>Payment Methods</h4>
+                <div class="payment-logos">
+                    <span>💳 Visa</span>
+                    <span>💳 MasterCard</span>
+                    <span>📱 bKash</span>
+                    <span>📱 Nagad</span>
+                    <span>💵 Cash on Delivery</span>
+                </div>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Verified by</h4>
+                <p style="font-size: 13px; font-weight: bold; color: #28a745;">✅ PCI DSS Compliant</p>
+            </div>
+            
+            <div class="footer-col">
+                <h4>DBID</h4>
+                <p style="font-size: 13px; color: #777;">Registration ID : <br> 123456789</p>
+            </div>
+        </div>
+    </footer>
 
     <!-- Quick View Modal -->
     <div class="modal-overlay" id="quickViewModal">
@@ -137,7 +219,6 @@
             }
         });
 
-        // Cart System
         let cart = JSON.parse(localStorage.getItem("amarDarazCart")) || [];
         const cartLink = document.getElementById("cart-link");
         function updateCartCount() { cartLink.innerText = `🛒 Cart (${cart.length})`; }
@@ -181,7 +262,6 @@
             renderCustomProducts(filteredProducts);
         }
 
-        // Live Search Suggestion
         const searchInput = document.getElementById('search-input');
         const searchBtn = document.getElementById('search-btn');
         const suggestionsBox = document.getElementById('search-suggestions');
