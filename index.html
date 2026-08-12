@@ -26,6 +26,11 @@
         .search-bar button { width: 50px; height: 100%; background: #ffece1; border: none; border-radius: 0 4px 4px 0; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.3s; }
         .search-bar button:hover { background: #ffd1b3; }
         
+        .search-bar button svg {
+            width: 28px !important;
+            height: 28px !important;
+        }
+        
         .suggestions-box { position: absolute; top: 100%; left: 0; width: calc(100% - 50px); background: white; border-radius: 0 0 8px 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-height: 250px; overflow-y: auto; z-index: 2000; display: none; margin-top: 2px; }
         .suggestion-item { padding: 12px 15px; cursor: pointer; color: #333; font-size: 14px; text-align: left; border-bottom: 1px solid #f1f1f1; display: flex; justify-content: space-between; align-items: center; }
         .suggestion-item:last-child { border-bottom: none; }
@@ -66,6 +71,12 @@
         
         .payment-logos { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
         .payment-logos span { background: white; padding: 5px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; font-weight: bold; color: #333; }
+
+        /* ব্যালেন্স অপশনের স্টাইল */
+        #balance-link {
+            color: #ffcc00 !important; 
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -77,7 +88,6 @@
         <div class="search-bar">
             <input type="text" id="search-input" placeholder="Search in Daraz">
             <button id="search-btn">
-                <!-- 🌟 ম্যাজিক: scale(1.4) ব্যবহার করে জোরপূর্বক আইকনটি বড় করা হলো! -->
                 <svg style="width: 26px !important; height: 26px !important; transform: scale(1.4); display: block;" viewBox="0 0 24 24" fill="none" stroke="#f85606" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="11" cy="11" r="8"></circle>
                     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -87,6 +97,9 @@
         </div>
 
         <div class="nav-links">
+            <!-- 🌟 নতুন: ব্যালেন্স অপশন (লগইন ছাড়া লুকানো থাকবে) -->
+            <a href="#" id="balance-link" style="display: none;">💰 ৳ 0</a>
+            
             <a href="checkout.html" id="cart-link">🛒 Cart (0)</a>
             <a href="login.html" id="auth-link">Login / Signup</a>
         </div>
@@ -208,14 +221,25 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const authLink = document.getElementById("auth-link");
+        const balanceLink = document.getElementById("balance-link");
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 authLink.innerText = "👤 Profile";
                 authLink.href = "profile.html"; 
+                
+                // ইউজার লগইন থাকলে ব্যালেন্স দেখাবে
+                balanceLink.style.display = "inline-block";
+                
+                // লোকাল স্টোরেজ থেকে ব্যালেন্স চেক করা, না থাকলে 0 দেখাবে
+                let currentBalance = localStorage.getItem("amarDarazBalance") || 0;
+                balanceLink.innerText = `💰 ৳ ${currentBalance}`;
             } else {
                 authLink.innerText = "Login / Signup";
                 authLink.href = "login.html";
+                
+                // লগআউট থাকলে ব্যালেন্স হাইড হয়ে যাবে
+                balanceLink.style.display = "none";
             }
         });
 
