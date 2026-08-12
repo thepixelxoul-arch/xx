@@ -15,6 +15,12 @@
         .product-card h3:hover { color: #f85606; }
         .product-card h3 { font-size: 15px; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
+        /* 🌟 নতুন: ক্যাটাগরি মেনুর ডিজাইন */
+        .category-nav { display: flex; justify-content: center; gap: 10px; margin: 20px 10px; flex-wrap: wrap; }
+        .cat-btn { padding: 10px 20px; background: #eee; border: none; border-radius: 25px; cursor: pointer; font-weight: bold; color: #555; transition: 0.3s; font-size: 14px; }
+        .cat-btn:hover { background: #ffd1b3; color: #f85606; }
+        .cat-btn.active { background: #f85606; color: white; box-shadow: 0 4px 10px rgba(248, 86, 6, 0.3); }
+
         /* Quick View Modal Design */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; }
         .modal-content { background: white; padding: 25px; border-radius: 8px; max-width: 350px; width: 90%; text-align: center; position: relative; box-shadow: 0 5px 20px rgba(0,0,0,0.2); animation: fadeIn 0.3s; }
@@ -49,14 +55,22 @@
 
     <!-- Banner Section -->
     <div class="banner">
-        <h2>🔥 ধামাকা অফার! সব প্রোডাক্টে 100% ছাড়! 🔥</h2>
+        <h2>🔥 সুপার ডিজিটাল সেল! সব সার্ভিসে বিশেষ ছাড়! 🔥</h2>
+    </div>
+
+    <!-- 🌟 নতুন: Category Navigation -->
+    <div class="category-nav">
+        <button class="cat-btn active" data-filter="all">All</button>
+        <button class="cat-btn" data-filter="card">Card</button>
+        <button class="cat-btn" data-filter="subscription">Subscription</button>
+        <button class="cat-btn" data-filter="topup">Topup</button>
+        <button class="cat-btn" data-filter="panel">Panel</button>
     </div>
 
     <!-- Main Content -->
     <div class="main-container">
-        <h2 class="section-title">Just For You</h2>
         
-        <!-- HTML ফাঁকা! জাভাস্ক্রিপ্ট এখানে ১০০ প্রোডাক্ট বসিয়ে দেবে -->
+        <!-- HTML ফাঁকা! জাভাস্ক্রিপ্ট এখানে প্রোডাক্ট বসিয়ে দেবে -->
         <div class="product-grid" id="dynamic-product-grid">
             <!-- Products will be generated here -->
         </div>
@@ -104,7 +118,7 @@
             }
         });
 
-        // 🛒 Cart System (UI Update)
+        // 🛒 Cart System
         let cart = JSON.parse(localStorage.getItem("amarDarazCart")) || [];
         const cartLink = document.getElementById("cart-link");
         function updateCartCount() {
@@ -113,80 +127,114 @@
         updateCartCount(); 
 
         // ==========================================
-        // 🌟 স্মার্ট প্রোডাক্ট ডেটাবেস (Array)
-        // ১০০টি প্রোডাক্ট আপনি এখানে এক লাইনে এক লাইনে লিখবেন!
+        // 🌟 স্মার্ট প্রোডাক্ট ডেটাবেস (Category সহ)
         // ==========================================
         const productsDatabase = [
-            { name: "সলিড সাদা কটন টি-শার্ট", price: "৩৫০", img: "https://images.unsplash.com/photo-1581655353564-df123a1eb820?w=300&q=80" },
-            { name: "ওয়্যারলেস ব্লুটুথ হেডফোন", price: "১২০০", img: "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=300&q=80" },
-            { name: "ডিজিটাল স্মার্ট ওয়াচ", price: "৮৫০", img: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=300&q=80" },
-            { name: "স্টাইলিশ স্নিকার্স জুতো", price: "১৫০০", img: "https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=300&q=80" },
-            { name: "গেমিং ল্যাপটপ কোর আই ৭", price: "৮৫০০০", img: "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=300&q=80" },
-            { name: "অফিসিয়াল লেদার ব্যাগ", price: "২৫০০", img: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300&q=80" },
-            { name: "প্রিমিয়াম সানগ্লাস মেনজ", price: "৪৫০", img: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=300&q=80" },
-            { name: "মেকানিক্যাল কীবোর্ড", price: "২০০০", img: "https://images.unsplash.com/photo-1595225476474-87563907a212?w=300&q=80" },
-            { name: "রিচার্জেবল ট্রিমার", price: "৬৫০", img: "https://images.unsplash.com/photo-1621607512214-68297480165e?w=300&q=80" },
-            { name: "ফাস্ট চার্জিং পাওয়ার ব্যাংক", price: "১১০০", img: "https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=300&q=80" },
-            { name: "মিনি ব্লুটুথ স্পিকার", price: "৪০০", img: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=300&q=80" },
-            { name: "স্টাডি ডেস্ক ল্যাম্প", price: "৩০০", img: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=300&q=80" }
+            // Topup Category
+            { name: "Free Fire 115 Diamonds", price: "৮৫", img: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=300&q=80", category: "topup" },
+            { name: "PUBG Mobile 60 UC", price: "১০০", img: "https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=300&q=80", category: "topup" },
             
-            // ১০০টি প্রোডাক্ট বানাতে চাইলে ঠিক এভাবেই কমা (,) দিয়ে নিচে নিচে লাইন বাড়াতে থাকবেন:
-            // { name: "প্রোডাক্টের নাম", price: "দাম", img: "ছবির লিংক" },
+            // Subscription Category
+            { name: "Netflix Premium 1 Month", price: "৩৫০", img: "https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?w=300&q=80", category: "subscription" },
+            { name: "Spotify Premium 1 Month", price: "১৫০", img: "https://images.unsplash.com/photo-1614680376573-df3480f0c6ff?w=300&q=80", category: "subscription" },
+            
+            // Card Category
+            { name: "Google Play $10 Gift Card", price: "১১০০", img: "https://images.unsplash.com/photo-1610464627010-0935fbabceea?w=300&q=80", category: "card" },
+            { name: "Apple iTunes $5 Card", price: "৫৫০", img: "https://images.unsplash.com/photo-1620189507195-68309c04c4d0?w=300&q=80", category: "card" },
+            
+            // Panel Category (SMM/Services)
+            { name: "Instagram 1K Followers Panel", price: "২০০", img: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=300&q=80", category: "panel" },
+            { name: "Facebook 1K Page Likes", price: "২৫০", img: "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=300&q=80", category: "panel" }
         ];
 
-        // 🌟 ম্যাজিক: ডেটাবেস থেকে অটোমেটিক HTML তৈরি করা
+        // 🌟 ম্যাজিক: ক্যাটাগরি অনুযায়ী প্রোডাক্ট দেখানোর ফাংশন
         const productGrid = document.getElementById("dynamic-product-grid");
-        let htmlContent = "";
 
-        productsDatabase.forEach((product) => {
-            htmlContent += `
-                <div class="product-card">
-                    <img src="${product.img}" alt="Product" class="clickable-item">
-                    <h3 class="clickable-item">${product.name}</h3>
-                    <div class="product-price">৳ ${product.price}</div>
-                    <button class="buy-btn direct-buy-btn">Buy Now</button>
-                </div>
-            `;
+        function renderProducts(filterCategory) {
+            let htmlContent = "";
+            
+            // ক্যাটাগরি অনুযায়ী ফিল্টার করা
+            const filteredProducts = filterCategory === "all" 
+                ? productsDatabase 
+                : productsDatabase.filter(product => product.category === filterCategory);
+
+            if(filteredProducts.length === 0) {
+                htmlContent = "<p style='text-align:center; width:100%; color:#777;'>এই ক্যাটাগরিতে কোনো প্রোডাক্ট নেই।</p>";
+            } else {
+                filteredProducts.forEach((product) => {
+                    htmlContent += `
+                        <div class="product-card">
+                            <img src="${product.img}" alt="Product" class="clickable-item">
+                            <h3 class="clickable-item">${product.name}</h3>
+                            <div class="product-price">৳ ${product.price}</div>
+                            <button class="buy-btn direct-buy-btn">Buy Now</button>
+                        </div>
+                    `;
+                });
+            }
+            productGrid.innerHTML = htmlContent;
+            
+            // নতুন করে ইভেন্ট লিসেনার যোগ করতে হবে, কারণ HTML নতুন করে তৈরি হয়েছে
+            attachEvents(); 
+        }
+
+        // ক্যাটাগরি বাটনে ক্লিক করার সিস্টেম
+        document.querySelectorAll('.cat-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                // আগের অ্যাকটিভ বাটন থেকে কালার সরানো
+                document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+                // যেটায় ক্লিক করেছে সেটাকে অ্যাকটিভ করা
+                e.target.classList.add('active');
+                
+                // ডেটা-ফিল্টার অনুযায়ী প্রোডাক্ট রি-রেন্ডার করা
+                const category = e.target.getAttribute('data-filter');
+                renderProducts(category);
+            });
         });
-        // সব প্রোডাক্ট একসাথে ওয়েবসাইটে বসিয়ে দেওয়া হলো
-        productGrid.innerHTML = htmlContent;
+
+        // প্রথমবার পেজ লোড হলে সব (all) প্রোডাক্ট দেখাবে
+        renderProducts("all");
 
         // ==========================================
         // ফাংশনালিটি (Buy Now & Quick View)
         // ==========================================
-        
-        // ১. কার্ড থেকে সরাসরি Buy Now
-        document.querySelectorAll(".direct-buy-btn").forEach(button => {
-            button.addEventListener("click", function(event) {
-                const productCard = event.target.closest(".product-card");
-                const name = productCard.querySelector("h3").innerText;
-                const price = productCard.querySelector(".product-price").innerText.replace("৳ ", ""); // ৳ চিহ্ন বাদ দিয়ে সেভ হবে
+        function attachEvents() {
+            // ১. কার্ড থেকে সরাসরি Buy Now
+            document.querySelectorAll(".direct-buy-btn").forEach(button => {
+                button.addEventListener("click", function(event) {
+                    const productCard = event.target.closest(".product-card");
+                    const name = productCard.querySelector("h3").innerText;
+                    const price = productCard.querySelector(".product-price").innerText.replace("৳ ", "");
 
-                cart.push({ name, price });
-                localStorage.setItem("amarDarazCart", JSON.stringify(cart));
-                window.location.href = "checkout.html";
+                    cart.push({ name, price });
+                    localStorage.setItem("amarDarazCart", JSON.stringify(cart));
+                    window.location.href = "checkout.html";
+                });
             });
-        });
 
-        // ২. Quick View Modal
-        const modal = document.getElementById('quickViewModal');
+            // ২. Quick View Modal
+            const modal = document.getElementById('quickViewModal');
+
+            document.querySelectorAll(".clickable-item").forEach(item => {
+                item.addEventListener("click", function(event) {
+                    const productCard = event.target.closest(".product-card");
+                    const name = productCard.querySelector("h3").innerText;
+                    const price = productCard.querySelector(".product-price").innerText.replace("৳ ", "");
+                    const imgSrc = productCard.querySelector("img").src;
+
+                    document.getElementById("modalImg").src = imgSrc;
+                    document.getElementById("modalTitle").innerText = name;
+                    document.getElementById("modalPrice").innerText = `৳ ${price}`;
+                    
+                    selectedProduct = { name, price };
+                    modal.style.display = 'flex'; 
+                });
+            });
+        }
+
+        // গ্লোবাল ভেরিয়েবল ফর মডাল
         let selectedProduct = null;
-
-        document.querySelectorAll(".clickable-item").forEach(item => {
-            item.addEventListener("click", function(event) {
-                const productCard = event.target.closest(".product-card");
-                const name = productCard.querySelector("h3").innerText;
-                const price = productCard.querySelector(".product-price").innerText.replace("৳ ", "");
-                const imgSrc = productCard.querySelector("img").src;
-
-                document.getElementById("modalImg").src = imgSrc;
-                document.getElementById("modalTitle").innerText = name;
-                document.getElementById("modalPrice").innerText = `৳ ${price}`;
-                
-                selectedProduct = { name, price };
-                modal.style.display = 'flex'; 
-            });
-        });
+        const modal = document.getElementById('quickViewModal');
 
         document.getElementById('closeModal').addEventListener('click', () => {
             modal.style.display = 'none';
@@ -195,7 +243,6 @@
             if (e.target === modal) modal.style.display = 'none';
         });
 
-        // মডাল থেকে Add to Cart
         document.getElementById('modalAddBtn').addEventListener('click', (e) => {
             if(selectedProduct) {
                 cart.push(selectedProduct);
@@ -213,7 +260,6 @@
             }
         });
 
-        // মডাল থেকে Buy Now
         document.getElementById('modalBuyBtn').addEventListener('click', () => {
             if(selectedProduct) {
                 cart.push(selectedProduct);
