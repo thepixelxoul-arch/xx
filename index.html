@@ -41,9 +41,9 @@
             <button>Search</button>
         </div>
         <div class="nav-links">
-            <!-- আইডি ঠিক রাখা হয়েছে, নাম ও লিংক জাভাস্ক্রিপ্ট দিয়ে পরিবর্তন হবে -->
-            <a href="login.html" id="auth-link">Login / Signup</a>
+            <!-- এখানে Cart বামে এবং Profile ডানে দেওয়া হলো -->
             <a href="checkout.html" id="cart-link">🛒 Cart (0)</a>
+            <a href="login.html" id="auth-link">Login / Signup</a>
         </div>
     </nav>
 
@@ -113,7 +113,6 @@
     <!-- Firebase & JavaScript -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-        // লগআউট (signOut) এখন আর এই পেজে দরকার নেই, প্রোফাইল পেজে থাকবে
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
         const firebaseConfig = {
@@ -132,11 +131,9 @@
         // 유জার লগইন চেক
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // ইউজার লগইন করা থাকলে প্রোফাইল দেখাবে
                 authLink.innerText = "👤 Profile";
                 authLink.href = "profile.html"; 
             } else {
-                // ইউজার লগইন করা না থাকলে Login / Signup দেখাবে
                 authLink.innerText = "Login / Signup";
                 authLink.href = "login.html";
             }
