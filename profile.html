@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>আমার প্রোফাইল - আমার দারাজ</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        .profile-container { 
+            max-width: 500px; 
+            margin: 60px auto; 
+            background: white; 
+            padding: 40px 30px; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+            text-align: center;
+        }
+        
+        .profile-icon {
+            font-size: 60px;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+
+        .profile-container h2 { 
+            color: #333; 
+            margin-bottom: 10px; 
+        }
+        
+        .user-email-box { 
+            background: #f9f9f9; 
+            padding: 15px; 
+            border-radius: 4px; 
+            font-size: 16px; 
+            color: #555; 
+            margin-bottom: 30px;
+            border: 1px dashed #ccc;
+        }
+
+        .logout-btn { 
+            background-color: #ff4d4d; 
+            color: white; 
+            border: none; 
+            padding: 12px 25px; 
+            cursor: pointer; 
+            border-radius: 4px; 
+            font-weight: bold; 
+            font-size: 16px; 
+            transition: 0.3s;
+            width: 100%;
+        }
+
+        .logout-btn:hover { 
+            background-color: #e60000; 
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="logo">
+            <a href="index.html" style="color: white; text-decoration: none;">AmarDaraz</a>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">🏠 Home</a>
+            <a href="checkout.html">🛒 Cart</a>
+        </div>
+    </nav>
+
+    <!-- Profile Box -->
+    <div class="profile-container">
+        <div class="profile-icon">👤</div>
+        <h2>স্বাগতম, আপনার প্রোফাইলে!</h2>
+        <div class="user-email-box">
+            <p><strong>লগইন করা ইমেইল:</strong></p>
+            <p id="user-email">লোড হচ্ছে...</p>
+        </div>
+        <button id="logout-btn" class="logout-btn">লগআউট করুন</button>
+    </div>
+
+    <!-- Firebase Authentication Javascript -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+        // আপনার ফায়ারবেস কনফিগারেশন
+        const firebaseConfig = {
+            apiKey: "AIzaSyBZNrrK7MLGIZoPakMgj2yFEX7iCVYYhlg",
+            authDomain: "amrdraz-d0682.firebaseapp.com",
+            projectId: "amrdraz-d0682",
+            storageBucket: "amrdraz-d0682.firebasestorage.app",
+            messagingSenderId: "690289096145",
+            appId: "1:690289096145:web:dbebaa4e60203a7922dcf0"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const userEmailDisplay = document.getElementById("user-email");
+        const logoutBtn = document.getElementById("logout-btn");
+
+        // 유জার লগইন চেক (Route Protection)
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // ইউজার লগইন করা থাকলে তার ইমেইল দেখাবে
+                userEmailDisplay.innerText = user.email;
+                userEmailDisplay.style.color = "#f85606";
+                userEmailDisplay.style.fontWeight = "bold";
+            } else {
+                // লগইন করা না থাকলে জোর করে লগইন পেজে পাঠিয়ে দেবে
+                window.location.href = "login.html";
+            }
+        });
+
+        // লগআউট বাটনের কাজ
+        logoutBtn.addEventListener("click", () => {
+            logoutBtn.innerText = "লগআউট হচ্ছে...";
+            signOut(auth).then(() => {
+                // লগআউট সফল হলে লগইন পেজে পাঠিয়ে দেবে
+                window.location.href = "login.html"; 
+            }).catch((error) => {
+                alert("লগআউট করতে সমস্যা হয়েছে!");
+                logoutBtn.innerText = "লগআউট করুন";
+            });
+        });
+    </script>
+
+</body>
+</html>
