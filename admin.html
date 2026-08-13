@@ -44,7 +44,7 @@
         .loader { border: 5px solid #f3f3f3; border-top: 5px solid #f85606; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 15px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* 🌟 Product Table */
+        /* 🌟 Tables */
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
         th { background-color: #f4f4f6; color: #333; }
@@ -53,6 +53,12 @@
         .edit-btn:hover { background-color: #2980b9; }
         .delete-btn { background-color: #e74c3c; }
         .delete-btn:hover { background-color: #c0392b; }
+        .complete-btn { background-color: #28a745; }
+        .complete-btn:hover { background-color: #218838; }
+        
+        .status-badge { padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; }
+        .status-pending { background-color: #fff3cd; color: #856404; }
+        .status-completed { background-color: #d4edda; color: #155724; }
     </style>
 </head>
 <body>
@@ -100,10 +106,8 @@
                 </div>
             </div>
 
-            <!-- 🌟 Manage Products Section (Add, Edit, Delete) -->
+            <!-- Manage Products Section -->
             <div id="manage-products" class="section">
-                
-                <!-- Product Form -->
                 <div class="card">
                     <h3 id="form-title">নতুন প্রোডাক্ট যোগ করুন</h3>
                     <form id="add-product-form">
@@ -133,21 +137,20 @@
                     </form>
                 </div>
 
-                <!-- Product List -->
                 <div class="card">
                     <h3>আপনার সকল প্রোডাক্ট</h3>
-                    <div id="product-list-container">
-                        <!-- জাভাস্ক্রিপ্ট দিয়ে এখানে লিস্ট তৈরি হবে -->
-                        <p>লোড হচ্ছে...</p>
-                    </div>
+                    <div id="product-list-container"><p>লোড হচ্ছে...</p></div>
                 </div>
             </div>
 
-            <!-- Manage Orders Section -->
+            <!-- 🌟 Manage Orders Section (নতুন) -->
             <div id="orders" class="section">
                 <div class="card">
                     <h3>গ্রাহকদের অর্ডারসমূহ</h3>
-                    <p style="color: #777;">(পরে কাজ করা হবে)</p>
+                    <button class="submit-btn" style="width: auto; margin-bottom: 15px; background: #3498db;" onclick="loadOrders()">🔄 তালিকা রিফ্রেশ করুন</button>
+                    <div id="order-list-container">
+                        <p>লোড হচ্ছে...</p>
+                    </div>
                 </div>
             </div>
 
@@ -177,8 +180,6 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-        
-        // 🌟 ডাটাবেস ফাংশন ইমপোর্ট
         import { getFirestore, collection, addDoc, getDocs, doc, setDoc, getDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -196,7 +197,7 @@
 
         const ADMIN_EMAIL = "sakibbinsalam.admin@gmail.com"; 
         
-        let editingProductId = null; // এডিট ট্র্যাক করার ভ্যারিয়েবল
+        let editingProductId = null; 
 
         onAuthStateChanged(auth, (user) => {
             const overlay = document.getElementById("protection-overlay");
@@ -204,8 +205,8 @@
                 overlay.style.display = "none";
                 document.getElementById("admin-email-display").innerText = user.email;
                 
-                // 🌟 লগইন সফল হলে প্রোডাক্ট লিস্ট লোড হবে
                 loadProducts();
+                loadOrders(); // 🌟 লগইন করলে অর্ডারগুলোও লোড হবে
             } else {
                 alert("দুঃখিত! এই পেজে ঢোকার পারমিশন আপনার নেই।");
                 window.location.href = "index.html";
@@ -213,9 +214,7 @@
         });
 
         document.getElementById('admin-logout').addEventListener('click', () => {
-            signOut(auth).then(() => {
-                window.location.href = "login.html";
-            });
+            signOut(auth).then(() => { window.location.href = "login.html"; });
         });
 
         window.showSection = function(sectionId) {
@@ -225,34 +224,23 @@
             event.target.classList.add('active');
         };
 
-        // 🌟 Load Products from Firestore
+        /* ================= PRODUCTS LOGIC ================= */
         async function loadProducts() {
             const listDiv = document.getElementById("product-list-container");
             try {
                 const querySnapshot = await getDocs(collection(db, "products"));
-                
-                document.getElementById("dash-products").innerText = querySnapshot.size; // ড্যাশবোর্ড আপডেট
+                document.getElementById("dash-products").innerText = querySnapshot.size; 
 
                 if (querySnapshot.empty) {
                     listDiv.innerHTML = "<p style='color:#777;'>এখনও কোনো প্রোডাক্ট যোগ করা হয়নি।</p>";
                     return;
                 }
 
-                let html = `<table>
-                    <tr>
-                        <th>ছবি</th>
-                        <th>নাম</th>
-                        <th>ক্যাটাগরি</th>
-                        <th>দাম</th>
-                        <th>অ্যাকশন</th>
-                    </tr>`;
-                
+                let html = `<table><tr><th>ছবি</th><th>নাম</th><th>ক্যাটাগরি</th><th>দাম</th><th>অ্যাকশন</th></tr>`;
                 querySnapshot.forEach((docSnap) => {
                     const data = docSnap.data();
                     const id = docSnap.id;
-                    // String quotes escape for inline functions
                     const safeName = data.name.replace(/'/g, "\\'");
-                    
                     html += `
                     <tr>
                         <td><img src="${data.img}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;"></td>
@@ -265,19 +253,15 @@
                         </td>
                     </tr>`;
                 });
-                
                 html += `</table>`;
                 listDiv.innerHTML = html;
             } catch (error) {
                 listDiv.innerHTML = "<p style='color:red;'>প্রোডাক্ট লোড করতে সমস্যা হয়েছে!</p>";
-                console.error(error);
             }
         }
 
-        // 🌟 Add / Update Product
         document.getElementById("add-product-form").addEventListener("submit", async function(e) {
             e.preventDefault();
-            
             const btn = document.getElementById("product-submit-btn");
             btn.innerText = "সেভ হচ্ছে...";
             btn.disabled = true;
@@ -289,44 +273,33 @@
 
             try {
                 if (editingProductId) {
-                    // Update Product
-                    const pRef = doc(db, "products", editingProductId);
-                    await updateDoc(pRef, { name, price, img, category });
+                    await updateDoc(doc(db, "products", editingProductId), { name, price, img, category });
                     alert("✔ প্রোডাক্ট সফলভাবে আপডেট হয়েছে!");
-                    cancelEdit(); // ফর্ম রিসেট
+                    cancelEdit();
                 } else {
-                    // Add New Product
                     await addDoc(collection(db, "products"), { name, price, img, category });
                     alert("✔ নতুন প্রোডাক্ট যোগ করা হয়েছে!");
                     document.getElementById("add-product-form").reset();
                 }
-                loadProducts(); // লিস্ট আপডেট
-            } catch (error) {
-                alert("❌ সমস্যা হয়েছে: ডাটাবেস পারমিশন চেক করুন।");
-                console.error(error);
-            }
+                loadProducts(); 
+            } catch (error) { alert("❌ ডাটাবেস পারমিশন চেক করুন।"); }
             
             btn.innerText = editingProductId ? "প্রোডাক্ট আপডেট করুন" : "প্রোডাক্ট সেভ করুন";
             btn.disabled = false;
         });
 
-        // 🌟 Edit Product (ফর্ম ফিল-আপ করা)
         window.editProduct = function(id, name, price, img, category) {
             editingProductId = id;
             document.getElementById("p-name").value = name;
             document.getElementById("p-price").value = price;
             document.getElementById("p-img").value = img;
             document.getElementById("p-category").value = category;
-            
             document.getElementById("form-title").innerText = "প্রোডাক্ট আপডেট করুন";
             document.getElementById("product-submit-btn").innerText = "প্রোডাক্ট আপডেট করুন";
             document.getElementById("cancel-edit-btn").style.display = "block";
-            
-            // স্ক্রিন ওপরে নিয়ে যাওয়া
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
-        // 🌟 Cancel Edit
         window.cancelEdit = function() {
             editingProductId = null;
             document.getElementById("add-product-form").reset();
@@ -335,20 +308,79 @@
             document.getElementById("cancel-edit-btn").style.display = "none";
         };
 
-        // 🌟 Delete Product
         window.deleteProduct = async function(id) {
             if (confirm("আপনি কি নিশ্চিত যে এই প্রোডাক্টটি ডিলিট করতে চান?")) {
+                await deleteDoc(doc(db, "products", id));
+                loadProducts();
+            }
+        };
+
+        /* ================= ORDERS LOGIC (নতুন) ================= */
+        window.loadOrders = async function() {
+            const listDiv = document.getElementById("order-list-container");
+            try {
+                const querySnapshot = await getDocs(collection(db, "orders"));
+                document.getElementById("dash-orders").innerText = querySnapshot.size;
+
+                if (querySnapshot.empty) {
+                    listDiv.innerHTML = "<p style='color:#777; padding: 20px 0;'>এখনও কোনো অর্ডার আসেনি।</p>";
+                    return;
+                }
+
+                let html = `<table>
+                    <tr>
+                        <th>কাস্টমার ইমেইল</th>
+                        <th>প্রোডাক্ট</th>
+                        <th>দাম</th>
+                        <th>স্ট্যাটাস</th>
+                        <th>অ্যাকশন</th>
+                    </tr>`;
+                
+                querySnapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    const id = docSnap.id;
+                    const isCompleted = data.status === 'Completed';
+                    
+                    html += `
+                    <tr>
+                        <td>${data.userEmail || "Unknown"}</td>
+                        <td>${data.productName || "Product"}</td>
+                        <td>৳ ${data.price || "0"}</td>
+                        <td>
+                            <span class="status-badge ${isCompleted ? 'status-completed' : 'status-pending'}">
+                                ${isCompleted ? 'কমপ্লিট' : 'পেন্ডিং'}
+                            </span>
+                        </td>
+                        <td>
+                            ${!isCompleted 
+                                ? `<button class="action-btn complete-btn" onclick="completeOrder('${id}')">✔ Complete</button>` 
+                                : `<span style="color: #28a745; font-weight: bold;">✔ Done</span>`
+                            }
+                        </td>
+                    </tr>`;
+                });
+                html += `</table>`;
+                listDiv.innerHTML = html;
+            } catch (error) {
+                listDiv.innerHTML = "<p style='color:red;'>অর্ডার লোড করতে সমস্যা হয়েছে!</p>";
+                console.error(error);
+            }
+        };
+
+        window.completeOrder = async function(orderId) {
+            if(confirm("আপনি কি নিশ্চিত যে এই অর্ডারটি কমপ্লিট হয়ে গেছে? (ইউজার তার প্রোফাইলে এটি কমপ্লিট দেখতে পাবে)")) {
                 try {
-                    await deleteDoc(doc(db, "products", id));
-                    loadProducts();
+                    await updateDoc(doc(db, "orders", orderId), { status: "Completed" });
+                    alert("✔ অর্ডারটি সফলভাবে কমপ্লিট করা হয়েছে!");
+                    loadOrders(); // লিস্ট রিফ্রেশ
                 } catch (error) {
-                    alert("❌ প্রোডাক্ট ডিলিট করতে সমস্যা হয়েছে!");
+                    alert("❌ অর্ডার কমপ্লিট করতে সমস্যা হয়েছে!");
                     console.error(error);
                 }
             }
         };
 
-        // Add Balance Logic
+        /* ================= BALANCE LOGIC ================= */
         document.getElementById("add-balance-form").addEventListener("submit", async function(e) {
             e.preventDefault();
             const email = document.getElementById("u-email").value.trim().toLowerCase();
@@ -363,9 +395,7 @@
                 const userRef = doc(db, "users", email);
                 const docSnap = await getDoc(userRef);
                 let newBalance = amount;
-                if (docSnap.exists()) {
-                    newBalance = (docSnap.data().balance || 0) + amount;
-                }
+                if (docSnap.exists()) { newBalance = (docSnap.data().balance || 0) + amount; }
                 await setDoc(userRef, { balance: newBalance }, { merge: true });
 
                 msgBox.innerText = `✔ সফল! ${email} আইডিতে ৳${amount} যোগ করা হয়েছে।`;
