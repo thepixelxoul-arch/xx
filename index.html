@@ -77,6 +77,19 @@
         .profile-dropdown a:hover { background-color: #f9f9f9; color: #f85606 !important; }
         .profile-dropdown.show { display: block; }
 
+        /* 🌟 নতুন: Notification Dropdown Design */
+        .notif-menu { position: relative; display: inline-block; margin-right: 15px; }
+        .notif-icon { font-size: 18px; cursor: pointer; text-decoration: none; position: relative; display: flex; align-items: center; height: 100%; }
+        .notif-badge { position: absolute; top: -5px; right: -8px; background: red; color: white; border-radius: 50%; padding: 2px 6px; font-size: 10px; font-weight: bold; display: none; }
+        
+        .notif-dropdown { display: none; position: absolute; right: -50px; top: 100%; background: white; width: 280px; max-height: 350px; overflow-y: auto; box-shadow: 0 8px 16px rgba(0,0,0,0.2); border-radius: 5px; z-index: 2000; margin-top: 15px; border: 1px solid #eee; }
+        .notif-dropdown.show { display: block; animation: fadeIn 0.3s; }
+        .notif-header { background: #f85606; color: white; padding: 10px 15px; font-weight: bold; font-size: 14px; text-align: left; position: sticky; top: 0; z-index: 10;}
+        .notif-item { padding: 12px 15px; border-bottom: 1px solid #eee; text-align: left; text-decoration: none; color: #333 !important; font-size: 13px !important; display: block; margin: 0 !important; font-weight: normal !important;}
+        .notif-item:last-child { border-bottom: none; }
+        .notif-item:hover { background-color: #f9f9f9; }
+        .notif-title { font-weight: bold; color: #f85606; margin-bottom: 3px; display: block; }
+
         /* Lucky Spin Wheel Icon Design */
         .floating-spinner-container { position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; z-index: 9999; cursor: pointer; transition: 0.3s; }
         .floating-spinner-container:hover { transform: scale(1.1); }
@@ -106,7 +119,22 @@
             <div id="search-suggestions" class="suggestions-box"></div>
         </div>
 
-        <div class="nav-links">
+        <div class="nav-links" style="display: flex; align-items: center;">
+            
+            <!-- 🌟 নতুন: Notification Menu -->
+            <div class="notif-menu" id="notif-menu-container" style="display: none;">
+                <a href="#" class="notif-icon" id="notif-icon-btn">
+                    🔔 <span class="notif-badge" id="notif-badge">0</span>
+                </a>
+                <div class="notif-dropdown" id="notif-dropdown">
+                    <div class="notif-header">নোটিফিকেশনসমূহ</div>
+                    <div id="notif-list-box">
+                        <!-- নোটিফিকেশন এখানে লোড হবে -->
+                        <div style="padding: 15px; text-align: center; color: #777; font-size: 13px;">লোড হচ্ছে...</div>
+                    </div>
+                </div>
+            </div>
+
             <a href="#" id="balance-link" style="display: none;">💰 Balance: ৳ 0</a>
             <a href="checkout.html" id="cart-link">🛒 Cart (0)</a>
             
@@ -148,7 +176,6 @@
 
     <!-- Main Content -->
     <div class="main-container">
-        <!-- 🌟 লোডিং টেক্সট যোগ করা হলো -->
         <div class="product-grid" id="dynamic-product-grid">
             <div class="loading-products">প্রোডাক্ট লোড হচ্ছে... অনুগ্রহ করে অপেক্ষা করুন।</div>
         </div>
@@ -156,7 +183,6 @@
 
     <!-- Footer Section -->
     <footer class="footer">
-        <!-- ... Footer Content ... -->
         <div class="footer-top">
             <div class="footer-col">
                 <h4>Customer Care</h4>
@@ -211,8 +237,6 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-        
-        // 🌟 ডাটাবেস থেকে প্রোডাক্ট আনার জন্য Firestore ইমপোর্ট
         import { getFirestore, collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -226,25 +250,34 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        const db = getFirestore(app); // 🌟 ডাটাবেস ইনিশিয়ালাইজ
+        const db = getFirestore(app); 
 
         const authLink = document.getElementById("auth-link");
         const balanceLink = document.getElementById("balance-link");
         const profileMenuContainer = document.getElementById("profile-menu-container");
         const profileDropdown = document.getElementById("profile-dropdown");
         const adminMenuLink = document.getElementById("admin-menu-link");
+        
+        // Notification Elements
+        const notifMenuContainer = document.getElementById("notif-menu-container");
+        const notifIconBtn = document.getElementById("notif-icon-btn");
+        const notifDropdown = document.getElementById("notif-dropdown");
+        const notifBadge = document.getElementById("notif-badge");
+        const notifListBox = document.getElementById("notif-list-box");
 
         profileDropdown.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', () => profileDropdown.classList.remove("show"));
         });
-        window.addEventListener('pageshow', () => profileDropdown.classList.remove("show"));
+        window.addEventListener('pageshow', () => {
+            profileDropdown.classList.remove("show");
+            notifDropdown.classList.remove("show");
+        });
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 authLink.innerText = "👤 Profile ▾";
                 authLink.href = "#"; 
                 
-                // 🌟 ডাটাবেস থেকে ইউজারের ব্যালেন্স ফেচ করা হচ্ছে
                 try {
                     const userDoc = await getDoc(doc(db, "users", user.email));
                     let currentBalance = 0;
@@ -255,7 +288,6 @@
                     balanceLink.innerText = `💰 Balance: ৳ ${currentBalance}`;
                 } catch(e) { console.error("Balance fetch error:", e); }
 
-                // অ্যাডমিন হলে ড্রপডাউনে অ্যাডমিন অপশন দেখাবে
                 if(user.email === "sakibbinsalam.admin@gmail.com") {
                     adminMenuLink.style.display = "block";
                 }
@@ -263,13 +295,28 @@
                 authLink.onclick = function(e) {
                     e.preventDefault();
                     profileDropdown.classList.toggle("show");
+                    notifDropdown.classList.remove("show"); // Hide other dropdown
                 };
+
+                // 🌟 Notification Logic 
+                notifMenuContainer.style.display = "inline-block"; // Show bell icon
+                loadNotifications(user.email); // Load DB notifications
+                
+                notifIconBtn.onclick = function(e) {
+                    e.preventDefault();
+                    notifDropdown.classList.toggle("show");
+                    profileDropdown.classList.remove("show"); // Hide other dropdown
+                    notifBadge.style.display = "none"; // Hide badge when clicked
+                };
+
             } else {
                 authLink.innerText = "Login / Signup";
                 authLink.href = "login.html";
                 authLink.onclick = null; 
                 balanceLink.style.display = "none";
+                notifMenuContainer.style.display = "none"; // Hide bell icon
                 profileDropdown.classList.remove("show");
+                notifDropdown.classList.remove("show");
                 adminMenuLink.style.display = "none";
             }
         });
@@ -281,6 +328,9 @@
             if (!profileMenuContainer.contains(e.target)) {
                 profileDropdown.classList.remove("show");
             }
+            if (!notifMenuContainer.contains(e.target)) {
+                notifDropdown.classList.remove("show");
+            }
         });
 
         let cart = JSON.parse(localStorage.getItem("amarDarazCart")) || [];
@@ -288,29 +338,57 @@
         function updateCartCount() { cartLink.innerText = `🛒 Cart (${cart.length})`; }
         updateCartCount(); 
 
-        // 🌟 গ্লোবাল ভ্যারিয়েবলে প্রোডাক্ট রাখা হচ্ছে
         let productsDatabase = [];
         const productGrid = document.getElementById("dynamic-product-grid");
 
-        // 🌟 ডাটাবেস থেকে প্রোডাক্ট লোড করার ফাংশন
         async function fetchProductsFromDB() {
             try {
                 const querySnapshot = await getDocs(collection(db, "products"));
-                productsDatabase = []; // আগের ডেমো ডাটা ক্লিয়ার
-                
+                productsDatabase = []; 
                 querySnapshot.forEach((docSnap) => {
                     productsDatabase.push({ id: docSnap.id, ...docSnap.data() });
                 });
-                
-                renderProducts("all"); // প্রোডাক্টগুলো স্ক্রিনে দেখানো
+                renderProducts("all"); 
             } catch (error) {
                 console.error("Error fetching products: ", error);
                 productGrid.innerHTML = "<p style='text-align:center; width:100%; color:red;'>প্রোডাক্ট লোড করতে সমস্যা হচ্ছে! আপনার ইন্টারনেট কানেকশন চেক করুন।</p>";
             }
         }
-
-        // পেজ লোড হলেই প্রোডাক্ট ফেচ শুরু হবে
         fetchProductsFromDB();
+
+        // 🌟 Load Notifications Function
+        async function loadNotifications(email) {
+            try {
+                const querySnapshot = await getDocs(collection(db, "notifications"));
+                let html = "";
+                let count = 0;
+                
+                querySnapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    if (data.to === "all" || data.to === email) {
+                        html += `
+                            <a href="#" class="notif-item">
+                                <span class="notif-title">${data.title}</span>
+                                ${data.message}
+                            </a>
+                        `;
+                        count++;
+                    }
+                });
+
+                if (html === "") {
+                    notifListBox.innerHTML = "<div style='padding: 15px; text-align: center; color: #777; font-size: 13px;'>কোনো নতুন নোটিফিকেশন নেই।</div>";
+                } else {
+                    notifListBox.innerHTML = html;
+                    if(count > 0) {
+                        notifBadge.innerText = count;
+                        notifBadge.style.display = "inline-block";
+                    }
+                }
+            } catch(e) {
+                notifListBox.innerHTML = "<div style='padding: 15px; text-align: center; color: red; font-size: 13px;'>নোটিফিকেশন লোড করতে সমস্যা হয়েছে।</div>";
+            }
+        }
 
         function renderCustomProducts(productsArray) {
             let htmlContent = "";
