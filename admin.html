@@ -27,9 +27,12 @@
         /* Form Design */
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 5px; color: #555; font-weight: bold; }
-        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
-        .submit-btn { background: #f85606; color: white; padding: 12px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold; width: 100%; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; outline: none; }
+        .form-group input:focus { border-color: #f85606; box-shadow: 0 0 5px rgba(248, 86, 6, 0.3); }
+        
+        .submit-btn { background: #f85606; color: white; padding: 12px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold; width: 100%; transition: 0.3s; }
         .submit-btn:hover { background: #d84a05; }
+        .submit-btn:disabled { background: #ccc; cursor: not-allowed; }
 
         /* Section Toggling */
         .section { display: none; animation: fadeIn 0.3s; }
@@ -56,7 +59,7 @@
         <button class="nav-btn active" onclick="showSection('dashboard')">📊 Dashboard</button>
         <button class="nav-btn" onclick="showSection('add-product')">📦 Add Product</button>
         <button class="nav-btn" onclick="showSection('orders')">🛒 Manage Orders</button>
-        <button class="nav-btn" onclick="showSection('users')">👥 User Balance</button>
+        <button class="nav-btn" onclick="showSection('users')">💰 Add Balance</button>
         
         <button class="logout-btn" id="admin-logout">🚪 Logout</button>
     </div>
@@ -127,11 +130,23 @@
                 </div>
             </div>
 
-            <!-- User Balance Section -->
+            <!-- 🌟 Add User Balance Section -->
             <div id="users" class="section">
                 <div class="card">
-                    <h3>ইউজার ব্যালেন্স কন্ট্রোল</h3>
-                    <p style="color: #777;">(এখান থেকে আপনি ইউজারদের অ্যাকাউন্টে টাকা অ্যাড করতে পারবেন)</p>
+                    <h3>ইউজার অ্যাকাউন্টে টাকা অ্যাড করুন</h3>
+                    <form id="add-balance-form">
+                        <div class="form-group">
+                            <label>কাস্টমারের ইমেইল:</label>
+                            <input type="email" id="u-email" placeholder="যেমন: customer@gmail.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label>টাকার পরিমাণ (৳):</label>
+                            <input type="number" id="u-amount" placeholder="যেমন: 500" required>
+                        </div>
+                        <button type="submit" class="submit-btn" id="balance-btn">টাকা পাঠিয়ে দিন</button>
+                    </form>
+                    
+                    <div id="balance-msg" style="margin-top: 15px; font-weight: bold; display: none; padding: 10px; border-radius: 4px;"></div>
                 </div>
             </div>
 
@@ -142,6 +157,9 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+        
+        // 🌟 নতুন: ডাটাবেসের জন্য Firestore ইমপোর্ট করা হলো
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBZNrrK7MLGIZoPakMgj2yFEX7iCVYYhlg",
@@ -154,8 +172,8 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        const db = getFirestore(app); // 🌟 ডাটাবেস ইনিশিয়ালাইজ
 
-        // 🛑 নতুন অ্যাডমিন ইমেইল সেট করা হলো
         const ADMIN_EMAIL = "sakibbinsalam.admin@gmail.com"; 
 
         onAuthStateChanged(auth, (user) => {
@@ -187,6 +205,57 @@
         document.getElementById("add-product-form").addEventListener("submit", function(e) {
             e.preventDefault();
             alert("দারুণ! ডাটাবেস কানেক্ট করার পর এই প্রোডাক্টটি আপনার হোমপেজে শো করবে।");
+        });
+
+        // 🌟 Add Balance Logic (ডাটাবেসে টাকা পাঠানো)
+        document.getElementById("add-balance-form").addEventListener("submit", async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById("u-email").value.trim().toLowerCase();
+            const amount = parseFloat(document.getElementById("u-amount").value);
+            const btn = document.getElementById("balance-btn");
+            const msgBox = document.getElementById("balance-msg");
+
+            btn.innerText = "টাকা পাঠানো হচ্ছে...";
+            btn.disabled = true;
+
+            try {
+                // ইউজারের ডাটাবেস রেফারেন্স (ইমেইল দিয়ে ইউজার খোঁজা)
+                const userRef = doc(db, "users", email);
+                const docSnap = await getDoc(userRef);
+                
+                let newBalance = amount;
+                
+                // যদি আগে থেকে ইউজারের একাউন্ট ডাটাবেসে থাকে, তাহলে আগের টাকার সাথে নতুন টাকা যোগ হবে
+                if (docSnap.exists()) {
+                    const currentBalance = docSnap.data().balance || 0;
+                    newBalance = currentBalance + amount;
+                }
+                
+                // ডাটাবেসে নতুন ব্যালেন্স সেভ করা হলো
+                await setDoc(userRef, { balance: newBalance }, { merge: true });
+
+                // সাকসেস মেসেজ
+                msgBox.innerText = `✔ সফল! ${email} আইডিতে ৳${amount} যোগ করা হয়েছে। (বর্তমান ব্যালেন্স: ৳${newBalance})`;
+                msgBox.style.color = "#28a745";
+                msgBox.style.backgroundColor = "#e8f5e9";
+                msgBox.style.border = "1px solid #28a745";
+                msgBox.style.display = "block";
+                
+                document.getElementById("add-balance-form").reset(); // ফর্ম ক্লিয়ার
+
+            } catch (error) {
+                // এরর মেসেজ (যদি ডাটাবেস পারমিশন না থাকে)
+                msgBox.innerText = "❌ টাকা পাঠাতে সমস্যা হয়েছে! (আপনার Firebase ডাটাবেস চালু আছে কি?)";
+                msgBox.style.color = "#e74c3c";
+                msgBox.style.backgroundColor = "#fdecep";
+                msgBox.style.border = "1px solid #e74c3c";
+                msgBox.style.display = "block";
+                console.error(error);
+            }
+
+            btn.innerText = "টাকা পাঠিয়ে দিন";
+            btn.disabled = false;
         });
     </script>
 </body>
