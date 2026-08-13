@@ -58,15 +58,23 @@
         .footer-col ul li { margin-bottom: 10px; }
         .footer-col ul li a { text-decoration: none; color: #0f136d; font-size: 13px; transition: 0.3s; }
         .footer-col ul li a:hover { text-decoration: underline; color: #f85606; }
+        .app-download-box { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+        .app-icon { background: #f85606; color: white; width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; border-radius: 8px; font-size: 20px; font-weight: bold;}
+        .app-text { font-size: 14px; }
+        .app-text span { color: #f85606; font-size: 15px; }
+        .store-logos { display: flex; flex-direction: column; gap: 10px; }
+        .store-logos img { height: 35px; cursor: pointer; }
+        .payment-logos { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+        .payment-logos span { background: white; padding: 5px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; font-weight: bold; color: #333; }
 
         /* 🌟 Navbar Alignment Fixes */
-        .nav-links { display: flex; align-items: center; gap: 20px; } /* গ্যাপ সমান করা হলো */
-        .nav-links a { text-decoration: none; font-weight: bold; font-size: 15px; display: flex; align-items: center; gap: 5px; color: inherit; }
+        .nav-links { display: flex; align-items: center; gap: 20px; } 
+        .nav-links a { text-decoration: none; font-weight: bold; font-size: 15px; display: flex; align-items: center; gap: 6px; color: inherit; }
         
         #balance-link { color: #ffcc00 !important; font-weight: bold; }
 
         /* Profile Dropdown Menu */
-        .profile-menu { position: relative; display: inline-block; }
+        .profile-menu { position: relative; display: flex; align-items: center; }
         .profile-dropdown { display: none; position: absolute; right: 0; top: 100%; background: white; min-width: 150px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); border-radius: 5px; overflow: hidden; z-index: 2000; margin-top: 15px; border: 1px solid #eee; }
         .profile-dropdown a { display: block !important; color: #333 !important; padding: 12px 15px !important; font-size: 14px !important; font-weight: normal !important; text-align: left; border-bottom: 1px solid #f1f1f1; margin: 0 !important; }
         .profile-dropdown a:hover { background-color: #f9f9f9; color: #f85606 !important; }
@@ -74,8 +82,8 @@
 
         /* 🌟 Notification Design Upgrade */
         .notif-menu { position: relative; display: flex; align-items: center; }
-        .notif-icon-wrapper { position: relative; display: inline-block; }
-        .notif-badge { position: absolute; top: -6px; right: -8px; background: #e74c3c; color: white; border-radius: 50%; padding: 2px 5px; font-size: 11px; font-weight: bold; display: none; line-height: 1; border: 1px solid #fff; }
+        .notif-icon-wrapper { position: relative; display: flex; align-items: center; }
+        .notif-badge { position: absolute; top: -8px; right: -8px; background: #e74c3c; color: white; border-radius: 50%; padding: 2px 5px; font-size: 11px; font-weight: bold; display: none; line-height: 1; border: 1px solid #fff; }
         
         .notif-dropdown { display: none; position: absolute; right: -80px; top: 100%; background: white; width: 300px; max-height: 350px; overflow-y: auto; box-shadow: 0 8px 20px rgba(0,0,0,0.15); border-radius: 8px; z-index: 2000; margin-top: 15px; border: 1px solid #eee; }
         .notif-dropdown.show { display: block; animation: fadeIn 0.2s ease-in-out; }
@@ -116,17 +124,17 @@
 
         <div class="nav-links">
             
-            <!-- 🌟 Notification Menu (উন্নত ডিজাইন) -->
+            <!-- 🌟 Notification Menu (Alignment Fixed) -->
             <div class="notif-menu" id="notif-menu-container" style="display: none;">
                 <a href="#" id="notif-icon-btn">
                     <div class="notif-icon-wrapper">
                         🔔 <span class="notif-badge" id="notif-badge">0</span>
                     </div>
-                    নোটিফিকেশন
+                    <span>Notification</span>
                 </a>
                 
                 <div class="notif-dropdown" id="notif-dropdown">
-                    <div class="notif-header">আপনার নোটিফিকেশন</div>
+                    <div class="notif-header">Your Notifications</div>
                     <div id="notif-list-box">
                         <div style="padding: 15px; text-align: center; color: #777; font-size: 13px;">লোড হচ্ছে...</div>
                     </div>
@@ -284,7 +292,7 @@
                     if(userDoc.exists()) {
                         currentBalance = userDoc.data().balance || 0;
                     }
-                    balanceLink.style.display = "inline-flex";
+                    balanceLink.style.display = "flex";
                     balanceLink.innerText = `💰 Balance: ৳ ${currentBalance}`;
                 } catch(e) { console.error("Balance fetch error:", e); }
 
