@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>অ্যাডমিন প্যানেল - আমার দারাজ</title>
+    
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; background: #f4f7f6; display: flex; height: 100vh; overflow: hidden; }
+        
+        /* 🌟 Sidebar Design */
+        .sidebar { width: 250px; background: #2c3e50; color: white; padding-top: 20px; display: flex; flex-direction: column; }
+        .sidebar h2 { text-align: center; color: #f85606; margin-bottom: 30px; letter-spacing: 1px; }
+        .sidebar button { background: transparent; color: white; border: none; padding: 15px 20px; text-align: left; font-size: 16px; cursor: pointer; transition: 0.3s; width: 100%; border-left: 4px solid transparent; }
+        .sidebar button:hover, .sidebar button.active { background: #34495e; border-left: 4px solid #f85606; }
+        .logout-btn { margin-top: auto; background: #e74c3c !important; text-align: center !important; }
+        .logout-btn:hover { background: #c0392b !important; }
+
+        /* 🌟 Main Content Design */
+        .main-content { flex: 1; display: flex; flex-direction: column; }
+        .header { background: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .content-area { padding: 30px; overflow-y: auto; flex: 1; }
+        
+        .card { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .card h3 { margin-top: 0; color: #333; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+
+        /* Form Design */
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; color: #555; font-weight: bold; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; outline: none; }
+        .form-group input:focus { border-color: #f85606; box-shadow: 0 0 5px rgba(248, 86, 6, 0.3); }
+        
+        .submit-btn { background: #f85606; color: white; padding: 12px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold; width: 100%; transition: 0.3s; }
+        .submit-btn:hover { background: #d84a05; }
+        .submit-btn:disabled { background: #ccc; cursor: not-allowed; }
+
+        /* Section Toggling */
+        .section { display: none; animation: fadeIn 0.3s; }
+        .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Protection Overlay */
+        #protection-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: white; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .loader { border: 5px solid #f3f3f3; border-top: 5px solid #f85606; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 15px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* 🌟 Product Table */
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #f4f4f6; color: #333; }
+        .action-btn { padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; color: white; transition: 0.3s; }
+        .edit-btn { background-color: #3498db; margin-right: 5px; }
+        .edit-btn:hover { background-color: #2980b9; }
+        .delete-btn { background-color: #e74c3c; }
+        .delete-btn:hover { background-color: #c0392b; }
+    </style>
+</head>
+<body>
+
+    <div id="protection-overlay">
+        <div class="loader"></div>
+        <h3 style="color: #555;">অ্যাডমিন চেক করা হচ্ছে...</h3>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>Admin Panel</h2>
+        <button class="nav-btn active" onclick="showSection('dashboard')">📊 Dashboard</button>
+        <button class="nav-btn" onclick="showSection('manage-products')">📦 Manage Products</button>
+        <button class="nav-btn" onclick="showSection('orders')">🛒 Manage Orders</button>
+        <button class="nav-btn" onclick="showSection('users')">💰 Add Balance</button>
+        
+        <button class="logout-btn" id="admin-logout">🚪 Logout</button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <h2>আমার দারাজ কন্ট্রোল রুম</h2>
+            <div id="admin-email-display" style="font-weight: bold; color: #f85606;">লোড হচ্ছে...</div>
+        </div>
+
+        <div class="content-area">
+            
+            <!-- Dashboard Section -->
+            <div id="dashboard" class="section active">
+                <div class="card">
+                    <h3>স্বাগতম, বস! 🚀</h3>
+                    <p>এখান থেকে আপনি আপনার ওয়েবসাইটের সবকিছু কন্ট্রোল করতে পারবেন। বামপাশের মেনু থেকে অপশন সিলেক্ট করুন।</p>
+                </div>
+                <div style="display: flex; gap: 20px;">
+                    <div class="card" style="flex: 1; text-align: center;">
+                        <h1 style="color: #2ecc71; margin: 0; font-size: 40px;" id="dash-orders">0</h1>
+                        <p style="color: #777; margin-top: 5px;">মোট অর্ডার</p>
+                    </div>
+                    <div class="card" style="flex: 1; text-align: center;">
+                        <h1 style="color: #3498db; margin: 0; font-size: 40px;" id="dash-products">0</h1>
+                        <p style="color: #777; margin-top: 5px;">মোট প্রোডাক্ট</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 🌟 Manage Products Section (Add, Edit, Delete) -->
+            <div id="manage-products" class="section">
+                
+                <!-- Product Form -->
+                <div class="card">
+                    <h3 id="form-title">নতুন প্রোডাক্ট যোগ করুন</h3>
+                    <form id="add-product-form">
+                        <div class="form-group">
+                            <label>প্রোডাক্টের নাম:</label>
+                            <input type="text" id="p-name" placeholder="যেমন: Free Fire 115 Diamonds" required>
+                        </div>
+                        <div class="form-group">
+                            <label>দাম (৳):</label>
+                            <input type="number" id="p-price" placeholder="যেমন: 85" required>
+                        </div>
+                        <div class="form-group">
+                            <label>ছবির লিংক (URL):</label>
+                            <input type="text" id="p-img" placeholder="https://example.com/image.jpg" required>
+                        </div>
+                        <div class="form-group">
+                            <label>ক্যাটাগরি:</label>
+                            <select id="p-category">
+                                <option value="topup">Topup</option>
+                                <option value="subscription">Subscription</option>
+                                <option value="card">Gift Card</option>
+                                <option value="panel">Panel / SMM</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="submit-btn" id="product-submit-btn">প্রোডাক্ট সেভ করুন</button>
+                        <button type="button" class="submit-btn" id="cancel-edit-btn" style="background:#7f8c8d; margin-top:10px; display:none;" onclick="cancelEdit()">এডিট বাতিল করুন</button>
+                    </form>
+                </div>
+
+                <!-- Product List -->
+                <div class="card">
+                    <h3>আপনার সকল প্রোডাক্ট</h3>
+                    <div id="product-list-container">
+                        <!-- জাভাস্ক্রিপ্ট দিয়ে এখানে লিস্ট তৈরি হবে -->
+                        <p>লোড হচ্ছে...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Manage Orders Section -->
+            <div id="orders" class="section">
+                <div class="card">
+                    <h3>গ্রাহকদের অর্ডারসমূহ</h3>
+                    <p style="color: #777;">(পরে কাজ করা হবে)</p>
+                </div>
+            </div>
+
+            <!-- User Balance Section -->
+            <div id="users" class="section">
+                <div class="card">
+                    <h3>ইউজার অ্যাকাউন্টে টাকা অ্যাড করুন</h3>
+                    <form id="add-balance-form">
+                        <div class="form-group">
+                            <label>কাস্টমারের ইমেইল:</label>
+                            <input type="email" id="u-email" placeholder="যেমন: customer@gmail.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label>টাকার পরিমাণ (৳):</label>
+                            <input type="number" id="u-amount" placeholder="যেমন: 500" required>
+                        </div>
+                        <button type="submit" class="submit-btn" id="balance-btn">টাকা পাঠিয়ে দিন</button>
+                    </form>
+                    <div id="balance-msg" style="margin-top: 15px; font-weight: bold; display: none; padding: 10px; border-radius: 4px;"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Firebase & JavaScript -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+        
+        // 🌟 ডাটাবেস ফাংশন ইমপোর্ট
+        import { getFirestore, collection, addDoc, getDocs, doc, setDoc, getDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBZNrrK7MLGIZoPakMgj2yFEX7iCVYYhlg",
+            authDomain: "amrdraz-d0682.firebaseapp.com",
+            projectId: "amrdraz-d0682",
+            storageBucket: "amrdraz-d0682.firebasestorage.app",
+            messagingSenderId: "690289096145",
+            appId: "1:690289096145:web:dbebaa4e60203a7922dcf0"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app); 
+
+        const ADMIN_EMAIL = "sakibbinsalam.admin@gmail.com"; 
+        
+        let editingProductId = null; // এডিট ট্র্যাক করার ভ্যারিয়েবল
+
+        onAuthStateChanged(auth, (user) => {
+            const overlay = document.getElementById("protection-overlay");
+            if (user && user.email === ADMIN_EMAIL) {
+                overlay.style.display = "none";
+                document.getElementById("admin-email-display").innerText = user.email;
+                
+                // 🌟 লগইন সফল হলে প্রোডাক্ট লিস্ট লোড হবে
+                loadProducts();
+            } else {
+                alert("দুঃখিত! এই পেজে ঢোকার পারমিশন আপনার নেই।");
+                window.location.href = "index.html";
+            }
+        });
+
+        document.getElementById('admin-logout').addEventListener('click', () => {
+            signOut(auth).then(() => {
+                window.location.href = "login.html";
+            });
+        });
+
+        window.showSection = function(sectionId) {
+            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+        };
+
+        // 🌟 Load Products from Firestore
+        async function loadProducts() {
+            const listDiv = document.getElementById("product-list-container");
+            try {
+                const querySnapshot = await getDocs(collection(db, "products"));
+                
+                document.getElementById("dash-products").innerText = querySnapshot.size; // ড্যাশবোর্ড আপডেট
+
+                if (querySnapshot.empty) {
+                    listDiv.innerHTML = "<p style='color:#777;'>এখনও কোনো প্রোডাক্ট যোগ করা হয়নি।</p>";
+                    return;
+                }
+
+                let html = `<table>
+                    <tr>
+                        <th>ছবি</th>
+                        <th>নাম</th>
+                        <th>ক্যাটাগরি</th>
+                        <th>দাম</th>
+                        <th>অ্যাকশন</th>
+                    </tr>`;
+                
+                querySnapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    const id = docSnap.id;
+                    // String quotes escape for inline functions
+                    const safeName = data.name.replace(/'/g, "\\'");
+                    
+                    html += `
+                    <tr>
+                        <td><img src="${data.img}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;"></td>
+                        <td>${data.name}</td>
+                        <td style="text-transform: capitalize;">${data.category}</td>
+                        <td>৳ ${data.price}</td>
+                        <td>
+                            <button class="action-btn edit-btn" onclick="editProduct('${id}', '${safeName}', '${data.price}', '${data.img}', '${data.category}')">Edit</button>
+                            <button class="action-btn delete-btn" onclick="deleteProduct('${id}')">Delete</button>
+                        </td>
+                    </tr>`;
+                });
+                
+                html += `</table>`;
+                listDiv.innerHTML = html;
+            } catch (error) {
+                listDiv.innerHTML = "<p style='color:red;'>প্রোডাক্ট লোড করতে সমস্যা হয়েছে!</p>";
+                console.error(error);
+            }
+        }
+
+        // 🌟 Add / Update Product
+        document.getElementById("add-product-form").addEventListener("submit", async function(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById("product-submit-btn");
+            btn.innerText = "সেভ হচ্ছে...";
+            btn.disabled = true;
+
+            const name = document.getElementById("p-name").value.trim();
+            const price = document.getElementById("p-price").value;
+            const img = document.getElementById("p-img").value.trim();
+            const category = document.getElementById("p-category").value;
+
+            try {
+                if (editingProductId) {
+                    // Update Product
+                    const pRef = doc(db, "products", editingProductId);
+                    await updateDoc(pRef, { name, price, img, category });
+                    alert("✔ প্রোডাক্ট সফলভাবে আপডেট হয়েছে!");
+                    cancelEdit(); // ফর্ম রিসেট
+                } else {
+                    // Add New Product
+                    await addDoc(collection(db, "products"), { name, price, img, category });
+                    alert("✔ নতুন প্রোডাক্ট যোগ করা হয়েছে!");
+                    document.getElementById("add-product-form").reset();
+                }
+                loadProducts(); // লিস্ট আপডেট
+            } catch (error) {
+                alert("❌ সমস্যা হয়েছে: ডাটাবেস পারমিশন চেক করুন।");
+                console.error(error);
+            }
+            
+            btn.innerText = editingProductId ? "প্রোডাক্ট আপডেট করুন" : "প্রোডাক্ট সেভ করুন";
+            btn.disabled = false;
+        });
+
+        // 🌟 Edit Product (ফর্ম ফিল-আপ করা)
+        window.editProduct = function(id, name, price, img, category) {
+            editingProductId = id;
+            document.getElementById("p-name").value = name;
+            document.getElementById("p-price").value = price;
+            document.getElementById("p-img").value = img;
+            document.getElementById("p-category").value = category;
+            
+            document.getElementById("form-title").innerText = "প্রোডাক্ট আপডেট করুন";
+            document.getElementById("product-submit-btn").innerText = "প্রোডাক্ট আপডেট করুন";
+            document.getElementById("cancel-edit-btn").style.display = "block";
+            
+            // স্ক্রিন ওপরে নিয়ে যাওয়া
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        // 🌟 Cancel Edit
+        window.cancelEdit = function() {
+            editingProductId = null;
+            document.getElementById("add-product-form").reset();
+            document.getElementById("form-title").innerText = "নতুন প্রোডাক্ট যোগ করুন";
+            document.getElementById("product-submit-btn").innerText = "প্রোডাক্ট সেভ করুন";
+            document.getElementById("cancel-edit-btn").style.display = "none";
+        };
+
+        // 🌟 Delete Product
+        window.deleteProduct = async function(id) {
+            if (confirm("আপনি কি নিশ্চিত যে এই প্রোডাক্টটি ডিলিট করতে চান?")) {
+                try {
+                    await deleteDoc(doc(db, "products", id));
+                    loadProducts();
+                } catch (error) {
+                    alert("❌ প্রোডাক্ট ডিলিট করতে সমস্যা হয়েছে!");
+                    console.error(error);
+                }
+            }
+        };
+
+        // Add Balance Logic
+        document.getElementById("add-balance-form").addEventListener("submit", async function(e) {
+            e.preventDefault();
+            const email = document.getElementById("u-email").value.trim().toLowerCase();
+            const amount = parseFloat(document.getElementById("u-amount").value);
+            const btn = document.getElementById("balance-btn");
+            const msgBox = document.getElementById("balance-msg");
+
+            btn.innerText = "টাকা পাঠানো হচ্ছে...";
+            btn.disabled = true;
+
+            try {
+                const userRef = doc(db, "users", email);
+                const docSnap = await getDoc(userRef);
+                let newBalance = amount;
+                if (docSnap.exists()) {
+                    newBalance = (docSnap.data().balance || 0) + amount;
+                }
+                await setDoc(userRef, { balance: newBalance }, { merge: true });
+
+                msgBox.innerText = `✔ সফল! ${email} আইডিতে ৳${amount} যোগ করা হয়েছে।`;
+                msgBox.style.color = "#28a745";
+                msgBox.style.backgroundColor = "#e8f5e9";
+                msgBox.style.border = "1px solid #28a745";
+                msgBox.style.display = "block";
+                document.getElementById("add-balance-form").reset();
+            } catch (error) {
+                msgBox.innerText = "❌ টাকা পাঠাতে সমস্যা হয়েছে!";
+                msgBox.style.color = "#e74c3c";
+                msgBox.style.backgroundColor = "#fdecep";
+                msgBox.style.border = "1px solid #e74c3c";
+                msgBox.style.display = "block";
+            }
+            btn.innerText = "টাকা পাঠিয়ে দিন";
+            btn.disabled = false;
+        });
+    </script>
+</body>
+</html>
