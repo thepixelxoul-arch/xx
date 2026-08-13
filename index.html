@@ -77,78 +77,16 @@
         .profile-dropdown a:hover { background-color: #f9f9f9; color: #f85606 !important; }
         .profile-dropdown.show { display: block; }
 
-        /* 🌟 নতুন: Lucky Spin Wheel Icon Design */
-        .floating-spinner-container {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            width: 60px;
-            height: 60px;
-            z-index: 9999;
-            cursor: pointer;
-            transition: 0.3s;
-        }
+        /* Lucky Spin Wheel Icon Design */
+        .floating-spinner-container { position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; z-index: 9999; cursor: pointer; transition: 0.3s; }
+        .floating-spinner-container:hover { transform: scale(1.1); }
+        .spin-wheel-bg { width: 100%; height: 100%; border-radius: 50%; background: conic-gradient( #e74c3c 0deg 60deg, #f1c40f 60deg 120deg, #2ecc71 120deg 180deg, #3498db 180deg 240deg, #9b59b6 240deg 300deg, #e67e22 300deg 360deg ); border: 3px solid #fff; box-sizing: border-box; box-shadow: 0 4px 10px rgba(0,0,0,0.3); animation: spin 3s linear infinite; }
+        .spin-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 24px; height: 24px; background: #fff; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; color: #e74c3c; font-size: 14px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 5; }
+        .spin-pointer { position: absolute; top: -5px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 14px solid #333; z-index: 10; }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
-        .floating-spinner-container:hover {
-            transform: scale(1.1);
-        }
-
-        .spin-wheel-bg {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            /* ম্যাজিক: CSS দিয়ে একাধিক রঙের চাকা বানানো হলো */
-            background: conic-gradient(
-                #e74c3c 0deg 60deg,
-                #f1c40f 60deg 120deg,
-                #2ecc71 120deg 180deg,
-                #3498db 180deg 240deg,
-                #9b59b6 240deg 300deg,
-                #e67e22 300deg 360deg
-            );
-            border: 3px solid #fff;
-            box-sizing: border-box;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            animation: spin 3s linear infinite; /* চাকাটি ঘুরবে */
-        }
-
-        .spin-center {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 24px;
-            height: 24px;
-            background: #fff;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-            color: #e74c3c;
-            font-size: 14px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            z-index: 5;
-        }
-
-        /* চাকার উপরের ছোট কাঁটা (Pointer) */
-        .spin-pointer {
-            position: absolute;
-            top: -5px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 0;
-            border-left: 8px solid transparent;
-            border-right: 8px solid transparent;
-            border-top: 14px solid #333;
-            z-index: 10;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        .loading-products { text-align: center; width: 100%; padding: 40px 0; color: #f85606; font-size: 18px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -177,7 +115,7 @@
                 
                 <div class="profile-dropdown" id="profile-dropdown">
                     <a href="profile.html">👤 Profile</a>
-                    <a href="addfund.html">💳 Add Fund</a>
+                    <a href="admin.html" id="admin-menu-link" style="display: none;">⚙️ Admin Panel</a>
                 </div>
             </div>
         </div>
@@ -210,7 +148,10 @@
 
     <!-- Main Content -->
     <div class="main-container">
-        <div class="product-grid" id="dynamic-product-grid"></div>
+        <!-- 🌟 লোডিং টেক্সট যোগ করা হলো -->
+        <div class="product-grid" id="dynamic-product-grid">
+            <div class="loading-products">প্রোডাক্ট লোড হচ্ছে... অনুগ্রহ করে অপেক্ষা করুন।</div>
+        </div>
     </div>
 
     <!-- Footer Section -->
@@ -259,13 +200,10 @@
         </div>
     </div>
 
-    <!-- 🌟 আপডেট করা: Lucky Spin Button -->
+    <!-- Lucky Spin Button -->
     <div class="floating-spinner-container" onclick="window.location.href='spin.html'">
-        <!-- ঘূর্নায়মান চাকা -->
         <div class="spin-wheel-bg"></div>
-        <!-- চাকার উপরের কাঁটা -->
         <div class="spin-pointer"></div>
-        <!-- মাঝখানের ৳ চিহ্ন (এটি ঘুরবে না, স্থির থাকবে) -->
         <div class="spin-center">৳</div>
     </div>
 
@@ -273,6 +211,9 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+        
+        // 🌟 ডাটাবেস থেকে প্রোডাক্ট আনার জন্য Firestore ইমপোর্ট
+        import { getFirestore, collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBZNrrK7MLGIZoPakMgj2yFEX7iCVYYhlg",
@@ -285,25 +226,39 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        
+        const db = getFirestore(app); // 🌟 ডাটাবেস ইনিশিয়ালাইজ
+
         const authLink = document.getElementById("auth-link");
         const balanceLink = document.getElementById("balance-link");
         const profileMenuContainer = document.getElementById("profile-menu-container");
         const profileDropdown = document.getElementById("profile-dropdown");
+        const adminMenuLink = document.getElementById("admin-menu-link");
 
         profileDropdown.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', () => profileDropdown.classList.remove("show"));
         });
         window.addEventListener('pageshow', () => profileDropdown.classList.remove("show"));
 
-        onAuthStateChanged(auth, (user) => {
+        onAuthStateChanged(auth, async (user) => {
             if (user) {
                 authLink.innerText = "👤 Profile ▾";
                 authLink.href = "#"; 
                 
-                balanceLink.style.display = "inline-block";
-                let currentBalance = localStorage.getItem("amarDarazBalance") || 0;
-                balanceLink.innerText = `💰 Balance: ৳ ${currentBalance}`;
+                // 🌟 ডাটাবেস থেকে ইউজারের ব্যালেন্স ফেচ করা হচ্ছে
+                try {
+                    const userDoc = await getDoc(doc(db, "users", user.email));
+                    let currentBalance = 0;
+                    if(userDoc.exists()) {
+                        currentBalance = userDoc.data().balance || 0;
+                    }
+                    balanceLink.style.display = "inline-block";
+                    balanceLink.innerText = `💰 Balance: ৳ ${currentBalance}`;
+                } catch(e) { console.error("Balance fetch error:", e); }
+
+                // অ্যাডমিন হলে ড্রপডাউনে অ্যাডমিন অপশন দেখাবে
+                if(user.email === "sakibbinsalam.admin@gmail.com") {
+                    adminMenuLink.style.display = "block";
+                }
 
                 authLink.onclick = function(e) {
                     e.preventDefault();
@@ -315,6 +270,7 @@
                 authLink.onclick = null; 
                 balanceLink.style.display = "none";
                 profileDropdown.classList.remove("show");
+                adminMenuLink.style.display = "none";
             }
         });
 
@@ -332,18 +288,29 @@
         function updateCartCount() { cartLink.innerText = `🛒 Cart (${cart.length})`; }
         updateCartCount(); 
 
-        const productsDatabase = [
-            { name: "Free Fire 115 Diamonds", price: "৮৫", img: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=300&q=80", category: "topup" },
-            { name: "PUBG Mobile 60 UC", price: "১০০", img: "https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=300&q=80", category: "topup" },
-            { name: "Netflix Premium 1 Month", price: "৩৫০", img: "https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?w=300&q=80", category: "subscription" },
-            { name: "Spotify Premium 1 Month", price: "১৫০", img: "https://images.unsplash.com/photo-1614680376573-df3480f0c6ff?w=300&q=80", category: "subscription" },
-            { name: "Google Play $10 Gift Card", price: "১১০০", img: "https://images.unsplash.com/photo-1610464627010-0935fbabceea?w=300&q=80", category: "card" },
-            { name: "Apple iTunes $5 Card", price: "৫৫০", img: "https://images.unsplash.com/photo-1620189507195-68309c04c4d0?w=300&q=80", category: "card" },
-            { name: "Instagram 1K Followers Panel", price: "২০০", img: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=300&q=80", category: "panel" },
-            { name: "Facebook 1K Page Likes", price: "২৫০", img: "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=300&q=80", category: "panel" }
-        ];
-
+        // 🌟 গ্লোবাল ভ্যারিয়েবলে প্রোডাক্ট রাখা হচ্ছে
+        let productsDatabase = [];
         const productGrid = document.getElementById("dynamic-product-grid");
+
+        // 🌟 ডাটাবেস থেকে প্রোডাক্ট লোড করার ফাংশন
+        async function fetchProductsFromDB() {
+            try {
+                const querySnapshot = await getDocs(collection(db, "products"));
+                productsDatabase = []; // আগের ডেমো ডাটা ক্লিয়ার
+                
+                querySnapshot.forEach((docSnap) => {
+                    productsDatabase.push({ id: docSnap.id, ...docSnap.data() });
+                });
+                
+                renderProducts("all"); // প্রোডাক্টগুলো স্ক্রিনে দেখানো
+            } catch (error) {
+                console.error("Error fetching products: ", error);
+                productGrid.innerHTML = "<p style='text-align:center; width:100%; color:red;'>প্রোডাক্ট লোড করতে সমস্যা হচ্ছে! আপনার ইন্টারনেট কানেকশন চেক করুন।</p>";
+            }
+        }
+
+        // পেজ লোড হলেই প্রোডাক্ট ফেচ শুরু হবে
+        fetchProductsFromDB();
 
         function renderCustomProducts(productsArray) {
             let htmlContent = "";
@@ -419,8 +386,6 @@
                 suggestionsBox.style.display = 'none';
             });
         });
-
-        renderProducts("all");
 
         function attachEvents() {
             document.querySelectorAll(".direct-buy-btn").forEach(button => {
