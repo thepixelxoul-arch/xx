@@ -4,88 +4,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>আমার প্রোফাইল - আমার দারাজ</title>
-    <link rel="stylesheet" href="style.css">
-    
     <style>
-        .profile-container { 
-            max-width: 500px; 
-            margin: 60px auto; 
-            background: white; 
-            padding: 40px 30px; 
-            border-radius: 8px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
-            text-align: center;
-        }
+        body { font-family: Arial, sans-serif; background-color: #f4f4f6; margin: 0; }
+        .navbar { background-color: #f85606; padding: 15px 20px; color: white; display: flex; justify-content: space-between; align-items: center; }
+        .navbar .logo { font-size: 24px; font-weight: bold; text-decoration: none; color: white; }
+        .navbar .home-link { color: white; text-decoration: none; font-size: 20px; }
         
-        .profile-icon {
-            font-size: 60px;
-            color: #ccc;
-            margin-bottom: 20px;
-        }
-
-        .profile-container h2 { 
-            color: #333; 
-            margin-bottom: 10px; 
-        }
+        .profile-container { display: flex; justify-content: center; align-items: center; min-height: 80vh; padding: 20px; }
+        .profile-card { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
         
-        .user-email-box { 
-            background: #f9f9f9; 
-            padding: 15px; 
-            border-radius: 4px; 
-            font-size: 16px; 
-            color: #555; 
-            margin-bottom: 30px;
-            border: 1px dashed #ccc;
-        }
-
-        .logout-btn { 
-            background-color: #ff4d4d; 
-            color: white; 
-            border: none; 
-            padding: 12px 25px; 
-            cursor: pointer; 
-            border-radius: 4px; 
-            font-weight: bold; 
-            font-size: 16px; 
-            transition: 0.3s;
-            width: 100%;
-        }
-
-        .logout-btn:hover { 
-            background-color: #e60000; 
-        }
+        .profile-icon { font-size: 60px; color: #5c7c99; margin-bottom: 10px; }
+        .profile-card h2 { color: #333; margin-bottom: 25px; font-size: 22px; }
+        
+        .email-box { border: 1px dashed #ccc; padding: 15px; border-radius: 5px; margin-bottom: 25px; background: #fafafa; }
+        .email-box p { margin: 0 0 5px 0; color: #555; font-weight: bold; font-size: 14px; }
+        .email-box h4 { margin: 0; color: #f85606; font-size: 16px; word-break: break-all; }
+        
+        .logout-btn { background-color: #e74c3c; color: white; border: none; padding: 12px; width: 100%; border-radius: 4px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; margin-bottom: 10px; }
+        .logout-btn:hover { background-color: #c0392b; }
+        
+        /* 🌟 নতুন: অ্যাডমিন বাটন ডিজাইন */
+        .admin-btn { background-color: #2c3e50; color: white; border: none; padding: 12px; width: 100%; border-radius: 4px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; display: none; margin-bottom: 10px; }
+        .admin-btn:hover { background-color: #1a252f; }
     </style>
 </head>
 <body>
 
-    <!-- Navigation Bar -->
     <nav class="navbar">
-        <div class="logo">
-            <a href="index.html" style="color: white; text-decoration: none;">AmarDaraz</a>
-        </div>
-        <div class="nav-links">
-            <a href="index.html">🏠 Home</a>
-            <a href="checkout.html">🛒 Cart</a>
-        </div>
+        <a href="index.html" class="logo">AmarDaraz</a>
+        <a href="index.html" class="home-link">🏠</a>
     </nav>
 
-    <!-- Profile Box -->
     <div class="profile-container">
-        <div class="profile-icon">👤</div>
-        <h2>স্বাগতম, আপনার প্রোফাইলে!</h2>
-        <div class="user-email-box">
-            <p><strong>লগইন করা ইমেইল:</strong></p>
-            <p id="user-email">লোড হচ্ছে...</p>
+        <div class="profile-card">
+            <div class="profile-icon">👤</div>
+            <h2>স্বাগতম, আপনার প্রোফাইলে!</h2>
+            
+            <div class="email-box">
+                <p>লগইন করা ইমেইল:</p>
+                <h4 id="user-email">লোড হচ্ছে...</h4>
+            </div>
+            
+            <!-- 🌟 ম্যাজিক অ্যাডমিন বাটন (সাধারণ ইউজাররা এটি দেখবে না) -->
+            <button class="admin-btn" id="admin-panel-btn" onclick="window.location.href='admin.html'">⚙️ অ্যাডমিন প্যানেলে যান</button>
+            
+            <button class="logout-btn" id="logout-btn">লগআউট করুন</button>
         </div>
-        <button id="logout-btn" class="logout-btn">লগআউট করুন</button>
     </div>
 
-    <!-- Firebase Authentication Javascript -->
+    <!-- Firebase Setup -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
-        // আপনার ফায়ারবেস কনফিগারেশন
         const firebaseConfig = {
             apiKey: "AIzaSyBZNrrK7MLGIZoPakMgj2yFEX7iCVYYhlg",
             authDomain: "amrdraz-d0682.firebaseapp.com",
@@ -97,34 +68,28 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        const userEmailDisplay = document.getElementById("user-email");
-        const logoutBtn = document.getElementById("logout-btn");
 
-        // 유জার লগইন চেক (Route Protection)
+        const userEmailDisplay = document.getElementById("user-email");
+        const adminPanelBtn = document.getElementById("admin-panel-btn");
+
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // ইউজার লগইন করা থাকলে তার ইমেইল দেখাবে
                 userEmailDisplay.innerText = user.email;
-                userEmailDisplay.style.color = "#f85606";
-                userEmailDisplay.style.fontWeight = "bold";
+                
+                // 🌟 চেক করা হচ্ছে ইউজার অ্যাডমিন কি না
+                if (user.email === "sakibbinsalam.admin@gmail.com") {
+                    adminPanelBtn.style.display = "block"; // অ্যাডমিন হলে বাটন দেখাবে
+                }
             } else {
-                // লগইন করা না থাকলে জোর করে লগইন পেজে পাঠিয়ে দেবে
-                window.location.href = "login.html";
+                window.location.href = "login.html"; // লগইন না থাকলে বের করে দেবে
             }
         });
 
-        // লগআউট বাটনের কাজ
-        logoutBtn.addEventListener("click", () => {
-            logoutBtn.innerText = "লগআউট হচ্ছে...";
+        document.getElementById("logout-btn").addEventListener("click", () => {
             signOut(auth).then(() => {
-                // লগআউট সফল হলে লগইন পেজে পাঠিয়ে দেবে
-                window.location.href = "login.html"; 
-            }).catch((error) => {
-                alert("লগআউট করতে সমস্যা হয়েছে!");
-                logoutBtn.innerText = "লগআউট করুন";
+                window.location.href = "login.html";
             });
         });
     </script>
-
 </body>
 </html>
