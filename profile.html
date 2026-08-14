@@ -13,7 +13,7 @@
         .profile-container { display: flex; justify-content: center; align-items: flex-start; min-height: 80vh; padding: 20px; margin-top: 20px;}
         .profile-card { background: white; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 600px; overflow: hidden; }
         
-        /* 🌟 Tab Navigation */
+        /* 🌟 Tab Navigation (এখন শুধু ২টি ট্যাব) */
         .profile-tabs { display: flex; background: #2c3e50; }
         .tab-btn { flex: 1; padding: 15px; border: none; background: transparent; color: white; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 15px; }
         .tab-btn:hover { background: #34495e; }
@@ -37,7 +37,7 @@
         .admin-btn { background-color: #2c3e50; color: white; border: none; padding: 12px; width: 100%; border-radius: 4px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; display: none; margin-top: 10px; }
         .admin-btn:hover { background-color: #1a252f; }
 
-        /* 🌟 Lists (Orders & Notifs) */
+        /* 🌟 Lists (Orders) */
         .list-item { border: 1px solid #eee; padding: 15px; border-radius: 8px; margin-bottom: 15px; background: #fafafa; }
         .list-item h4 { margin: 0 0 5px 0; color: #333; }
         .list-item p { margin: 0; color: #666; font-size: 14px; line-height: 1.4; }
@@ -60,11 +60,10 @@
     <div class="profile-container">
         <div class="profile-card">
             
-            <!-- Tabs -->
+            <!-- 🌟 Tabs (Only Two Options Now) -->
             <div class="profile-tabs">
-                <button class="tab-btn active" onclick="switchTab('info')">👤 প্রোফাইল</button>
-                <button class="tab-btn" onclick="switchTab('orders')">🛒 অর্ডার</button>
-                <button class="tab-btn" onclick="switchTab('notifs')">🔔 নোটিফিকেশন</button>
+                <button class="tab-btn active" onclick="switchTab('info')">👤 Profile</button>
+                <button class="tab-btn" onclick="switchTab('orders')">🛒 Order History</button>
             </div>
 
             <!-- 1. Profile Info Tab -->
@@ -91,14 +90,6 @@
                 <h3 style="margin-top: 0; color: #333;">আপনার অর্ডারসমূহ</h3>
                 <div id="orders-container">
                     <div class="loading-text">অর্ডার লোড হচ্ছে...</div>
-                </div>
-            </div>
-
-            <!-- 3. Notifications Tab -->
-            <div id="tab-notifs" class="tab-content">
-                <h3 style="margin-top: 0; color: #333;">আপনার নোটিফিকেশন</h3>
-                <div id="notifs-container">
-                    <div class="loading-text">নোটিফিকেশন লোড হচ্ছে...</div>
                 </div>
             </div>
 
@@ -143,9 +134,8 @@
                     }
                 } catch(e) { console.log(e); }
 
-                // অর্ডার এবং নোটিফিকেশন লোড করা
+                // অর্ডার লোড করা
                 loadUserOrders(user.email);
-                loadNotifications(user.email);
 
             } else {
                 window.location.href = "login.html";
@@ -195,38 +185,6 @@
                 container.innerHTML = html;
             } catch(e) {
                 container.innerHTML = "<p style='color:red; text-align:center;'>অর্ডার লোড করতে সমস্যা হয়েছে।</p>";
-            }
-        }
-
-        // 🌟 Load Notifications
-        async function loadNotifications(email) {
-            const container = document.getElementById("notifs-container");
-            try {
-                // ডাটাবেস থেকে সব নোটিফিকেশন আনা হচ্ছে
-                const querySnapshot = await getDocs(collection(db, "notifications"));
-                let html = "";
-                
-                querySnapshot.forEach((docSnap) => {
-                    const data = docSnap.data();
-                    // চেক করা হচ্ছে নোটিফিকেশনটি সবার জন্য ('all') নাকি শুধু এই ইউজারের জন্য
-                    if (data.to === "all" || data.to === email) {
-                        html += `
-                            <div class="list-item" style="border-left: 4px solid #f85606;">
-                                <h4>🔔 ${data.title}</h4>
-                                <p>${data.message}</p>
-                                <small>${data.date || ""}</small>
-                            </div>
-                        `;
-                    }
-                });
-
-                if (html === "") {
-                    container.innerHTML = "<p style='color:#777; text-align:center;'>আপনার কোনো নতুন নোটিফিকেশন নেই।</p>";
-                } else {
-                    container.innerHTML = html;
-                }
-            } catch(e) {
-                container.innerHTML = "<p style='color:red; text-align:center;'>নোটিফিকেশন লোড করতে সমস্যা হয়েছে।</p>";
             }
         }
     </script>
