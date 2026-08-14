@@ -15,14 +15,28 @@
         label { font-weight: bold; font-size: 14px; color: #333; display: block; margin-top: 15px; margin-bottom: 5px; }
         input[type="number"], input[type="text"] { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 15px; }
         
-        /* Payment Methods */
-        .payment-methods { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
-        .pay-btn { flex: 1; padding: 10px; border: 1px solid #ccc; background: white; cursor: pointer; border-radius: 4px; font-weight: bold; transition: 0.3s; text-align: center; font-size: 14px;}
-        .pay-btn.active { border-color: #f85606; background: #fff3ed; color: #f85606; }
+        /* Payment Methods (Logo Design) */
+        .payment-methods { display: flex; gap: 15px; margin-top: 15px; flex-wrap: wrap; }
+        .pay-btn { 
+            flex: 1; 
+            min-width: 100px;
+            height: 60px; 
+            border: 2px solid #eaeaea; 
+            background: white; 
+            cursor: pointer; 
+            border-radius: 8px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            transition: 0.3s; 
+            padding: 5px;
+        }
+        .pay-btn img { max-height: 35px; max-width: 90%; object-fit: contain; }
+        .pay-btn:hover { border-color: #ccc; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         
-        .bKash.active { border-color: #e2136e; background: #fce4ec; color: #e2136e; }
-        .Nagad.active { border-color: #f7931e; background: #fff3e0; color: #f7931e; }
-        .Upay.active { border-color: #0063a6; background: #e3f2fd; color: #0063a6; }
+        .bKash.active { border-color: #e2136e; background: #fff9fb; box-shadow: 0 0 8px rgba(226, 19, 110, 0.2); }
+        .Nagad.active { border-color: #f7931e; background: #fffcf8; box-shadow: 0 0 8px rgba(247, 147, 30, 0.2); }
+        .Upay.active { border-color: #0063a6; background: #f4fafe; box-shadow: 0 0 8px rgba(0, 99, 166, 0.2); }
 
         /* Instruction Box */
         .instruction-box { background: #e8f4fd; padding: 15px; border-radius: 5px; margin-top: 15px; font-size: 14px; color: #333; display: none; border-left: 4px solid #007bff; line-height: 1.5; text-align: center;}
@@ -38,7 +52,7 @@
 <body>
 
     <div class="fund-container">
-        <h2>💰 ব্যালেন্স অ্যাড করুন (Deposit)</h2>
+        <h2>💰 ব্যালেন্স অ্যাড করুন</h2>
         
         <div class="balance-display">
             বর্তমান ব্যালেন্স: <span id="current-balance">৳ 0</span>
@@ -49,9 +63,15 @@
 
         <label>পেমেন্ট মেথড সিলেক্ট করুন:</label>
         <div class="payment-methods">
-            <div class="pay-btn bKash" onclick="selectPayment('bKash')">bKash</div>
-            <div class="pay-btn Nagad" onclick="selectPayment('Nagad')">Nagad</div>
-            <div class="pay-btn Upay" onclick="selectPayment('Upay')">Upay</div>
+            <div class="pay-btn bKash" onclick="selectPayment('bKash')">
+                <img src="https://download.logo.wine/logo/BKash/BKash-Logo.wine.png" alt="bKash">
+            </div>
+            <div class="pay-btn Nagad" onclick="selectPayment('Nagad')">
+                <img src="https://download.logo.wine/logo/Nagad/Nagad-Logo.wine.png" alt="Nagad">
+            </div>
+            <div class="pay-btn Upay" onclick="selectPayment('Upay')">
+                <img src="https://seeklogo.com/images/U/upay-logo-940B79B5BD-seeklogo.com.png" alt="Upay">
+            </div>
         </div>
 
         <!-- Instruction Box -->
@@ -163,14 +183,13 @@
                 paymentMethod: selectedGateway,
                 senderNumber: document.getElementById("sender-number").value,
                 trxId: document.getElementById("trx-id").value,
-                status: "Pending", // অ্যাডমিন এটি চেক করে 'Approved' করবে
+                status: "Pending", 
                 timestamp: new Date().toISOString()
             };
 
             try {
-                // Firebase এর 'deposits' কালেকশনে ডাটা সেভ হবে
                 await addDoc(collection(db, "deposits"), depositData);
-                alert("আপনার ডিপোজিট রিকোয়েস্ট সফলভাবে পাঠানো হয়েছে! অ্যাডমিন চেক করে ব্যালেন্স অ্যাড করে দেবে।");
+                alert("আপনার ডিপোজিট রিকোয়েস্ট সফলভাবে পাঠানো হয়েছে!");
                 window.location.href = "profile.html"; 
             } catch (error) {
                 console.error("Error submitting deposit: ", error);
