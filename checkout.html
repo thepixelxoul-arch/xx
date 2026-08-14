@@ -4,166 +4,229 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>চেকআউট - আমার দারাজ</title>
-    <link rel="stylesheet" href="style.css">
-    
     <style>
-        .checkout-container { max-width: 900px; margin: 40px auto; padding: 0 20px; display: flex; gap: 30px; flex-wrap: wrap; }
-        .shipping-details, .order-summary { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .shipping-details { flex: 2; min-width: 300px; }
-        .order-summary { flex: 1; min-width: 300px; height: fit-content; }
+        body { font-family: Arial, sans-serif; background-color: #f4f4f6; margin: 0; padding: 20px; }
+        .checkout-container { max-width: 800px; margin: auto; display: flex; flex-wrap: wrap; gap: 20px; }
+        .box { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); flex: 1; min-width: 300px; }
         
-        h3 { margin-bottom: 20px; color: #333; border-bottom: 2px solid #eee; padding-bottom: 10px; font-size: 18px;}
+        h2 { color: #f85606; margin-top: 0; border-bottom: 2px solid #eee; padding-bottom: 10px; }
         
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; color: #555; font-weight: bold; font-size: 14px; }
-        .form-group input, .form-group textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; outline: none; }
-        .form-group input:focus, .form-group textarea:focus { border-color: #f85606; }
+        /* Cart Summary */
+        .cart-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 14px; }
+        .cart-total { display: flex; justify-content: space-between; font-weight: bold; font-size: 18px; color: #f85606; margin-top: 15px; }
+
+        /* Form Styling */
+        label { font-weight: bold; font-size: 14px; color: #333; display: block; margin-top: 15px; margin-bottom: 5px; }
+        input[type="text"], input[type="number"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
         
-        .summary-item { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #555; border-bottom: 1px dashed #eee; padding-bottom: 5px; }
-        .summary-item:last-child { border-bottom: none; }
-        .summary-total { display: flex; justify-content: space-between; font-weight: bold; font-size: 18px; color: #f85606; border-top: 2px solid #eee; padding-top: 15px; margin-top: 10px; }
+        /* Payment Methods (Logo Design) */
+        .payment-methods { display: flex; gap: 15px; margin-top: 15px; flex-wrap: wrap; }
+        .pay-btn { 
+            flex: 1; 
+            min-width: 100px;
+            height: 60px; 
+            border: 2px solid #eaeaea; 
+            background: white; 
+            cursor: pointer; 
+            border-radius: 8px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            transition: 0.3s; 
+            padding: 5px;
+        }
+        .pay-btn img { max-height: 35px; max-width: 90%; object-fit: contain; }
+        .pay-btn:hover { border-color: #ccc; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         
-        .confirm-btn { background-color: #f85606; color: white; border: none; padding: 15px; width: 100%; cursor: pointer; border-radius: 4px; font-weight: bold; font-size: 16px; margin-top: 20px; transition: 0.3s; }
-        .confirm-btn:hover { background-color: #d84a05; }
+        .bKash.active { border-color: #e2136e; background: #fff9fb; box-shadow: 0 0 8px rgba(226, 19, 110, 0.2); }
+        .Nagad.active { border-color: #f7931e; background: #fffcf8; box-shadow: 0 0 8px rgba(247, 147, 30, 0.2); }
+        .Upay.active { border-color: #0063a6; background: #f4fafe; box-shadow: 0 0 8px rgba(0, 99, 166, 0.2); }
+        .Binance.active { border-color: #f3ba2f; background: #fffde7; box-shadow: 0 0 8px rgba(243, 186, 47, 0.2); }
+
+        /* Payment Instruction Box */
+        .instruction-box { background: #e8f4fd; padding: 15px; border-radius: 5px; margin-top: 15px; font-size: 14px; color: #333; display: none; border-left: 4px solid #007bff; line-height: 1.5; }
+        .account-number { font-size: 18px; font-weight: bold; color: #e74c3c; user-select: all; }
+
+        .submit-btn { width: 100%; padding: 12px; background: #f85606; color: white; border: none; border-radius: 4px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px; transition: 0.3s; }
+        .submit-btn:hover { background: #d84a05; }
         
-        .empty-cart { text-align: center; color: #888; font-style: italic; }
+        .empty-cart { text-align: center; color: #777; padding: 20px; }
+        .back-home { display: block; text-align: center; margin-top: 15px; color: #555; text-decoration: none; font-weight: bold; }
+        .back-home:hover { color: #f85606; }
     </style>
 </head>
 <body>
 
-    <!-- Navigation Bar -->
-    <nav class="navbar">
-        <div class="logo">
-            <a href="index.html" style="color: white; text-decoration: none;">AmarDaraz</a>
-        </div>
-    </nav>
-
     <div class="checkout-container">
-        
-        <!-- Shipping Form -->
-        <div class="shipping-details">
-            <h3>ডেলিভারি ঠিকানা</h3>
-            <form id="checkout-form">
-                <div class="form-group">
-                    <label>আপনার সম্পূর্ণ নাম</label>
-                    <input type="text" id="customer-name" placeholder="যেমন: রহিম ইসলাম" required>
+        <!-- Order Summary Box -->
+        <div class="box">
+            <h2>🛒 আপনার অর্ডার</h2>
+            <div id="cart-items-container"></div>
+            <div class="cart-total">
+                <span>মোট বিল:</span>
+                <span id="total-amount">৳ 0</span>
+            </div>
+            <a href="index.html" class="back-home">⬅ হোম পেজে ফিরে যান</a>
+        </div>
+
+        <!-- Payment Form Box -->
+        <div class="box">
+            <h2>💳 পেমেন্ট করুন</h2>
+            <p style="font-size: 13px; color: #666; margin-top: -10px;">আপনার পছন্দের পেমেন্ট মেথড সিলেক্ট করুন</p>
+            
+            <div class="payment-methods">
+                <div class="pay-btn bKash" onclick="selectPayment('bKash')">
+                    <img src="https://download.logo.wine/logo/BKash/BKash-Logo.wine.png" alt="bKash">
                 </div>
-                <div class="form-group">
-                    <label>ফোন নম্বর</label>
-                    <input type="text" id="customer-phone" placeholder="০১৭XXXXXXXX" required>
+                <div class="pay-btn Nagad" onclick="selectPayment('Nagad')">
+                    <img src="https://download.logo.wine/logo/Nagad/Nagad-Logo.wine.png" alt="Nagad">
                 </div>
-                <div class="form-group">
-                    <label>সম্পূর্ণ ঠিকানা (বাসা, রাস্তা, এলাকা)</label>
-                    <textarea id="customer-address" rows="3" placeholder="বিস্তারিত ঠিকানা লিখুন..." required></textarea>
+                <div class="pay-btn Upay" onclick="selectPayment('Upay')">
+                    <img src="https://seeklogo.com/images/U/upay-logo-940B79B5BD-seeklogo.com.png" alt="Upay">
                 </div>
-                <!-- অর্ডার বাটন -->
-                <button type="submit" class="confirm-btn" id="confirm-btn">অর্ডার কনফার্ম করুন</button>
+                <div class="pay-btn Binance" onclick="selectPayment('Binance')">
+                    <img src="https://download.logo.wine/logo/Binance/Binance-Logo.wine.png" alt="Binance">
+                </div>
+            </div>
+
+            <!-- Instruction Box -->
+            <div id="instruction-box" class="instruction-box">
+                <span id="instruction-text"></span><br>
+                <span class="account-number" id="account-number"></span>
+            </div>
+
+            <form id="checkout-form" style="display: none;">
+                <label>আপনার নাম:</label>
+                <input type="text" id="cus-name" placeholder="আপনার নাম লিখুন" required>
+
+                <label>যে নাম্বার থেকে টাকা পাঠিয়েছেন (Sender Number):</label>
+                <input type="text" id="sender-number" placeholder="যেমন: 01XXXXXXXXX" required>
+
+                <label>Transaction ID (TrxID):</label>
+                <input type="text" id="trx-id" placeholder="টাকা পাঠানোর পর মেসেজে থাকা TrxID" required>
+
+                <button type="submit" class="submit-btn" id="place-order-btn">অর্ডার কনফার্ম করুন</button>
             </form>
         </div>
-
-        <!-- Order Summary -->
-        <div class="order-summary">
-            <h3>অর্ডার সামারি</h3>
-            
-            <!-- কার্টের প্রোডাক্টগুলো এখানে অটোমেটিক আসবে -->
-            <div id="cart-items-list">
-                <!-- JavaScript এর মাধ্যমে প্রোডাক্ট বসবে -->
-            </div>
-            
-            <div class="summary-item" style="margin-top: 15px;">
-                <span>ডেলিভারি চার্জ</span>
-                <span id="delivery-charge">৳ ০</span>
-            </div>
-            <div class="summary-total">
-                <span>সর্বমোট</span>
-                <span id="total-price">৳ ০</span>
-            </div>
-        </div>
-
     </div>
 
-    <script>
-        // ১. LocalStorage থেকে কার্টের ডেটা আনা
+    <!-- Firebase Setup -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBZNrrK7MLGIZoPakMgj2yFEX7iCVYYhlg",
+            authDomain: "amrdraz-d0682.firebaseapp.com",
+            projectId: "amrdraz-d0682",
+            storageBucket: "amrdraz-d0682.firebasestorage.app",
+            messagingSenderId: "690289096145",
+            appId: "1:690289096145:web:dbebaa4e60203a7922dcf0"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUserEmail = null;
+        let finalAmount = 0;
+        let selectedGateway = "";
+
+        // Check Auth
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUserEmail = user.email;
+            } else {
+                alert("অর্ডার করতে হলে আপনাকে প্রথমে লগইন করতে হবে!");
+                window.location.href = "login.html";
+            }
+        });
+
+        // Load Cart
         let cart = JSON.parse(localStorage.getItem("amarDarazCart")) || [];
-        const cartItemsList = document.getElementById("cart-items-list");
-        let subTotal = 0;
-        let total = 0;
-        let deliveryCharge = 60; // ডেলিভারি চার্জ ৬০ টাকা
+        const cartContainer = document.getElementById("cart-items-container");
+        const totalAmountEl = document.getElementById("total-amount");
 
-        // বাংলা সংখ্যাকে ইংরেজি সংখ্যায় রূপান্তর করার ফাংশন (হিসাবের জন্য)
-        function convertToEnglishNumber(str) {
-            const banglaNumbers = {'০':'0', '১':'1', '২':'2', '৩':'3', '৪':'4', '৫':'5', '৬':'6', '৭':'7', '৮':'8', '৯':'9'};
-            let numStr = str.replace(/[^০-৯0-9]/g, ''); // শুধু সংখ্যাগুলো রাখবে
-            let engNum = numStr.replace(/[০-৯]/g, w => banglaNumbers[w]);
-            return parseInt(engNum) || 0;
-        }
-
-        // ২. কার্টে প্রোডাক্ট থাকলে সেগুলো দেখানো
         if (cart.length === 0) {
-            cartItemsList.innerHTML = "<p class='empty-cart'>আপনার কার্ট খালি!</p>";
-            document.getElementById("confirm-btn").disabled = true;
-            document.getElementById("confirm-btn").style.backgroundColor = "#ccc";
+            cartContainer.innerHTML = "<div class='empty-cart'>আপনার কার্টে কোনো প্রোডাক্ট নেই!</div>";
         } else {
-            cartItemsList.innerHTML = ""; // আগের ফাঁকা লেখা মুছে ফেলা
-            
+            let html = "";
             cart.forEach((item) => {
-                // পেজে প্রোডাক্ট দেখানো
-                cartItemsList.innerHTML += `
-                    <div class="summary-item">
-                        <span>${item.name}</span>
-                        <span>${item.price}</span>
-                    </div>
-                `;
-                // মোট দাম হিসাব করা
-                subTotal += convertToEnglishNumber(item.price);
+                html += `<div class="cart-item"><span>${item.name}</span><span>৳ ${item.price}</span></div>`;
+                finalAmount += parseInt(item.price);
             });
-
-            total = subTotal + deliveryCharge;
-            document.getElementById("delivery-charge").innerText = `৳ 60`;
-            document.getElementById("total-price").innerText = `৳ ${total}`;
+            cartContainer.innerHTML = html;
+            totalAmountEl.innerText = `৳ ${finalAmount}`;
         }
 
-        // ৩. অর্ডার সাবমিট করে টেলিগ্রামে পাঠানো
-        const botToken = "আপনার_বট_টোকেন_এখানে_দিন"; // ⚠️ টেলিগ্রাম বট টোকেন দিন
-        const chatId = "আপনার_চ্যাট_আইডি_এখানে_দিন"; // ⚠️ আপনার চ্যাট আইডি দিন
+        // Payment Selection Logic
+        window.selectPayment = function(method) {
+            document.querySelectorAll('.pay-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.${method}`).classList.add('active');
+            selectedGateway = method;
 
-        document.getElementById("checkout-form").addEventListener("submit", function(event) {
-            event.preventDefault(); 
+            const instBox = document.getElementById("instruction-box");
+            const form = document.getElementById("checkout-form");
+            const instText = document.getElementById("instruction-text");
+            const accNum = document.getElementById("account-number");
 
-            const btn = document.getElementById('confirm-btn');
-            btn.innerText = "অর্ডার প্রসেস হচ্ছে...";
-            btn.style.backgroundColor = "#ccc";
+            instBox.style.display = "block";
+            form.style.display = "block";
 
-            // ফর্মের ডেটা
-            const name = document.getElementById("customer-name").value;
-            const phone = document.getElementById("customer-phone").value;
-            const address = document.getElementById("customer-address").value;
-            
-            // কার্টের প্রোডাক্টগুলোকে মেসেজ আকারে সাজানো
-            let productListStr = cart.map((item, index) => `${index + 1}. ${item.name} - ${item.price}`).join("\n");
+            // ⚠️ আপনার আসল নাম্বারগুলো এখানে বসান ⚠️
+            if(method === 'bKash') {
+                instText.innerHTML = `নিচের পার্সোনাল বিকাশ নাম্বারে <b>৳ ${finalAmount}</b> Send Money করুন:`;
+                accNum.innerText = "01XXXXXXXXX"; // আপনার বিকাশ নাম্বার
+                instBox.style.borderLeftColor = "#e2136e";
+            } else if(method === 'Nagad') {
+                instText.innerHTML = `নিচের পার্সোনাল নগদ নাম্বারে <b>৳ ${finalAmount}</b> Send Money করুন:`;
+                accNum.innerText = "01XXXXXXXXX"; // আপনার নগদ নাম্বার
+                instBox.style.borderLeftColor = "#f7931e";
+            } else if(method === 'Upay') {
+                instText.innerHTML = `নিচের পার্সোনাল উপায় নাম্বারে <b>৳ ${finalAmount}</b> Send Money করুন:`;
+                accNum.innerText = "01XXXXXXXXX"; // আপনার উপায় নাম্বার
+                instBox.style.borderLeftColor = "#0063a6";
+            } else if(method === 'Binance') {
+                instText.innerHTML = `নিচের Binance Pay ID বা Email-এ পেমেন্ট করুন:`;
+                accNum.innerText = "your.email@binance.com"; // আপনার বাইনান্স পে আইডি বা ইমেইল
+                instBox.style.borderLeftColor = "#f3ba2f";
+            }
+        };
 
-            // টেলিগ্রামের মেসেজ
-            const message = `🛒 *নতুন অর্ডার (AmarDaraz)*\n\n👤 *নাম:* ${name}\n📞 *ফোন:* ${phone}\n📍 *ঠিকানা:* ${address}\n\n🛍️ *প্রোডাক্টসমূহ:*\n${productListStr}\n\n🚚 *ডেলিভারি চার্জ:* ৳ 60\n💰 *সর্বমোট বিল:* ৳ ${total}`;
+        // Submit Order
+        document.getElementById("checkout-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            if(!currentUserEmail) return alert("দয়া করে লগইন করুন!");
+            if(cart.length === 0) return alert("আপনার কার্ট খালি!");
 
-            const url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
+            const submitBtn = document.getElementById("place-order-btn");
+            submitBtn.innerText = "অর্ডার সাবমিট হচ্ছে...";
+            submitBtn.disabled = true;
 
-            fetch(url)
-                .then(response => {
-                    if(response.ok) {
-                        alert("🎉 অভিনন্দন! আপনার অর্ডারটি সফলভাবে সম্পন্ন হয়েছে।");
-                        localStorage.removeItem("amarDarazCart"); // অর্ডার শেষে কার্ট খালি করে দেওয়া
-                        window.location.href = "index.html"; // হোমপেজে ফেরত
-                    } else {
-                        alert("দুঃখিত, সমস্যা হচ্ছে। আবার চেষ্টা করুন।");
-                        btn.innerText = "অর্ডার কনফার্ম করুন";
-                        btn.style.backgroundColor = "#f85606";
-                    }
-                })
-                .catch(error => {
-                    alert("নেটওয়ার্ক সমস্যা! ইন্টারনেট কানেকশন চেক করুন।");
-                    btn.innerText = "অর্ডার কনফার্ম করুন";
-                    btn.style.backgroundColor = "#f85606";
-                });
+            const orderData = {
+                userEmail: currentUserEmail,
+                customerName: document.getElementById("cus-name").value,
+                senderNumber: document.getElementById("sender-number").value,
+                trxId: document.getElementById("trx-id").value,
+                paymentMethod: selectedGateway,
+                items: cart,
+                totalAmount: finalAmount,
+                status: "Pending", 
+                timestamp: new Date().toISOString()
+            };
+
+            try {
+                await addDoc(collection(db, "orders"), orderData);
+                alert("আপনার অর্ডারটি সফলভাবে গ্রহণ করা হয়েছে! আমরা পেমেন্ট ভেরিফাই করে দ্রুত ডেলিভারি দিব।");
+                localStorage.removeItem("amarDarazCart"); 
+                window.location.href = "profile.html"; 
+            } catch (error) {
+                console.error("Error placing order: ", error);
+                alert("অর্ডার সাবমিট করতে সমস্যা হচ্ছে!");
+                submitBtn.innerText = "অর্ডার কনফার্ম করুন";
+                submitBtn.disabled = false;
+            }
         });
     </script>
 </body>
