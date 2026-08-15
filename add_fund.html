@@ -15,12 +15,12 @@
         label { font-weight: bold; font-size: 14px; color: #333; display: block; margin-top: 15px; margin-bottom: 5px; }
         input[type="number"], input[type="text"] { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 15px; }
         
-        /* Payment Methods (Updated Logos & Sizes) */
-        .payment-methods { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
+        /* Payment Methods (Fixed Logos, Added Rocket) */
+        .payment-methods { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; justify-content: center;}
         .pay-btn { 
             flex: 1; 
-            min-width: 90px;
-            height: 60px; 
+            min-width: 80px;
+            height: 55px; 
             border: 2px solid #eaeaea; 
             background: white; 
             cursor: pointer; 
@@ -31,12 +31,12 @@
             transition: 0.3s; 
             padding: 5px 10px;
         }
-        .pay-btn img { max-height: 38px; max-width: 100%; object-fit: contain; }
-        .Binance img { max-height: 45px; transform: scale(1.15); } /* বাইনান্স লোগো বড় করা হয়েছে */
+        .pay-btn img { max-height: 35px; max-width: 100%; object-fit: contain; }
         
         .pay-btn:hover { border-color: #ccc; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .bKash.active { border-color: #e2136e; background: #fff9fb; box-shadow: 0 0 8px rgba(226, 19, 110, 0.2); }
         .Nagad.active { border-color: #f7931e; background: #fffcf8; box-shadow: 0 0 8px rgba(247, 147, 30, 0.2); }
+        .Rocket.active { border-color: #8c1596; background: #fdf2ff; box-shadow: 0 0 8px rgba(140, 21, 150, 0.2); }
         .Upay.active { border-color: #0063a6; background: #f4fafe; box-shadow: 0 0 8px rgba(0, 99, 166, 0.2); }
         .Binance.active { border-color: #f3ba2f; background: #fffde7; box-shadow: 0 0 8px rgba(243, 186, 47, 0.2); }
 
@@ -65,24 +65,20 @@
 
         <label>পেমেন্ট মেথড সিলেক্ট করুন:</label>
         <div class="payment-methods">
-            <!-- bKash (No BRAC Bank text) -->
             <div class="pay-btn bKash" onclick="selectPayment('bKash')">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/BKash_logo.svg/512px-BKash_logo.svg.png" alt="bKash">
+                <img src="https://freelogopng.com/images/all_img/1656227150bkash-logo-png.png" onerror="this.outerHTML='<span style=\'color:#e2136e;font-weight:900;font-size:20px;\'>bKash</span>'" alt="bKash">
             </div>
-            
-            <!-- Nagad (Updated 2026 Logo) -->
             <div class="pay-btn Nagad" onclick="selectPayment('Nagad')">
-                <img src="https://upload.wikimedia.org/wikipedia/bn/thumb/6/64/Nagad_Logo_2024.svg/512px-Nagad_Logo_2024.svg.png" onerror="this.src='https://download.logo.wine/logo/Nagad/Nagad-Logo.wine.png';" alt="Nagad">
+                <img src="https://freelogopng.com/images/all_img/1679248787Nagad-Logo.png" onerror="this.outerHTML='<span style=\'color:#f7931e;font-weight:900;font-size:20px;\'>Nagad</span>'" alt="Nagad">
             </div>
-            
-            <!-- Upay (Real Logo) -->
+            <div class="pay-btn Rocket" onclick="selectPayment('Rocket')">
+                <img src="https://freelogopng.com/images/all_img/1679248828Rocket-Logo.png" onerror="this.outerHTML='<span style=\'color:#8c1596;font-weight:900;font-size:20px;\'>Rocket</span>'" alt="Rocket">
+            </div>
             <div class="pay-btn Upay" onclick="selectPayment('Upay')">
-                <img src="https://smartpay.com.bd/wp-content/uploads/2021/11/upay.png" onerror="this.src='https://wiki.bdthemes.com/images/1/13/Upay_Logo.png';" alt="Upay">
+                <img src="https://freelogopng.com/images/all_img/1679248881upay-logo.png" onerror="this.outerHTML='<span style=\'color:#0063a6;font-weight:900;font-size:22px;\'>upay</span>'" alt="Upay">
             </div>
-            
-            <!-- Binance (Bigger Logo) -->
             <div class="pay-btn Binance" onclick="selectPayment('Binance')">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Binance_Logo.svg/512px-Binance_Logo.svg.png" alt="Binance">
+                <img src="https://cryptologos.cc/logos/binance-coin-bnb-logo.png" style="max-height: 40px;" onerror="this.outerHTML='<span style=\'color:#f3ba2f;font-weight:900;font-size:18px;\'>Binance</span>'" alt="Binance">
             </div>
         </div>
 
@@ -172,6 +168,10 @@
                 instText.innerHTML = `নিচের পার্সোনাল নগদ নাম্বারে <b>৳ ${amount}</b> Send Money করুন:`;
                 accNum.innerText = "01XXXXXXXXX"; // ⚠️ আপনার নগদ নাম্বার
                 instBox.style.borderLeftColor = "#f7931e";
+            } else if(method === 'Rocket') {
+                instText.innerHTML = `নিচের পার্সোনাল রকেট নাম্বারে <b>৳ ${amount}</b> Send Money করুন:`;
+                accNum.innerText = "01XXXXXXXXX"; // ⚠️ আপনার রকেট নাম্বার
+                instBox.style.borderLeftColor = "#8c1596";
             } else if(method === 'Upay') {
                 instText.innerHTML = `নিচের পার্সোনাল উপায় নাম্বারে <b>৳ ${amount}</b> Send Money করুন:`;
                 accNum.innerText = "01XXXXXXXXX"; // ⚠️ আপনার উপায় নাম্বার
