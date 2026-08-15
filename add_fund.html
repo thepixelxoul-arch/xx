@@ -15,11 +15,11 @@
         label { font-weight: bold; font-size: 14px; color: #333; display: block; margin-top: 15px; margin-bottom: 5px; }
         input[type="number"], input[type="text"] { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 15px; }
         
-        /* Payment Methods (Logo Design) */
-        .payment-methods { display: flex; gap: 15px; margin-top: 15px; flex-wrap: wrap; }
+        /* Payment Methods (Logo Design Fixed) */
+        .payment-methods { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
         .pay-btn { 
             flex: 1; 
-            min-width: 100px;
+            min-width: 90px;
             height: 60px; 
             border: 2px solid #eaeaea; 
             background: white; 
@@ -31,12 +31,13 @@
             transition: 0.3s; 
             padding: 5px;
         }
-        .pay-btn img { max-height: 35px; max-width: 90%; object-fit: contain; }
+        .pay-btn img { max-height: 45px; max-width: 100%; object-fit: contain; }
         .pay-btn:hover { border-color: #ccc; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         
         .bKash.active { border-color: #e2136e; background: #fff9fb; box-shadow: 0 0 8px rgba(226, 19, 110, 0.2); }
         .Nagad.active { border-color: #f7931e; background: #fffcf8; box-shadow: 0 0 8px rgba(247, 147, 30, 0.2); }
         .Upay.active { border-color: #0063a6; background: #f4fafe; box-shadow: 0 0 8px rgba(0, 99, 166, 0.2); }
+        .Binance.active { border-color: #f3ba2f; background: #fffde7; box-shadow: 0 0 8px rgba(243, 186, 47, 0.2); }
 
         /* Instruction Box */
         .instruction-box { background: #e8f4fd; padding: 15px; border-radius: 5px; margin-top: 15px; font-size: 14px; color: #333; display: none; border-left: 4px solid #007bff; line-height: 1.5; text-align: center;}
@@ -64,13 +65,16 @@
         <label>পেমেন্ট মেথড সিলেক্ট করুন:</label>
         <div class="payment-methods">
             <div class="pay-btn bKash" onclick="selectPayment('bKash')">
-                <img src="https://seeklogo.com/images/B/bkash-logo-0C1572FBB4-seeklogo.com.png" alt="bKash">
+                <img src="https://download.logo.wine/logo/BKash/BKash-Logo.wine.png" alt="bKash">
             </div>
             <div class="pay-btn Nagad" onclick="selectPayment('Nagad')">
-                <img src="https://seeklogo.com/images/N/nagad-logo-7A70CCFEE0-seeklogo.com.png" alt="Nagad">
+                <img src="https://download.logo.wine/logo/Nagad/Nagad-Logo.wine.png" alt="Nagad">
             </div>
             <div class="pay-btn Upay" onclick="selectPayment('Upay')">
-                <img src="https://seeklogo.com/images/U/upay-logo-940B79B5BD-seeklogo.com.png" alt="Upay">
+                <span style="color: #0063a6; font-size: 24px; font-weight: 900; font-family: 'Arial Black', Arial, sans-serif; letter-spacing: -1px;">upay</span>
+            </div>
+            <div class="pay-btn Binance" onclick="selectPayment('Binance')">
+                <img src="https://download.logo.wine/logo/Binance/Binance-Logo.wine.png" alt="Binance">
             </div>
         </div>
 
@@ -152,19 +156,22 @@
             instBox.style.display = "block";
             form.style.display = "block";
 
-            // ⚠️ আপনার আসল নাম্বারগুলো এখানে বসান ⚠️
             if(method === 'bKash') {
                 instText.innerHTML = `নিচের পার্সোনাল বিকাশ নাম্বারে <b>৳ ${amount}</b> Send Money করুন:`;
-                accNum.innerText = "01XXXXXXXXX"; // আপনার বিকাশ নাম্বার
+                accNum.innerText = "01XXXXXXXXX"; // ⚠️ আপনার বিকাশ নাম্বার
                 instBox.style.borderLeftColor = "#e2136e";
             } else if(method === 'Nagad') {
                 instText.innerHTML = `নিচের পার্সোনাল নগদ নাম্বারে <b>৳ ${amount}</b> Send Money করুন:`;
-                accNum.innerText = "01XXXXXXXXX"; // আপনার নগদ নাম্বার
+                accNum.innerText = "01XXXXXXXXX"; // ⚠️ আপনার নগদ নাম্বার
                 instBox.style.borderLeftColor = "#f7931e";
             } else if(method === 'Upay') {
                 instText.innerHTML = `নিচের পার্সোনাল উপায় নাম্বারে <b>৳ ${amount}</b> Send Money করুন:`;
-                accNum.innerText = "01XXXXXXXXX"; // আপনার উপায় নাম্বার
+                accNum.innerText = "01XXXXXXXXX"; // ⚠️ আপনার উপায় নাম্বার
                 instBox.style.borderLeftColor = "#0063a6";
+            } else if(method === 'Binance') {
+                instText.innerHTML = `নিচের Binance Pay ID বা Email-এ পেমেন্ট করুন:`;
+                accNum.innerText = "your.email@binance.com"; // ⚠️ আপনার বাইনান্স আইডি
+                instBox.style.borderLeftColor = "#f3ba2f";
             }
         };
 
