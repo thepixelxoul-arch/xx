@@ -102,9 +102,41 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
         .loading-products { text-align: center; width: 100%; padding: 40px 0; color: #f85606; font-size: 18px; font-weight: bold; }
+
+        /* 🌟 Modern Toast Notification */
+        .toast-notification {
+            visibility: hidden;
+            min-width: 280px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 16px;
+            position: fixed;
+            z-index: 4000;
+            left: 50%;
+            top: 30px;
+            transform: translateX(-50%);
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            opacity: 0;
+            transition: opacity 0.3s, top 0.3s;
+        }
+        .toast-notification.show {
+            visibility: visible;
+            opacity: 1;
+            top: 50px;
+        }
+        .toast-success { background-color: #28a745; }
+        .toast-error { background-color: #e74c3c; }
+        .toast-warning { background-color: #f39c12; color: #fff; }
     </style>
 </head>
 <body>
+
+    <!-- 🌟 Toast Notification Div -->
+    <div id="toast" class="toast-notification">Notification text</div>
 
     <!-- Navigation Bar -->
     <nav class="navbar">
@@ -220,7 +252,7 @@
         </div>
     </footer>
 
-    <!-- 🌟 Dynamic Quick View Modal -->
+    <!-- Dynamic Quick View Modal -->
     <div class="modal-overlay" id="quickViewModal">
         <div class="modal-content">
             <span class="close-btn" id="closeModal">&times;</span>
@@ -278,6 +310,25 @@
         const notifListBox = document.getElementById("notif-list-box");
 
         let currentUserEmail = null;
+
+        // 🌟 Custom Toast Function
+        function showToast(message, type = "success") {
+            const toast = document.getElementById("toast");
+            toast.innerText = message;
+            toast.className = "toast-notification show";
+            
+            if(type === "error") {
+                toast.classList.add("toast-error");
+            } else if (type === "warning") {
+                toast.classList.add("toast-warning");
+            } else {
+                toast.classList.add("toast-success");
+            }
+
+            setTimeout(function(){ 
+                toast.className = "toast-notification"; 
+            }, 3500);
+        }
 
         profileDropdown.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', () => profileDropdown.classList.remove("show"));
@@ -530,8 +581,8 @@
             if(!selectedProduct) return;
             
             if(!currentUserEmail) {
-                alert("অর্ডার করতে হলে আপনাকে প্রথমে লগইন করতে হবে!");
-                window.location.href = "login.html";
+                showToast("⚠️ অর্ডার করতে হলে আপনাকে প্রথমে লগইন করতে হবে!", "warning");
+                setTimeout(() => { window.location.href = "login.html"; }, 1500);
                 return;
             }
 
@@ -541,7 +592,7 @@
 
             if (extraGroup.style.display === "block") {
                 if (extraInput.value.trim() === "") {
-                    alert("দয়া করে বক্সে আপনার প্রয়োজনীয় তথ্যটি লিখুন!");
+                    showToast("⚠️ দয়া করে বক্সে আপনার প্রয়োজনীয় তথ্যটি লিখুন!", "warning");
                     extraInput.focus();
                     return;
                 }
@@ -573,17 +624,18 @@
                             timestamp: new Date().toISOString()
                         });
 
-                        alert("✅ আপনার অর্ডারটি সফলভাবে প্লেস হয়েছে এবং ব্যালেন্স কেটে নেওয়া হয়েছে!");
+                        // 🌟 এখানে Alert এর বদলে সুন্দর Toast মেসেজ দেখানো হচ্ছে 
+                        showToast("✅ আপনার অর্ডারটি সফলভাবে প্লেস হয়েছে!");
                         modal.style.display = 'none';
                         
                         document.getElementById("balance-link").innerText = `💰 Balance: ৳ ${newBalance}`;
                     } else {
-                        alert("❌ আপনার অ্যাকাউন্টে পর্যাপ্ত ব্যালেন্স নেই! দয়া করে ফান্ড অ্যাড করুন।");
+                        showToast("❌ আপনার অ্যাকাউন্টে পর্যাপ্ত ব্যালেন্স নেই!", "error");
                     }
                 }
             } catch(error) {
                 console.error(error);
-                alert("অর্ডার করতে সমস্যা হয়েছে! ইন্টারনেট কানেকশন চেক করুন।");
+                showToast("❌ অর্ডার করতে সমস্যা হয়েছে! ইন্টারনেট কানেকশন চেক করুন।", "error");
             }
 
             btn.innerText = "Confirm & Buy Now";
