@@ -15,7 +15,7 @@
         label { font-weight: bold; font-size: 14px; color: #333; display: block; margin-top: 15px; margin-bottom: 5px; }
         input[type="number"], input[type="text"] { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 15px; }
         
-        /* Payment Methods (Fixed Logos, Added Rocket) */
+        /* Payment Methods */
         .payment-methods { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; justify-content: center;}
         .pay-btn { 
             flex: 1; 
@@ -38,7 +38,6 @@
         .Nagad.active { border-color: #f7931e; background: #fffcf8; box-shadow: 0 0 8px rgba(247, 147, 30, 0.2); }
         .Rocket.active { border-color: #8c1596; background: #fdf2ff; box-shadow: 0 0 8px rgba(140, 21, 150, 0.2); }
         .Upay.active { border-color: #0063a6; background: #f4fafe; box-shadow: 0 0 8px rgba(0, 99, 166, 0.2); }
-        .Binance.active { border-color: #f3ba2f; background: #fffde7; box-shadow: 0 0 8px rgba(243, 186, 47, 0.2); }
 
         /* Instruction Box */
         .instruction-box { background: #e8f4fd; padding: 15px; border-radius: 5px; margin-top: 15px; font-size: 14px; color: #333; display: none; border-left: 4px solid #007bff; line-height: 1.5; text-align: center;}
@@ -66,19 +65,16 @@
         <label>পেমেন্ট মেথড সিলেক্ট করুন:</label>
         <div class="payment-methods">
             <div class="pay-btn bKash" onclick="selectPayment('bKash')">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/e/e0/BKash_logo.svg" onerror="this.outerHTML='<span style=\'color:#e2136e;font-weight:bold;font-size:22px;\'>bKash</span>'" alt="bKash">
+                <img src="bkash.png" alt="bKash">
             </div>
             <div class="pay-btn Nagad" onclick="selectPayment('Nagad')">
-                <img src="https://upload.wikimedia.org/wikipedia/bn/6/64/Nagad_Logo_2024.svg" onerror="this.outerHTML='<span style=\'color:#f7931e;font-weight:bold;font-size:22px;\'>নগদ</span>'" alt="Nagad">
+                <img src="nagad.png" alt="Nagad">
             </div>
             <div class="pay-btn Rocket" onclick="selectPayment('Rocket')">
-                <img src="https://wsrv.nl/?url=seeklogo.com/images/D/dutch-bangla-rocket-logo-B4D104711D-seeklogo.com.png" onerror="this.outerHTML='<div style=\'background:#8c1596;color:white;padding:5px 12px;border-radius:20px;font-weight:bold;font-style:italic;\'>Rocket</div>'" alt="Rocket">
+                <img src="roket.png" alt="Rocket">
             </div>
             <div class="pay-btn Upay" onclick="selectPayment('Upay')">
-                <img src="https://wsrv.nl/?url=seeklogo.com/images/U/upay-logo-940B79B5BD-seeklogo.com.png" onerror="this.outerHTML='<span style=\'color:#0063a6;font-weight:900;font-size:24px;\'>upay</span>'" alt="Upay">
-            </div>
-            <div class="pay-btn Binance" onclick="selectPayment('Binance')">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/e/e8/Binance_Logo.svg" style="max-height: 45px; transform: scale(1.15);" onerror="this.outerHTML='<span style=\'color:#f3ba2f;font-weight:bold;font-size:18px;\'>BINANCE</span>'" alt="Binance">
+                <img src="upay.png" alt="Upay">
             </div>
         </div>
 
@@ -124,7 +120,6 @@
         let currentUserEmail = null;
         let selectedGateway = "";
 
-        // Check Auth & Load Balance
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUserEmail = user.email;
@@ -140,7 +135,6 @@
             }
         });
 
-        // Payment Selection Logic
         window.selectPayment = function(method) {
             const amount = document.getElementById("deposit-amount").value;
             if(!amount || amount <= 0) {
@@ -162,28 +156,23 @@
 
             if(method === 'bKash') {
                 instText.innerHTML = `নিচের পার্সোনাল বিকাশ নাম্বারে <b>৳ ${amount}</b> Send Money করুন:`;
-                accNum.innerText = "01XXXXXXXXX"; // ⚠️ আপনার বিকাশ নাম্বার
+                accNum.innerText = "01XXXXXXXXX"; 
                 instBox.style.borderLeftColor = "#e2136e";
             } else if(method === 'Nagad') {
                 instText.innerHTML = `নিচের পার্সোনাল নগদ নাম্বারে <b>৳ ${amount}</b> Send Money করুন:`;
-                accNum.innerText = "01XXXXXXXXX"; // ⚠️ আপনার নগদ নাম্বার
+                accNum.innerText = "01XXXXXXXXX"; 
                 instBox.style.borderLeftColor = "#f7931e";
             } else if(method === 'Rocket') {
                 instText.innerHTML = `নিচের পার্সোনাল রকেট নাম্বারে <b>৳ ${amount}</b> Send Money করুন:`;
-                accNum.innerText = "01XXXXXXXXX"; // ⚠️ আপনার রকেট নাম্বার
+                accNum.innerText = "01XXXXXXXXX"; 
                 instBox.style.borderLeftColor = "#8c1596";
             } else if(method === 'Upay') {
                 instText.innerHTML = `নিচের পার্সোনাল উপায় নাম্বারে <b>৳ ${amount}</b> Send Money করুন:`;
-                accNum.innerText = "01XXXXXXXXX"; // ⚠️ আপনার উপায় নাম্বার
+                accNum.innerText = "01XXXXXXXXX"; 
                 instBox.style.borderLeftColor = "#0063a6";
-            } else if(method === 'Binance') {
-                instText.innerHTML = `নিচের Binance Pay ID বা Email-এ পেমেন্ট করুন:`;
-                accNum.innerText = "your.email@binance.com"; // ⚠️ আপনার বাইনান্স আইডি
-                instBox.style.borderLeftColor = "#f3ba2f";
             }
         };
 
-        // Submit Deposit Request
         document.getElementById("deposit-form").addEventListener("submit", async (e) => {
             e.preventDefault();
             if(!currentUserEmail) return alert("দয়া করে লগইন করুন!");
