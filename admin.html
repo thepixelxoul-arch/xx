@@ -27,7 +27,6 @@
         /* Form Design */
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 5px; color: #555; font-weight: bold; }
-        /* 🌟 Textarea styling added */
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; outline: none; background-color: #ffffff; font-family: inherit;}
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #f85606; box-shadow: 0 0 5px rgba(248, 86, 6, 0.3); }
         .form-group textarea { resize: vertical; min-height: 80px; }
@@ -77,8 +76,11 @@
         <button class="nav-btn" onclick="showSection('manage-products')">📦 Manage Products</button>
         <button class="nav-btn" onclick="showSection('orders')">🛒 Manage Orders</button>
         <button class="nav-btn" onclick="showSection('deposits')">💳 Deposit Requests</button>
-        <button class="nav-btn" onclick="showSection('users')">💰 Add Balance (Manual)</button>
         
+        <!-- 🌟 New Notification Button -->
+        <button class="nav-btn" onclick="showSection('notifications')">🔔 Send Notification</button>
+        
+        <button class="nav-btn" onclick="showSection('users')">💰 Add Balance</button>
         <button class="logout-btn" id="admin-logout">🚪 Logout</button>
     </div>
 
@@ -126,7 +128,6 @@
                             <label>ছবির লিংক (URL):</label>
                             <input type="text" id="p-img" placeholder="https://example.com/image.jpg" required>
                         </div>
-                        <!-- 🌟 New Description Field -->
                         <div class="form-group">
                             <label>প্রোডাক্টের বিবরণ (Description):</label>
                             <textarea id="p-desc" placeholder="প্রোডাক্ট সম্পর্কে বিস্তারিত বা কোনো নিয়মকানুন থাকলে এখানে লিখুন..."></textarea>
@@ -170,6 +171,41 @@
                     <div id="deposit-list-container">
                         <p>লোড হচ্ছে...</p>
                     </div>
+                </div>
+            </div>
+
+            <!-- 🌟 Notification Section (NEW) -->
+            <div id="notifications" class="section">
+                <div class="card">
+                    <h3>🔔 নোটিফিকেশন পাঠান</h3>
+                    <form id="send-notif-form">
+                        <div class="form-group">
+                            <label>নোটিফিকেশন টাইটেল:</label>
+                            <input type="text" id="n-title" placeholder="যেমন: মেগা অফার চলছে!" required>
+                        </div>
+                        <div class="form-group">
+                            <label>মেসেজ / বিস্তারিত:</label>
+                            <textarea id="n-message" placeholder="আপনার মেসেজ বা আপডেট বিস্তারিত লিখুন..." required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>কাকে পাঠাবেন?</label>
+                            <select id="n-target" onchange="document.getElementById('n-email-box').style.display = this.value === 'specific' ? 'block' : 'none';">
+                                <option value="all">সবাইকে (All Users)</option>
+                                <option value="specific">নির্দিষ্ট একজনকে (Specific User)</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="n-email-box" style="display: none;">
+                            <label>ইউজারের ইমেইল দিন:</label>
+                            <input type="email" id="n-email" placeholder="যেমন: user@gmail.com">
+                        </div>
+                        <button type="submit" class="submit-btn" id="notif-btn">নোটিফিকেশন সেন্ড করুন</button>
+                    </form>
+                    <div id="notif-status-msg" style="margin-top: 15px; font-weight: bold; display: none; padding: 10px; border-radius: 4px;"></div>
+                </div>
+
+                <div class="card">
+                    <h3>আগের পাঠানো নোটিফিকেশনগুলো</h3>
+                    <div id="admin-notif-list"><p>লোড হচ্ছে...</p></div>
                 </div>
             </div>
 
@@ -227,6 +263,7 @@
                 loadProducts();
                 loadOrders(); 
                 loadDeposits();
+                loadAdminNotifs(); // 🌟 Load Notifications List
             } else {
                 alert("দুঃখিত! এই পেজে ঢোকার পারমিশন আপনার নেই।");
                 window.location.href = "index.html";
@@ -261,7 +298,6 @@
                     const data = docSnap.data();
                     const id = docSnap.id;
                     const safeName = data.name.replace(/'/g, "\\'");
-                    // 🌟 Added safeDesc
                     const safeDesc = data.desc ? data.desc.replace(/'/g, "\\'").replace(/\n/g, "\\n") : "";
                     html += `
                     <tr>
@@ -270,7 +306,6 @@
                         <td style="text-transform: capitalize;">${data.category}</td>
                         <td>৳ ${data.price}</td>
                         <td>
-                            <!-- 🌟 Added desc to edit function -->
                             <button class="action-btn edit-btn" onclick="editProduct('${id}', '${safeName}', '${data.price}', '${data.img}', '${data.category}', '${safeDesc}')">Edit</button>
                             <button class="action-btn delete-btn" onclick="deleteProduct('${id}')">Delete</button>
                         </td>
@@ -293,17 +328,14 @@
             const price = document.getElementById("p-price").value;
             const img = document.getElementById("p-img").value.trim();
             const category = document.getElementById("p-category").value;
-            // 🌟 Get Description
             const desc = document.getElementById("p-desc").value.trim();
 
             try {
                 if (editingProductId) {
-                    // 🌟 Update with desc
                     await updateDoc(doc(db, "products", editingProductId), { name, price, img, category, desc });
                     alert("✔ প্রোডাক্ট সফলভাবে আপডেট হয়েছে!");
                     cancelEdit();
                 } else {
-                    // 🌟 Add with desc
                     await addDoc(collection(db, "products"), { name, price, img, category, desc });
                     alert("✔ নতুন প্রোডাক্ট যোগ করা হয়েছে!");
                     document.getElementById("add-product-form").reset();
@@ -315,14 +347,13 @@
             btn.disabled = false;
         });
 
-        // 🌟 Added desc parameter
         window.editProduct = function(id, name, price, img, category, desc) {
             editingProductId = id;
             document.getElementById("p-name").value = name;
             document.getElementById("p-price").value = price;
             document.getElementById("p-img").value = img;
             document.getElementById("p-category").value = category;
-            document.getElementById("p-desc").value = desc; // Set Description
+            document.getElementById("p-desc").value = desc; 
             document.getElementById("form-title").innerText = "প্রোডাক্ট আপডেট করুন";
             document.getElementById("product-submit-btn").innerText = "প্রোডাক্ট আপডেট করুন";
             document.getElementById("cancel-edit-btn").style.display = "block";
@@ -370,8 +401,7 @@
                     ordersArray.push({ id: docSnap.id, ...docSnap.data() });
                 });
                 
-                // Sort to show newest first
-                ordersArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                ordersArray.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
                 
                 ordersArray.forEach((data) => {
                     const isCompleted = data.status === 'Completed';
@@ -436,8 +466,7 @@
                     depositsArray.push({ id: docSnap.id, ...docSnap.data() });
                 });
                 
-                // Sort to show newest first
-                depositsArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                depositsArray.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
                 
                 depositsArray.forEach((data) => {
                     if(data.status === "Pending") {
@@ -502,6 +531,100 @@
                 loadDeposits(); 
             } catch (error) {
                 console.error(error);
+            }
+        };
+
+        /* ================= 🌟 NOTIFICATION LOGIC (NEW) ================= */
+        document.getElementById("send-notif-form").addEventListener("submit", async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById("notif-btn");
+            const msgBox = document.getElementById("notif-status-msg");
+            
+            btn.innerText = "নোটিফিকেশন পাঠানো হচ্ছে...";
+            btn.disabled = true;
+
+            const title = document.getElementById("n-title").value.trim();
+            const message = document.getElementById("n-message").value.trim();
+            const target = document.getElementById("n-target").value;
+            let toEmail = "all";
+            
+            if(target === "specific") {
+                toEmail = document.getElementById("n-email").value.trim().toLowerCase();
+                if(!toEmail) {
+                    alert("দয়া করে ইউজারের ইমেইল দিন!");
+                    btn.innerText = "নোটিফিকেশন সেন্ড করুন";
+                    btn.disabled = false;
+                    return;
+                }
+            }
+
+            try {
+                await addDoc(collection(db, "notifications"), {
+                    title: title,
+                    message: message,
+                    to: toEmail,
+                    timestamp: new Date().toISOString()
+                });
+
+                msgBox.innerText = "✔ নোটিফিকেশন সফলভাবে পাঠানো হয়েছে!";
+                msgBox.style.color = "#28a745";
+                msgBox.style.backgroundColor = "#e8f5e9";
+                msgBox.style.border = "1px solid #28a745";
+                msgBox.style.display = "block";
+                
+                document.getElementById("send-notif-form").reset();
+                document.getElementById("n-email-box").style.display = "none";
+                
+                loadAdminNotifs(); // রিফ্রেশ লিস্ট
+
+                setTimeout(() => { msgBox.style.display = "none"; }, 3500);
+            } catch(error) {
+                msgBox.innerText = "❌ নোটিফিকেশন পাঠাতে সমস্যা হয়েছে!";
+                msgBox.style.color = "#e74c3c";
+                msgBox.style.backgroundColor = "#fdecep";
+                msgBox.style.border = "1px solid #e74c3c";
+                msgBox.style.display = "block";
+            }
+            
+            btn.innerText = "নোটিফিকেশন সেন্ড করুন";
+            btn.disabled = false;
+        });
+
+        async function loadAdminNotifs() {
+            const listDiv = document.getElementById("admin-notif-list");
+            try {
+                const querySnapshot = await getDocs(collection(db, "notifications"));
+                let notifsArray = [];
+                querySnapshot.forEach((docSnap) => {
+                    notifsArray.push({ id: docSnap.id, ...docSnap.data() });
+                });
+                
+                if(notifsArray.length === 0) {
+                    listDiv.innerHTML = "<p style='color:#777; padding: 15px 0;'>কোনো নোটিফিকেশন পাঠানো হয়নি।</p>";
+                    return;
+                }
+
+                notifsArray.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
+
+                let html = `<table><tr><th>টাইটেল</th><th>কাকে পাঠানো হয়েছে</th><th>অ্যাকশন</th></tr>`;
+                notifsArray.forEach((data) => {
+                    html += `<tr>
+                        <td><strong>${data.title}</strong><br><small style="color:#777;">${data.message}</small></td>
+                        <td><span class="status-badge status-completed">${data.to === "all" ? "সবাইকে (All)" : data.to}</span></td>
+                        <td><button class="action-btn delete-btn" onclick="deleteNotif('${data.id}')">Delete</button></td>
+                    </tr>`;
+                });
+                html += `</table>`;
+                listDiv.innerHTML = html;
+            } catch(e) {
+                listDiv.innerHTML = "<p style='color:red;'>নোটিফিকেশন লোড করতে সমস্যা হয়েছে!</p>";
+            }
+        }
+
+        window.deleteNotif = async function(id) {
+            if(confirm("এই নোটিফিকেশনটি কি আপনি ডিলিট করতে চান? (ইউজাররাও আর দেখতে পাবে না)")) {
+                await deleteDoc(doc(db, "notifications", id));
+                loadAdminNotifs();
             }
         };
 
