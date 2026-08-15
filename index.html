@@ -142,6 +142,9 @@
             <!-- Balance -->
             <a href="add_fund.html" id="balance-link" style="display: none;">💰 Balance: ৳ 0</a>
             
+            <!-- Order History (New Option Replacing Cart) -->
+            <a href="profile.html">🛒 Order History</a>
+            
             <!-- Profile with Add Fund Option -->
             <div class="profile-menu" id="profile-menu-container">
                 <a href="login.html" id="auth-link">Login / Signup</a>
@@ -394,7 +397,7 @@
             }
         }
 
-        // 🌟 Modified to add data-category for dynamic inputs
+        // 🌟 Dynamic Inputs Setup
         function renderCustomProducts(productsArray) {
             let htmlContent = "";
             if(productsArray.length === 0) {
@@ -473,7 +476,6 @@
         let selectedProduct = null;
         const modal = document.getElementById('quickViewModal');
 
-        // 🌟 Modified attachEvents logic (Dynamic Modal)
         function attachEvents() {
             document.querySelectorAll(".clickable-item").forEach(item => {
                 item.addEventListener("click", function(event) {
@@ -496,7 +498,7 @@
                     const extraInput = document.getElementById("extra-info-input");
 
                     extraGroup.style.display = "block";
-                    extraInput.value = ""; // clear previous input
+                    extraInput.value = ""; 
 
                     if(category === "card") {
                         extraLabel.innerText = "লিংক দিন (Link):";
@@ -511,7 +513,7 @@
                         extraLabel.innerText = "আপনার হোয়াটসঅ্যাপ নাম্বার দিন:";
                         extraInput.placeholder = "যেমন: 01XXXXXXXXX";
                     } else {
-                        extraGroup.style.display = "none"; // Hide if no matching category
+                        extraGroup.style.display = "none"; 
                     }
 
                     modal.style.display = 'flex'; 
@@ -529,22 +531,18 @@
                 const extraInput = document.getElementById("extra-info-input");
                 let finalName = selectedProduct.name;
 
-                // Check if input is visible and user typed the value
                 if (extraGroup.style.display === "block") {
                     if (extraInput.value.trim() === "") {
                         alert("দয়া করে বক্সে আপনার প্রয়োজনীয় তথ্যটি লিখুন!");
                         extraInput.focus();
                         return;
                     }
-                    // Add the info to the product name!
                     finalName += ` [তথ্য: ${extraInput.value.trim()}]`;
                 }
 
-                // Create a completely new cart with just this 1 item
                 let cart = [];
                 cart.push({ name: finalName, price: selectedProduct.price });
                 
-                // Save and Redirect
                 localStorage.setItem("amarDarazCart", JSON.stringify(cart));
                 window.location.href = "checkout.html";
             }
