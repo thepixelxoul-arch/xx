@@ -35,18 +35,16 @@
         .suggestion-item:hover { background-color: #f9f9f9; color: #f85606; }
         .suggestion-icon { color: #ccc; font-size: 16px; font-weight: bold; }
 
-        /* Quick View Modal */
+        /* Quick View Modal (Updated for Dynamic Inputs) */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 3000; justify-content: center; align-items: center; }
         .modal-content { background: white; padding: 25px; border-radius: 8px; max-width: 350px; width: 90%; text-align: center; position: relative; box-shadow: 0 5px 20px rgba(0,0,0,0.2); animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         .close-btn { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; color: #777; transition: 0.3s; }
         .close-btn:hover { color: #f85606; }
-        .modal-img { width: 100%; max-height: 220px; object-fit: cover; margin-bottom: 15px; border-radius: 5px; }
-        .modal-price { color: #f85606; font-size: 20px; font-weight: bold; margin: 10px 0; }
-        .btn-group { display: flex; gap: 10px; margin-top: 15px; }
-        .btn-group button { flex: 1; padding: 10px 0; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; transition: 0.3s; color: white; font-size: 14px; }
-        .add-btn { background-color: #ff9900; }
-        .add-btn:hover { background-color: #e68a00; }
+        .modal-img { width: 100%; max-height: 200px; object-fit: cover; margin-bottom: 10px; border-radius: 5px; }
+        .modal-price { color: #f85606; font-size: 20px; font-weight: bold; margin: 5px 0 15px 0; }
+        .dynamic-input-box { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; outline: none; margin-bottom: 15px; }
+        .dynamic-input-box:focus { border-color: #f85606; }
 
         /* Footer Design */
         .footer { background-color: #eaeaea; padding: 40px 20px; margin-top: 50px; color: #0f136d; }
@@ -80,7 +78,7 @@
         .profile-dropdown a:hover { background-color: #f9f9f9; color: #f85606 !important; }
         .profile-dropdown.show { display: block; }
 
-        /* Notification Design Upgrade */
+        /* Notification Design */
         .notif-menu { position: relative; display: flex; align-items: center; }
         .notif-icon-wrapper { position: relative; display: flex; align-items: center; }
         .notif-badge { position: absolute; top: -8px; right: -8px; background: #e74c3c; color: white; border-radius: 50%; padding: 2px 5px; font-size: 11px; font-weight: bold; display: none; line-height: 1; border: 1px solid #fff; }
@@ -141,9 +139,8 @@
                 </div>
             </div>
 
-            <!-- Balance & Cart -->
+            <!-- Balance -->
             <a href="add_fund.html" id="balance-link" style="display: none;">💰 Balance: ৳ 0</a>
-            <a href="checkout.html" id="cart-link">🛒 Cart (0)</a>
             
             <!-- Profile with Add Fund Option -->
             <div class="profile-menu" id="profile-menu-container">
@@ -168,7 +165,7 @@
                     🔥 সুপার ডিজিটাল সেল! 🔥
                 </h2>
                 <p style="font-size: clamp(14px, 3vw, 20px); margin-top: 15px; text-shadow: 1px 1px 5px rgba(0,0,0,0.8); color: #ffd1b3;">
-                    সব সার্ভিসে এবং টপ-আপে বিশেষ ছাড়!
+                    সব সার্ভিসে এবং টপ-আপে বিশেষ ছাড়!
                 </p>
             </div>
         </div>
@@ -221,17 +218,21 @@
         </div>
     </footer>
 
-    <!-- Quick View Modal -->
+    <!-- 🌟 Dynamic Quick View Modal -->
     <div class="modal-overlay" id="quickViewModal">
         <div class="modal-content">
             <span class="close-btn" id="closeModal">&times;</span>
             <img src="" id="modalImg" class="modal-img">
             <h3 id="modalTitle">Product Name</h3>
             <div class="modal-price" id="modalPrice">৳ 0</div>
-            <div class="btn-group">
-                <button class="add-btn" id="modalAddBtn">Add to Cart</button>
-                <button class="buy-btn" style="margin-top: 0;" id="modalBuyBtn">Buy Now</button>
+            
+            <!-- Dynamic Input Group (Hidden by default) -->
+            <div id="extra-info-group" style="display: none; text-align: left;">
+                <label id="extra-info-label" style="font-size: 13px; color: #555; font-weight: bold; margin-bottom: 5px; display: block;">তথ্য দিন:</label>
+                <input type="text" id="extra-info-input" class="dynamic-input-box" required>
             </div>
+
+            <button class="buy-btn" id="modalBuyBtn" style="margin-top: 5px;">Confirm & Buy Now</button>
         </div>
     </div>
 
@@ -342,11 +343,6 @@
             }
         });
 
-        let cart = JSON.parse(localStorage.getItem("amarDarazCart")) || [];
-        const cartLink = document.getElementById("cart-link");
-        function updateCartCount() { cartLink.innerText = `🛒 Cart (${cart.length})`; }
-        updateCartCount(); 
-
         let productsDatabase = [];
         const productGrid = document.getElementById("dynamic-product-grid");
 
@@ -394,22 +390,23 @@
                     }
                 }
             } catch(e) {
-                notifListBox.innerHTML = "<div style='padding: 15px; text-align: center; color: red; font-size: 13px;'>নোটিফিকেশন লোড করতে সমস্যা হয়েছে।</div>";
+                notifListBox.innerHTML = "<div style='padding: 15px; text-align: center; color: red; font-size: 13px;'>নোটিফিকেশন লোড করতে সমস্যা হয়েছে।</div>";
             }
         }
 
+        // 🌟 Modified to add data-category for dynamic inputs
         function renderCustomProducts(productsArray) {
             let htmlContent = "";
             if(productsArray.length === 0) {
-                htmlContent = "<p style='text-align:center; width:100%; color:#777; margin-top:30px;'>দুঃখিত, কোনো প্রোডাক্ট পাওয়া যায়নি!</p>";
+                htmlContent = "<p style='text-align:center; width:100%; color:#777; margin-top:30px;'>দুঃখিত, কোনো প্রোডাক্ট পাওয়া যায়নি!</p>";
             } else {
                 productsArray.forEach((product) => {
                     htmlContent += `
-                        <div class="product-card">
+                        <div class="product-card" data-category="${product.category}">
                             <img src="${product.img}" alt="Product" class="clickable-item">
                             <h3 class="clickable-item">${product.name}</h3>
                             <div class="product-price">৳ ${product.price}</div>
-                            <button class="buy-btn direct-buy-btn">Buy Now</button>
+                            <button class="buy-btn clickable-item">Buy Now</button>
                         </div>
                     `;
                 });
@@ -473,52 +470,81 @@
             });
         });
 
-        function attachEvents() {
-            document.querySelectorAll(".direct-buy-btn").forEach(button => {
-                button.addEventListener("click", function(event) {
-                    const productCard = event.target.closest(".product-card");
-                    cart.push({ name: productCard.querySelector("h3").innerText, price: productCard.querySelector(".product-price").innerText.replace("৳ ", "") });
-                    localStorage.setItem("amarDarazCart", JSON.stringify(cart));
-                    window.location.href = "checkout.html";
-                });
-            });
+        let selectedProduct = null;
+        const modal = document.getElementById('quickViewModal');
 
-            const modal = document.getElementById('quickViewModal');
+        // 🌟 Modified attachEvents logic (Dynamic Modal)
+        function attachEvents() {
             document.querySelectorAll(".clickable-item").forEach(item => {
                 item.addEventListener("click", function(event) {
                     const productCard = event.target.closest(".product-card");
+                    
                     const name = productCard.querySelector("h3").innerText;
                     const price = productCard.querySelector(".product-price").innerText.replace("৳ ", "");
-                    document.getElementById("modalImg").src = productCard.querySelector("img").src;
+                    const img = productCard.querySelector("img").src;
+                    const category = productCard.getAttribute("data-category");
+                    
+                    document.getElementById("modalImg").src = img;
                     document.getElementById("modalTitle").innerText = name;
                     document.getElementById("modalPrice").innerText = `৳ ${price}`;
-                    selectedProduct = { name, price };
+                    
+                    selectedProduct = { name, price, category };
+
+                    // Setup Dynamic Input Box based on Category
+                    const extraGroup = document.getElementById("extra-info-group");
+                    const extraLabel = document.getElementById("extra-info-label");
+                    const extraInput = document.getElementById("extra-info-input");
+
+                    extraGroup.style.display = "block";
+                    extraInput.value = ""; // clear previous input
+
+                    if(category === "card") {
+                        extraLabel.innerText = "লিংক দিন (Link):";
+                        extraInput.placeholder = "যেমন: https://...";
+                    } else if(category === "subscription") {
+                        extraLabel.innerText = "আপনার জিমেইল দিন (Gmail):";
+                        extraInput.placeholder = "যেমন: example@gmail.com";
+                    } else if(category === "topup") {
+                        extraLabel.innerText = "গেমের UID দিন (Player ID):";
+                        extraInput.placeholder = "যেমন: 123456789";
+                    } else if(category === "panel") {
+                        extraLabel.innerText = "আপনার হোয়াটসঅ্যাপ নাম্বার দিন:";
+                        extraInput.placeholder = "যেমন: 01XXXXXXXXX";
+                    } else {
+                        extraGroup.style.display = "none"; // Hide if no matching category
+                    }
+
                     modal.style.display = 'flex'; 
                 });
             });
         }
 
-        let selectedProduct = null;
-        const modal = document.getElementById('quickViewModal');
         document.getElementById('closeModal').addEventListener('click', () => { modal.style.display = 'none'; });
         window.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
 
-        document.getElementById('modalAddBtn').addEventListener('click', (e) => {
-            if(selectedProduct) {
-                cart.push(selectedProduct);
-                localStorage.setItem("amarDarazCart", JSON.stringify(cart));
-                updateCartCount();
-                const btn = e.target;
-                const originalText = btn.innerText;
-                btn.innerText = "✔ যোগ হয়েছে!";
-                btn.style.backgroundColor = "#28a745"; 
-                setTimeout(() => { btn.innerText = originalText; btn.style.backgroundColor = "#ff9900"; }, 1500);
-            }
-        });
-
+        // 🌟 Dynamic Buy Now Logic
         document.getElementById('modalBuyBtn').addEventListener('click', () => {
             if(selectedProduct) {
-                cart.push(selectedProduct);
+                const extraGroup = document.getElementById("extra-info-group");
+                const extraInput = document.getElementById("extra-info-input");
+                let finalName = selectedProduct.name;
+
+                // Check if input is visible and user typed the value
+                if (extraGroup.style.display === "block") {
+                    if (extraInput.value.trim() === "") {
+                        alert("দয়া করে বক্সে আপনার প্রয়োজনীয় তথ্যটি লিখুন!");
+                        extraInput.focus();
+                        return;
+                    }
+                    // Add the info to the product name!
+                    finalName += ` [তথ্য: ${extraInput.value.trim()}]`;
+                }
+
+                // Create a completely new cart with just this 1 item
+                let cart = [];
+                cart.push({ name: finalName, price: selectedProduct.price });
+                
+                // Save and Redirect
                 localStorage.setItem("amarDarazCart", JSON.stringify(cart));
                 window.location.href = "checkout.html";
             }
