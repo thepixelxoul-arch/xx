@@ -10,9 +10,21 @@
         .navbar .logo { font-size: 24px; font-weight: bold; text-decoration: none; color: white; }
         .navbar .home-link { color: white; text-decoration: none; font-size: 20px; }
         
-        .profile-container { display: flex; justify-content: center; align-items: flex-start; min-height: 80vh; padding: 20px; margin-top: 40px;}
-        .profile-card { background: white; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 500px; padding: 40px 30px; box-sizing: border-box; }
+        .profile-container { display: flex; justify-content: center; align-items: flex-start; min-height: 80vh; padding: 20px; margin-top: 20px;}
+        .profile-card { background: white; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 600px; overflow: hidden; }
         
+        /* 🌟 Tab Navigation */
+        .profile-tabs { display: flex; background: #2c3e50; }
+        .tab-btn { flex: 1; padding: 15px; border: none; background: transparent; color: white; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 15px; }
+        .tab-btn:hover { background: #34495e; }
+        .tab-btn.active { background: #f85606; border-bottom: 3px solid #d84a05; }
+
+        /* 🌟 Tab Content */
+        .tab-content { padding: 30px; display: none; animation: fadeIn 0.3s; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 🌟 Info Tab Design */
         .profile-icon { font-size: 60px; color: #5c7c99; margin-bottom: 10px; text-align: center; }
         .info-box { border: 1px dashed #ccc; padding: 15px; border-radius: 5px; margin-bottom: 15px; background: #fafafa; text-align: center;}
         .info-box p { margin: 0 0 5px 0; color: #555; font-weight: bold; font-size: 14px; }
@@ -24,6 +36,20 @@
         
         .admin-btn { background-color: #2c3e50; color: white; border: none; padding: 12px; width: 100%; border-radius: 4px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; display: none; margin-top: 10px; }
         .admin-btn:hover { background-color: #1a252f; }
+
+        /* 🌟 Lists (Deposits) */
+        .list-item { border: 1px solid #eee; padding: 15px; border-radius: 8px; margin-bottom: 15px; background: #fafafa; }
+        .list-item h4 { margin: 0 0 5px 0; color: #333; display: flex; justify-content: space-between; align-items: center;}
+        .list-item p { margin: 5px 0; color: #666; font-size: 14px; line-height: 1.4; }
+        .list-item .method { color: #007bff; font-weight: bold; }
+        .list-item .trx { font-family: monospace; color: #e74c3c; font-weight: bold; }
+        
+        .status-badge { padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; }
+        .status-pending { background-color: #fff3cd; color: #856404; }
+        .status-approved { background-color: #d4edda; color: #155724; }
+        .status-rejected { background-color: #f8d7da; color: #721c24; }
+        
+        .loading-text { text-align: center; color: #777; font-weight: bold; padding: 20px 0; }
     </style>
 </head>
 <body>
@@ -35,21 +61,40 @@
 
     <div class="profile-container">
         <div class="profile-card">
-            <div class="profile-icon">👤</div>
-            <h3 style="text-align: center; color: #333; margin-top: 0; margin-bottom: 25px;">আপনার ড্যাশবোর্ড</h3>
             
-            <div class="info-box">
-                <p>লগইন করা ইমেইল:</p>
-                <h4 id="user-email">লোড হচ্ছে...</h4>
+            <!-- 🌟 Tabs -->
+            <div class="profile-tabs">
+                <button class="tab-btn active" onclick="switchTab('info')">👤 Profile</button>
+                <button class="tab-btn" onclick="switchTab('deposits')">💳 Deposit History</button>
             </div>
 
-            <div class="info-box">
-                <p>আপনার বর্তমান ব্যালেন্স:</p>
-                <h4 class="balance-amount" id="user-balance">৳ 0</h4>
+            <!-- 1. Profile Info Tab -->
+            <div id="tab-info" class="tab-content active">
+                <div class="profile-icon">👤</div>
+                <h3 style="text-align: center; color: #333; margin-top: 0;">আপনার ড্যাশবোর্ড</h3>
+                
+                <div class="info-box">
+                    <p>লগইন করা ইমেইল:</p>
+                    <h4 id="user-email">লোড হচ্ছে...</h4>
+                </div>
+
+                <div class="info-box">
+                    <p>আপনার বর্তমান ব্যালেন্স:</p>
+                    <h4 class="balance-amount" id="user-balance">৳ 0</h4>
+                </div>
+                
+                <button class="admin-btn" id="admin-panel-btn" onclick="window.location.href='admin.html'">⚙️ অ্যাডমিন প্যানেলে যান</button>
+                <button class="logout-btn" id="logout-btn">লগআউট করুন</button>
             </div>
-            
-            <button class="admin-btn" id="admin-panel-btn" onclick="window.location.href='admin.html'">⚙️ অ্যাডমিন প্যানেলে যান</button>
-            <button class="logout-btn" id="logout-btn">লগআউট করুন</button>
+
+            <!-- 2. Deposit History Tab -->
+            <div id="tab-deposits" class="tab-content">
+                <h3 style="margin-top: 0; color: #333; text-align: center; margin-bottom: 20px;">আপনার ডিপোজিট হিস্ট্রি</h3>
+                <div id="deposits-container">
+                    <div class="loading-text">লোড হচ্ছে...</div>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -57,7 +102,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBZNrrK7MLGIZoPakMgj2yFEX7iCVYYhlg",
@@ -72,8 +117,11 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        let currentUserEmail = "";
+
         onAuthStateChanged(auth, async (user) => {
             if (user) {
+                currentUserEmail = user.email;
                 document.getElementById("user-email").innerText = user.email;
                 
                 if (user.email === "sakibbinsalam.admin@gmail.com") {
@@ -88,6 +136,9 @@
                     }
                 } catch(e) { console.log(e); }
 
+                // ডিপোজিট হিস্ট্রি লোড করা
+                loadUserDeposits(user.email);
+
             } else {
                 window.location.href = "login.html";
             }
@@ -96,6 +147,64 @@
         document.getElementById("logout-btn").addEventListener("click", () => {
             signOut(auth).then(() => { window.location.href = "login.html"; });
         });
+
+        // 🌟 Tab Switching Logic
+        window.switchTab = function(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById('tab-' + tabName).classList.add('active');
+            event.target.classList.add('active');
+        };
+
+        // 🌟 Load User Deposits
+        async function loadUserDeposits(email) {
+            const container = document.getElementById("deposits-container");
+            try {
+                // Firebase থেকে ইউজারের সব ডিপোজিট আনা হচ্ছে
+                const q = query(collection(db, "deposits"), where("userEmail", "==", email));
+                const querySnapshot = await getDocs(q);
+                
+                if (querySnapshot.empty) {
+                    container.innerHTML = "<p style='color:#777; text-align:center;'>আপনি এখনও কোনো ডিপোজিট রিকোয়েস্ট করেননি।</p>";
+                    return;
+                }
+
+                let html = "";
+                querySnapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    
+                    let statusClass = "status-pending";
+                    let statusText = "Pending";
+                    
+                    if (data.status === "Approved") {
+                        statusClass = "status-approved";
+                        statusText = "Approved";
+                    } else if (data.status === "Rejected") {
+                        statusClass = "status-rejected";
+                        statusText = "Rejected";
+                    }
+
+                    html += `
+                        <div class="list-item">
+                            <h4>
+                                <span>৳ ${data.amount}</span>
+                                <span class="status-badge ${statusClass}">${statusText}</span>
+                            </h4>
+                            <p><strong>মেথড:</strong> <span class="method">${data.paymentMethod}</span></p>
+                            <p><strong>TrxID:</strong> <span class="trx">${data.trxId}</span></p>
+                            <p><strong>নাম্বার:</strong> ${data.senderNumber}</p>
+                        </div>
+                    `;
+                });
+                
+                // সবচেয়ে নতুন রিকোয়েস্টগুলো আগে দেখানোর জন্য লিস্ট উল্টে দেওয়া হলো (Optional)
+                container.innerHTML = html;
+            } catch(e) {
+                console.error(e);
+                container.innerHTML = "<p style='color:red; text-align:center;'>হিস্ট্রি লোড করতে সমস্যা হয়েছে।</p>";
+            }
+        }
     </script>
 </body>
 </html>
