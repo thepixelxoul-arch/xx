@@ -13,7 +13,7 @@
         .profile-container { display: flex; justify-content: center; align-items: flex-start; min-height: 80vh; padding: 20px; margin-top: 20px;}
         .profile-card { background: white; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 600px; overflow: hidden; }
         
-        /* 🌟 Tab Navigation */
+        /* 🌟 Tab Navigation (শুধু ২টি ট্যাব) */
         .profile-tabs { display: flex; background: #2c3e50; }
         .tab-btn { flex: 1; padding: 15px 5px; border: none; background: transparent; color: white; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 14px; text-align: center;}
         .tab-btn:hover { background: #34495e; }
@@ -63,7 +63,6 @@
             <div class="profile-tabs">
                 <button class="tab-btn active" onclick="switchTab('info')">👤 Profile</button>
                 <button class="tab-btn" onclick="switchTab('deposits')">💳 Deposit History</button>
-                <button class="tab-btn" onclick="switchTab('orders')">🛒 Order History</button>
             </div>
 
             <!-- 1. Profile Info -->
@@ -80,12 +79,6 @@
             <div id="tab-deposits" class="tab-content">
                 <h3 style="margin-top: 0; color: #333; text-align: center; margin-bottom: 20px;">আপনার ডিপোজিট হিস্ট্রি</h3>
                 <div id="deposits-container"><div class="loading-text">লোড হচ্ছে...</div></div>
-            </div>
-
-            <!-- 3. Order History (নতুন যোগ করা হয়েছে) -->
-            <div id="tab-orders" class="tab-content">
-                <h3 style="margin-top: 0; color: #333; text-align: center; margin-bottom: 20px;">আপনার অর্ডার হিস্ট্রি</h3>
-                <div id="orders-container"><div class="loading-text">লোড হচ্ছে...</div></div>
             </div>
 
         </div>
@@ -125,7 +118,6 @@
                 } catch(e) { console.log(e); }
 
                 loadUserDeposits(user.email);
-                loadUserOrders(user.email);
 
             } else {
                 window.location.href = "login.html";
@@ -153,8 +145,16 @@
                     return;
                 }
                 let html = "";
+                // ডাটাবেস থেকে সব ডিপোজিট নিয়ে লিস্ট তৈরি
+                let deposits = [];
                 querySnapshot.forEach((docSnap) => {
-                    const data = docSnap.data();
+                    deposits.push({ id: docSnap.id, ...docSnap.data() });
+                });
+                
+                // নতুন ডিপোজিটগুলো যেন আগে দেখায়
+                deposits.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)); 
+
+                deposits.forEach((data) => {
                     let statusClass = data.status === "Approved" ? "status-completed" : (data.status === "Rejected" ? "status-pending" : "status-pending");
                     html += `
                         <div class="list-item">
@@ -165,34 +165,6 @@
                 });
                 container.innerHTML = html;
             } catch(e) { container.innerHTML = "<p style='color:red;'>হিস্ট্রি লোড করতে সমস্যা হয়েছে।</p>"; }
-        }
-
-        async function loadUserOrders(email) {
-            const container = document.getElementById("orders-container");
-            try {
-                const q = query(collection(db, "orders"), where("userEmail", "==", email));
-                const querySnapshot = await getDocs(q);
-                if (querySnapshot.empty) {
-                    container.innerHTML = "<p style='color:#777; text-align:center;'>আপনি এখনও কোনো অর্ডার করেননি।</p>";
-                    return;
-                }
-                let html = "";
-                querySnapshot.forEach((docSnap) => {
-                    const data = docSnap.data();
-                    const isCompleted = data.status === 'Completed';
-                    html += `
-                        <div class="list-item">
-                            <h4>
-                                <span style="font-size: 15px;">📦 ${data.productName}</span>
-                                <span class="status-badge ${isCompleted ? 'status-completed' : 'status-pending'}">${isCompleted ? 'কমপ্লিট' : 'পেন্ডিং'}</span>
-                            </h4>
-                            <p><strong>দাম:</strong> ৳ ${data.price}</p>
-                            <p><small style="color: #999;">অর্ডার আইডি: ${docSnap.id}</small></p>
-                        </div>
-                    `;
-                });
-                container.innerHTML = html;
-            } catch(e) { container.innerHTML = "<p style='color:red;'>অর্ডার লোড করতে সমস্যা হয়েছে।</p>"; }
         }
     </script>
 </body>
