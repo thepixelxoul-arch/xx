@@ -11,6 +11,7 @@
         
         .buy-btn { background-color: #f85606; color: white; padding: 10px 0; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 14px; width: 100%; margin-top: 10px;}
         .buy-btn:hover { background-color: #d84a05; }
+        .buy-btn:disabled { background-color: #ccc; cursor: not-allowed; }
         
         .product-card img, .product-card h3 { cursor: pointer; transition: 0.3s; }
         .product-card img:hover { opacity: 0.8; }
@@ -31,11 +32,10 @@
         
         .suggestions-box { position: absolute; top: 100%; left: 0; width: calc(100% - 50px); background: white; border-radius: 0 0 8px 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-height: 250px; overflow-y: auto; z-index: 2000; display: none; margin-top: 2px; }
         .suggestion-item { padding: 12px 15px; cursor: pointer; color: #333; font-size: 14px; text-align: left; border-bottom: 1px solid #f1f1f1; display: flex; justify-content: space-between; align-items: center; }
-        .suggestion-item:last-child { border-bottom: none; }
         .suggestion-item:hover { background-color: #f9f9f9; color: #f85606; }
         .suggestion-icon { color: #ccc; font-size: 16px; font-weight: bold; }
 
-        /* Quick View Modal (Updated for Dynamic Inputs) */
+        /* Quick View Modal */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 3000; justify-content: center; align-items: center; }
         .modal-content { background: white; padding: 25px; border-radius: 8px; max-width: 350px; width: 90%; text-align: center; position: relative; box-shadow: 0 5px 20px rgba(0,0,0,0.2); animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -45,25 +45,6 @@
         .modal-price { color: #f85606; font-size: 20px; font-weight: bold; margin: 5px 0 15px 0; }
         .dynamic-input-box { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; outline: none; margin-bottom: 15px; }
         .dynamic-input-box:focus { border-color: #f85606; }
-
-        /* Footer Design */
-        .footer { background-color: #eaeaea; padding: 40px 20px; margin-top: 50px; color: #0f136d; }
-        .footer-top { display: flex; flex-wrap: wrap; justify-content: space-between; max-width: 1200px; margin: 0 auto; padding-bottom: 30px; border-bottom: 1px solid #ddd; }
-        .footer-bottom { display: flex; flex-wrap: wrap; justify-content: space-between; max-width: 1200px; margin: 30px auto 0; }
-        .footer-col { flex: 1; min-width: 200px; margin-bottom: 20px; }
-        .footer-col h4 { font-size: 16px; margin-bottom: 15px; color: #0f136d; font-weight: normal;}
-        .footer-col ul { list-style: none; padding: 0; margin: 0; }
-        .footer-col ul li { margin-bottom: 10px; }
-        .footer-col ul li a { text-decoration: none; color: #0f136d; font-size: 13px; transition: 0.3s; }
-        .footer-col ul li a:hover { text-decoration: underline; color: #f85606; }
-        .app-download-box { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
-        .app-icon { background: #f85606; color: white; width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; border-radius: 8px; font-size: 20px; font-weight: bold;}
-        .app-text { font-size: 14px; }
-        .app-text span { color: #f85606; font-size: 15px; }
-        .store-logos { display: flex; flex-direction: column; gap: 10px; }
-        .store-logos img { height: 35px; cursor: pointer; }
-        .payment-logos { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-        .payment-logos span { background: white; padding: 5px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; font-weight: bold; color: #333; }
 
         /* Navbar Alignment Fixes */
         .nav-links { display: flex; align-items: center; gap: 20px; } 
@@ -77,28 +58,6 @@
         .profile-dropdown a { display: block !important; color: #333 !important; padding: 12px 15px !important; font-size: 14px !important; font-weight: normal !important; text-align: left; border-bottom: 1px solid #f1f1f1; margin: 0 !important; }
         .profile-dropdown a:hover { background-color: #f9f9f9; color: #f85606 !important; }
         .profile-dropdown.show { display: block; }
-
-        /* Notification Design */
-        .notif-menu { position: relative; display: flex; align-items: center; }
-        .notif-icon-wrapper { position: relative; display: flex; align-items: center; }
-        .notif-badge { position: absolute; top: -8px; right: -8px; background: #e74c3c; color: white; border-radius: 50%; padding: 2px 5px; font-size: 11px; font-weight: bold; display: none; line-height: 1; border: 1px solid #fff; }
-        
-        .notif-dropdown { display: none; position: absolute; right: -80px; top: 100%; background: white; width: 300px; max-height: 350px; overflow-y: auto; box-shadow: 0 8px 20px rgba(0,0,0,0.15); border-radius: 8px; z-index: 2000; margin-top: 15px; border: 1px solid #eee; }
-        .notif-dropdown.show { display: block; animation: fadeIn 0.2s ease-in-out; }
-        .notif-header { background: #f85606; color: white; padding: 12px 15px; font-weight: bold; font-size: 14px; text-align: left; position: sticky; top: 0; z-index: 10;}
-        .notif-item { padding: 15px; border-bottom: 1px solid #f1f1f1; text-align: left; text-decoration: none; color: #444 !important; font-size: 13px !important; display: block; margin: 0 !important; font-weight: normal !important; transition: 0.3s;}
-        .notif-item:last-child { border-bottom: none; }
-        .notif-item:hover { background-color: #fcfcfc; color: #f85606 !important; }
-        .notif-title { font-weight: bold; color: #222; margin-bottom: 5px; display: block; font-size: 14px;}
-
-        /* Lucky Spin Wheel Icon Design */
-        .floating-spinner-container { position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; z-index: 9999; cursor: pointer; transition: 0.3s; }
-        .floating-spinner-container:hover { transform: scale(1.1); }
-        .spin-wheel-bg { width: 100%; height: 100%; border-radius: 50%; background: conic-gradient( #e74c3c 0deg 60deg, #f1c40f 60deg 120deg, #2ecc71 120deg 180deg, #3498db 180deg 240deg, #9b59b6 240deg 300deg, #e67e22 300deg 360deg ); border: 3px solid #fff; box-sizing: border-box; box-shadow: 0 4px 10px rgba(0,0,0,0.3); animation: spin 3s linear infinite; }
-        .spin-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 24px; height: 24px; background: #fff; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; color: #e74c3c; font-size: 14px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 5; }
-        .spin-pointer { position: absolute; top: -5px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 14px solid #333; z-index: 10; }
-
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
         .loading-products { text-align: center; width: 100%; padding: 40px 0; color: #f85606; font-size: 18px; font-weight: bold; }
     </style>
@@ -121,34 +80,11 @@
         </div>
 
         <div class="nav-links">
-            
-            <!-- Notification Menu -->
-            <div class="notif-menu" id="notif-menu-container" style="display: none;">
-                <a href="#" id="notif-icon-btn">
-                    <div class="notif-icon-wrapper">
-                        🔔 <span class="notif-badge" id="notif-badge">0</span>
-                    </div>
-                    <span>Notification</span>
-                </a>
-                
-                <div class="notif-dropdown" id="notif-dropdown">
-                    <div class="notif-header">Your Notifications</div>
-                    <div id="notif-list-box">
-                        <div style="padding: 15px; text-align: center; color: #777; font-size: 13px;">লোড হচ্ছে...</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Balance -->
             <a href="add_fund.html" id="balance-link" style="display: none;">💰 Balance: ৳ 0</a>
-            
-            <!-- Order History (New Option Replacing Cart) -->
             <a href="profile.html">🛒 Order History</a>
             
-            <!-- Profile with Add Fund Option -->
             <div class="profile-menu" id="profile-menu-container">
                 <a href="login.html" id="auth-link">Login / Signup</a>
-                
                 <div class="profile-dropdown" id="profile-dropdown">
                     <a href="profile.html">👤 Profile</a>
                     <a href="add_fund.html">💰 Add Fund</a>
@@ -157,22 +93,6 @@
             </div>
         </div>
     </nav>
-
-    <!-- Full Screen Banner Section -->
-    <div class="banner-wrapper" style="width: 100%; margin-bottom: 20px;">
-        <div class="banner" style="position: relative; width: 100%; height: 300px; background-color: #111; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
-            <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1600&h=400&q=80" alt="Super Digital Sale" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.5; display: block;">
-            
-            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: white; width: 90%;">
-                <h2 style="font-size: clamp(24px, 5vw, 42px); font-weight: bold; margin: 0; text-shadow: 2px 2px 10px rgba(0,0,0,0.8); letter-spacing: 1px;">
-                    🔥 সুপার ডিজিটাল সেল! 🔥
-                </h2>
-                <p style="font-size: clamp(14px, 3vw, 20px); margin-top: 15px; text-shadow: 1px 1px 5px rgba(0,0,0,0.8); color: #ffd1b3;">
-                    সব সার্ভিসে এবং টপ-আপে বিশেষ ছাড়!
-                </p>
-            </div>
-        </div>
-    </div>
 
     <!-- Category Navigation -->
     <div class="category-nav">
@@ -190,37 +110,6 @@
         </div>
     </div>
 
-    <!-- Footer Section -->
-    <footer class="footer">
-        <div class="footer-top">
-            <div class="footer-col">
-                <h4>Customer Care</h4>
-                <ul><li><a href="#">Help Center</a></li><li><a href="#">How to Buy</a></li><li><a href="#">Returns & Refunds</a></li><li><a href="#">Contact Us</a></li><li><a href="#">Terms & Conditions</a></li></ul>
-            </div>
-            <div class="footer-col">
-                <h4>AmarDaraz</h4>
-                <ul><li><a href="#">About Us</a></li><li><a href="#">Digital Payments</a></li><li><a href="#">Privacy Policy</a></li><li><a href="#">AmarDaraz App</a></li></ul>
-            </div>
-            <div class="footer-col">
-                <div class="app-download-box"><div class="app-icon">A</div><div class="app-text"><span>Happy Shopping</span><br>Download App</div></div>
-            </div>
-            <div class="footer-col">
-                <div class="store-logos">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg" alt="App Store">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Google Play">
-                </div>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <div class="footer-col" style="flex: 2;">
-                <h4>Payment Methods</h4>
-                <div class="payment-logos"><span>💳 Visa</span><span>💳 MasterCard</span><span>📱 bKash</span><span>📱 Nagad</span><span>💵 Cash on Delivery</span></div>
-            </div>
-            <div class="footer-col"><h4>Verified by</h4><p style="font-size: 13px; font-weight: bold; color: #28a745;">✅ PCI DSS Compliant</p></div>
-            <div class="footer-col"><h4>DBID</h4><p style="font-size: 13px; color: #777;">Registration ID : <br> 123456789</p></div>
-        </div>
-    </footer>
-
     <!-- 🌟 Dynamic Quick View Modal -->
     <div class="modal-overlay" id="quickViewModal">
         <div class="modal-content">
@@ -229,7 +118,6 @@
             <h3 id="modalTitle">Product Name</h3>
             <div class="modal-price" id="modalPrice">৳ 0</div>
             
-            <!-- Dynamic Input Group (Hidden by default) -->
             <div id="extra-info-group" style="display: none; text-align: left;">
                 <label id="extra-info-label" style="font-size: 13px; color: #555; font-weight: bold; margin-bottom: 5px; display: block;">তথ্য দিন:</label>
                 <input type="text" id="extra-info-input" class="dynamic-input-box" required>
@@ -239,18 +127,12 @@
         </div>
     </div>
 
-    <!-- Lucky Spin Button -->
-    <div class="floating-spinner-container" onclick="window.location.href='spin.html'">
-        <div class="spin-wheel-bg"></div>
-        <div class="spin-pointer"></div>
-        <div class="spin-center">৳</div>
-    </div>
-
     <!-- Firebase & JavaScript -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-        import { getFirestore, collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+        // 🌟 updateDoc এবং addDoc যুক্ত করা হয়েছে
+        import { getFirestore, collection, getDocs, doc, getDoc, updateDoc, addDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBZNrrK7MLGIZoPakMgj2yFEX7iCVYYhlg",
@@ -267,27 +149,14 @@
 
         const authLink = document.getElementById("auth-link");
         const balanceLink = document.getElementById("balance-link");
-        const profileMenuContainer = document.getElementById("profile-menu-container");
         const profileDropdown = document.getElementById("profile-dropdown");
         const adminMenuLink = document.getElementById("admin-menu-link");
         
-        // Notification Elements
-        const notifMenuContainer = document.getElementById("notif-menu-container");
-        const notifIconBtn = document.getElementById("notif-icon-btn");
-        const notifDropdown = document.getElementById("notif-dropdown");
-        const notifBadge = document.getElementById("notif-badge");
-        const notifListBox = document.getElementById("notif-list-box");
-
-        profileDropdown.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => profileDropdown.classList.remove("show"));
-        });
-        window.addEventListener('pageshow', () => {
-            profileDropdown.classList.remove("show");
-            notifDropdown.classList.remove("show");
-        });
+        let currentUserEmail = null; // লগইন ট্র্যাক করার জন্য
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
+                currentUserEmail = user.email;
                 authLink.innerText = "👤 Profile ▾";
                 authLink.href = "#"; 
                 
@@ -308,41 +177,16 @@
                 authLink.onclick = function(e) {
                     e.preventDefault();
                     profileDropdown.classList.toggle("show");
-                    notifDropdown.classList.remove("show");
-                };
-
-                // Notification Logic 
-                notifMenuContainer.style.display = "flex"; 
-                loadNotifications(user.email); 
-                
-                notifIconBtn.onclick = function(e) {
-                    e.preventDefault();
-                    notifDropdown.classList.toggle("show");
-                    profileDropdown.classList.remove("show");
-                    notifBadge.style.display = "none";
                 };
 
             } else {
+                currentUserEmail = null;
                 authLink.innerText = "Login / Signup";
                 authLink.href = "login.html";
                 authLink.onclick = null; 
                 balanceLink.style.display = "none";
-                notifMenuContainer.style.display = "none"; 
                 profileDropdown.classList.remove("show");
-                notifDropdown.classList.remove("show");
                 adminMenuLink.style.display = "none";
-            }
-        });
-
-        document.addEventListener('click', function(e) {
-            if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) { 
-                suggestionsBox.style.display = 'none'; 
-            }
-            if (!profileMenuContainer.contains(e.target)) {
-                profileDropdown.classList.remove("show");
-            }
-            if (!notifMenuContainer.contains(e.target)) {
-                notifDropdown.classList.remove("show");
             }
         });
 
@@ -358,46 +202,11 @@
                 });
                 renderProducts("all"); 
             } catch (error) {
-                console.error("Error fetching products: ", error);
-                productGrid.innerHTML = "<p style='text-align:center; width:100%; color:red;'>প্রোডাক্ট লোড করতে সমস্যা হচ্ছে! আপনার ইন্টারনেট কানেকশন চেক করুন।</p>";
+                productGrid.innerHTML = "<p style='color:red;'>প্রোডাক্ট লোড করতে সমস্যা হচ্ছে!</p>";
             }
         }
         fetchProductsFromDB();
 
-        async function loadNotifications(email) {
-            try {
-                const querySnapshot = await getDocs(collection(db, "notifications"));
-                let html = "";
-                let count = 0;
-                
-                querySnapshot.forEach((docSnap) => {
-                    const data = docSnap.data();
-                    if (data.to === "all" || data.to === email) {
-                        html += `
-                            <a href="#" class="notif-item">
-                                <span class="notif-title">${data.title}</span>
-                                ${data.message}
-                            </a>
-                        `;
-                        count++;
-                    }
-                });
-
-                if (html === "") {
-                    notifListBox.innerHTML = "<div style='padding: 15px; text-align: center; color: #777; font-size: 13px;'>কোনো নতুন নোটিফিকেশন নেই।</div>";
-                } else {
-                    notifListBox.innerHTML = html;
-                    if(count > 0) {
-                        notifBadge.innerText = count;
-                        notifBadge.style.display = "inline-block";
-                    }
-                }
-            } catch(e) {
-                notifListBox.innerHTML = "<div style='padding: 15px; text-align: center; color: red; font-size: 13px;'>নোটিফিকেশন লোড করতে সমস্যা হয়েছে।</div>";
-            }
-        }
-
-        // 🌟 Dynamic Inputs Setup
         function renderCustomProducts(productsArray) {
             let htmlContent = "";
             if(productsArray.length === 0) {
@@ -406,7 +215,7 @@
                 productsArray.forEach((product) => {
                     htmlContent += `
                         <div class="product-card" data-category="${product.category}">
-                            <img src="${product.img}" alt="Product" class="clickable-item">
+                            <img src="${product.img}" alt="Product" class="clickable-item" onerror="this.src='https://via.placeholder.com/150?text=No+Image'">
                             <h3 class="clickable-item">${product.name}</h3>
                             <div class="product-price">৳ ${product.price}</div>
                             <button class="buy-btn clickable-item">Buy Now</button>
@@ -423,53 +232,11 @@
             renderCustomProducts(filteredProducts);
         }
 
-        const searchInput = document.getElementById('search-input');
-        const searchBtn = document.getElementById('search-btn');
-        const suggestionsBox = document.getElementById('search-suggestions');
-
-        searchInput.addEventListener('input', function() {
-            const query = this.value.toLowerCase().trim();
-            suggestionsBox.innerHTML = '';
-            if (query.length > 0) {
-                const matches = productsDatabase.filter(product => product.name.toLowerCase().includes(query));
-                if (matches.length > 0) {
-                    suggestionsBox.style.display = 'block';
-                    matches.forEach(match => {
-                        const suggestionDiv = document.createElement('div');
-                        suggestionDiv.className = 'suggestion-item';
-                        suggestionDiv.innerHTML = `<span>${match.name}</span> <span class="suggestion-icon">↖</span>`;
-                        suggestionDiv.addEventListener('click', () => {
-                            searchInput.value = match.name;
-                            suggestionsBox.style.display = 'none';
-                            renderCustomProducts([match]);
-                            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-                        });
-                        suggestionsBox.appendChild(suggestionDiv);
-                    });
-                } else { suggestionsBox.style.display = 'none'; }
-            } else {
-                suggestionsBox.style.display = 'none';
-                renderProducts("all");
-            }
-        });
-
-        searchBtn.addEventListener('click', () => {
-            const query = searchInput.value.toLowerCase().trim();
-            suggestionsBox.style.display = 'none';
-            if(query) {
-                const matches = productsDatabase.filter(product => product.name.toLowerCase().includes(query));
-                renderCustomProducts(matches);
-                document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-            }
-        });
-
         document.querySelectorAll('.cat-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
                 e.target.classList.add('active');
                 renderProducts(e.target.getAttribute('data-filter'));
-                searchInput.value = '';
-                suggestionsBox.style.display = 'none';
             });
         });
 
@@ -492,7 +259,6 @@
                     
                     selectedProduct = { name, price, category };
 
-                    // Setup Dynamic Input Box based on Category
                     const extraGroup = document.getElementById("extra-info-group");
                     const extraLabel = document.getElementById("extra-info-label");
                     const extraInput = document.getElementById("extra-info-input");
@@ -522,30 +288,75 @@
         }
 
         document.getElementById('closeModal').addEventListener('click', () => { modal.style.display = 'none'; });
-        window.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
 
-        // 🌟 Dynamic Buy Now Logic
-        document.getElementById('modalBuyBtn').addEventListener('click', () => {
-            if(selectedProduct) {
-                const extraGroup = document.getElementById("extra-info-group");
-                const extraInput = document.getElementById("extra-info-input");
-                let finalName = selectedProduct.name;
-
-                if (extraGroup.style.display === "block") {
-                    if (extraInput.value.trim() === "") {
-                        alert("দয়া করে বক্সে আপনার প্রয়োজনীয় তথ্যটি লিখুন!");
-                        extraInput.focus();
-                        return;
-                    }
-                    finalName += ` [তথ্য: ${extraInput.value.trim()}]`;
-                }
-
-                let cart = [];
-                cart.push({ name: finalName, price: selectedProduct.price });
-                
-                localStorage.setItem("amarDarazCart", JSON.stringify(cart));
-                window.location.href = "checkout.html";
+        // 🌟 ডিরেক্ট ব্যালেন্স থেকে টাকা কাটার লজিক
+        document.getElementById('modalBuyBtn').addEventListener('click', async () => {
+            if(!selectedProduct) return;
+            
+            // ১. লগইন চেক
+            if(!currentUserEmail) {
+                alert("অর্ডার করতে হলে আপনাকে প্রথমে লগইন করতে হবে!");
+                window.location.href = "login.html";
+                return;
             }
+
+            const extraGroup = document.getElementById("extra-info-group");
+            const extraInput = document.getElementById("extra-info-input");
+            let finalName = selectedProduct.name;
+
+            if (extraGroup.style.display === "block") {
+                if (extraInput.value.trim() === "") {
+                    alert("দয়া করে বক্সে আপনার প্রয়োজনীয় তথ্যটি লিখুন!");
+                    extraInput.focus();
+                    return;
+                }
+                finalName += ` [তথ্য: ${extraInput.value.trim()}]`;
+            }
+
+            const btn = document.getElementById('modalBuyBtn');
+            btn.innerText = "অর্ডার হচ্ছে...";
+            btn.disabled = true;
+
+            const productPrice = parseFloat(selectedProduct.price);
+
+            try {
+                // ২. ব্যালেন্স চেক এবং টাকা কাটা
+                const userRef = doc(db, "users", currentUserEmail);
+                const userSnap = await getDoc(userRef);
+
+                if(userSnap.exists()) {
+                    const currentBalance = userSnap.data().balance || 0;
+
+                    if(currentBalance >= productPrice) {
+                        // ব্যালেন্স মাইনাস করা হলো
+                        const newBalance = currentBalance - productPrice;
+                        await updateDoc(userRef, { balance: newBalance });
+
+                        // ৩. অর্ডার ডাটাবেসে সেভ করা হলো
+                        await addDoc(collection(db, "orders"), {
+                            userEmail: currentUserEmail,
+                            productName: finalName,
+                            price: productPrice,
+                            status: "Pending",
+                            timestamp: new Date().toISOString()
+                        });
+
+                        alert("✅ আপনার অর্ডারটি সফলভাবে প্লেস হয়েছে এবং ব্যালেন্স কেটে নেওয়া হয়েছে!");
+                        modal.style.display = 'none';
+                        
+                        // লাইভ ব্যালেন্স আপডেট
+                        document.getElementById("balance-link").innerText = `💰 Balance: ৳ ${newBalance}`;
+                    } else {
+                        alert("❌ আপনার অ্যাকাউন্টে পর্যাপ্ত ব্যালেন্স নেই! দয়া করে ফান্ড অ্যাড করুন।");
+                    }
+                }
+            } catch(error) {
+                console.error(error);
+                alert("অর্ডার করতে সমস্যা হয়েছে! ইন্টারনেট কানেকশন চেক করুন।");
+            }
+
+            btn.innerText = "Confirm & Buy Now";
+            btn.disabled = false;
         });
     </script>
 </body>
