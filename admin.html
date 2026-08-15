@@ -4,107 +4,195 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>অ্যাডমিন প্যানেল - আমার দারাজ</title>
+    
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f4f6; margin: 0; display: flex; }
+        body { font-family: Arial, sans-serif; margin: 0; background: #f4f7f6; display: flex; height: 100vh; overflow: hidden; }
         
-        /* Sidebar */
-        .sidebar { width: 250px; background: #fff; height: 100vh; padding: 20px 0; box-shadow: 2px 0 10px rgba(0,0,0,0.1); position: fixed; }
-        .sidebar h2 { color: #f85606; text-align: center; margin-bottom: 30px; }
-        .tab-btn { display: block; width: 100%; padding: 15px 20px; border: none; background: none; text-align: left; font-size: 16px; font-weight: bold; color: #555; cursor: pointer; border-left: 4px solid transparent; transition: 0.3s; }
-        .tab-btn:hover { background: #fff3ed; color: #f85606; }
-        .tab-btn.active { background: #fff3ed; color: #f85606; border-left-color: #f85606; }
+        /* 🌟 Sidebar Design */
+        .sidebar { width: 250px; background: #2c3e50; color: white; padding-top: 20px; display: flex; flex-direction: column; }
+        .sidebar h2 { text-align: center; color: #f85606; margin-bottom: 30px; letter-spacing: 1px; }
+        .sidebar button { background: transparent; color: white; border: none; padding: 15px 20px; text-align: left; font-size: 16px; cursor: pointer; transition: 0.3s; width: 100%; border-left: 4px solid transparent; }
+        .sidebar button:hover, .sidebar button.active { background: #34495e; border-left: 4px solid #f85606; }
+        .logout-btn { margin-top: auto; background: #e74c3c !important; text-align: center !important; }
+        .logout-btn:hover { background: #c0392b !important; }
 
-        /* Main Content */
-        .main-content { margin-left: 250px; padding: 30px; width: calc(100% - 250px); box-sizing: border-box; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .header h1 { margin: 0; color: #333; }
-        .back-home { padding: 10px 20px; background: #333; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; transition: 0.3s; }
-        .back-home:hover { background: #f85606; }
+        /* 🌟 Main Content Design */
+        .main-content { flex: 1; display: flex; flex-direction: column; }
+        .header { background: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .content-area { padding: 30px; overflow-y: auto; flex: 1; }
+        
+        .card { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .card h3 { margin-top: 0; color: #333; border-bottom: 2px solid #eee; padding-bottom: 10px; }
 
-        /* Tables */
-        .table-container { background: white; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow: hidden; display: none; }
-        .table-container.active { display: block; animation: fadeIn 0.3s ease-in-out; }
+        /* Form Design */
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; color: #555; font-weight: bold; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; outline: none; }
+        .form-group input:focus { border-color: #f85606; box-shadow: 0 0 5px rgba(248, 86, 6, 0.3); }
+        
+        .submit-btn { background: #f85606; color: white; padding: 12px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold; width: 100%; transition: 0.3s; }
+        .submit-btn:hover { background: #d84a05; }
+        .submit-btn:disabled { background: #ccc; cursor: not-allowed; }
+
+        /* Section Toggling */
+        .section { display: none; animation: fadeIn 0.3s; }
+        .section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; font-size: 14px; }
-        th { background: #f8f9fa; color: #333; font-weight: bold; }
-        tr:hover { background: #fafafa; }
-        
-        /* Badges & Buttons */
-        .status { padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
-        .status.pending { background: #fff3cd; color: #856404; }
-        .status.approved { background: #d4edda; color: #155724; }
+        /* Protection Overlay */
+        #protection-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: white; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .loader { border: 5px solid #f3f3f3; border-top: 5px solid #f85606; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 15px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        .approve-btn { padding: 8px 12px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.3s; font-size: 13px; }
-        .approve-btn:hover { background: #218838; }
-        .reject-btn { padding: 8px 12px; background: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.3s; font-size: 13px; margin-left: 5px;}
-        .reject-btn:hover { background: #c82333; }
+        /* 🌟 Tables */
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #f4f4f6; color: #333; }
+        .action-btn { padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; color: white; transition: 0.3s; }
+        .edit-btn { background-color: #3498db; margin-right: 5px; }
+        .edit-btn:hover { background-color: #2980b9; }
+        .delete-btn { background-color: #e74c3c; }
+        .delete-btn:hover { background-color: #c0392b; }
+        .complete-btn { background-color: #28a745; margin-right: 5px; }
+        .complete-btn:hover { background-color: #218838; }
         
-        .empty-msg { text-align: center; padding: 40px; color: #777; font-size: 16px; }
+        .status-badge { padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; }
+        .status-pending { background-color: #fff3cd; color: #856404; }
+        .status-completed { background-color: #d4edda; color: #155724; }
     </style>
 </head>
 <body>
 
+    <div id="protection-overlay">
+        <div class="loader"></div>
+        <h3 style="color: #555;">অ্যাডমিন চেক করা হচ্ছে...</h3>
+    </div>
+
     <!-- Sidebar -->
     <div class="sidebar">
-        <h2>⚙️ Admin Panel</h2>
-        <button class="tab-btn active" onclick="switchTab('deposits')">💰 ডিপোজিট রিকোয়েস্ট</button>
-        <button class="tab-btn" onclick="switchTab('orders')">🛒 পেন্ডিং অর্ডার</button>
+        <h2>Admin Panel</h2>
+        <button class="nav-btn active" onclick="showSection('dashboard')">📊 Dashboard</button>
+        <button class="nav-btn" onclick="showSection('manage-products')">📦 Manage Products</button>
+        <button class="nav-btn" onclick="showSection('orders')">🛒 Manage Orders</button>
+        <button class="nav-btn" onclick="showSection('deposits')">💳 Deposit Requests</button> <!-- নতুন বাটন -->
+        <button class="nav-btn" onclick="showSection('users')">💰 Add Balance (Manual)</button>
+        
+        <button class="logout-btn" id="admin-logout">🚪 Logout</button>
     </div>
 
     <!-- Main Content -->
     <div class="main-content">
         <div class="header">
-            <h1 id="page-title">ডিপোজিট রিকোয়েস্ট</h1>
-            <a href="index.html" class="back-home">হোম পেজ</a>
+            <h2>আমার দারাজ কন্ট্রোল রুম</h2>
+            <div id="admin-email-display" style="font-weight: bold; color: #f85606;">লোড হচ্ছে...</div>
         </div>
 
-        <!-- Deposits Table -->
-        <div id="deposits-tab" class="table-container active">
-            <table>
-                <thead>
-                    <tr>
-                        <th>ইউজার ইমেইল</th>
-                        <th>মেথড</th>
-                        <th>সেন্ডার নাম্বার</th>
-                        <th>TrxID</th>
-                        <th>টাকার পরিমাণ</th>
-                        <th>স্ট্যাটাস</th>
-                        <th>অ্যাকশন</th>
-                    </tr>
-                </thead>
-                <tbody id="deposits-list">
-                    <tr><td colspan="7" class="empty-msg">লোড হচ্ছে...</td></tr>
-                </tbody>
-            </table>
-        </div>
+        <div class="content-area">
+            
+            <!-- Dashboard Section -->
+            <div id="dashboard" class="section active">
+                <div class="card">
+                    <h3>স্বাগতম, বস! 🚀</h3>
+                    <p>এখান থেকে আপনি আপনার ওয়েবসাইটের সবকিছু কন্ট্রোল করতে পারবেন। বামপাশের মেনু থেকে অপশন সিলেক্ট করুন।</p>
+                </div>
+                <div style="display: flex; gap: 20px;">
+                    <div class="card" style="flex: 1; text-align: center;">
+                        <h1 style="color: #2ecc71; margin: 0; font-size: 40px;" id="dash-orders">0</h1>
+                        <p style="color: #777; margin-top: 5px;">মোট অর্ডার</p>
+                    </div>
+                    <div class="card" style="flex: 1; text-align: center;">
+                        <h1 style="color: #3498db; margin: 0; font-size: 40px;" id="dash-products">0</h1>
+                        <p style="color: #777; margin-top: 5px;">মোট প্রোডাক্ট</p>
+                    </div>
+                </div>
+            </div>
 
-        <!-- Orders Table (Future use) -->
-        <div id="orders-tab" class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>কাস্টমার নাম</th>
-                        <th>মেথড</th>
-                        <th>TrxID</th>
-                        <th>টাকার পরিমাণ</th>
-                        <th>স্ট্যাটাস</th>
-                        <th>অ্যাকশন</th>
-                    </tr>
-                </thead>
-                <tbody id="orders-list">
-                    <tr><td colspan="6" class="empty-msg">লোড হচ্ছে...</td></tr>
-                </tbody>
-            </table>
+            <!-- Manage Products Section -->
+            <div id="manage-products" class="section">
+                <div class="card">
+                    <h3 id="form-title">নতুন প্রোডাক্ট যোগ করুন</h3>
+                    <form id="add-product-form">
+                        <div class="form-group">
+                            <label>প্রোডাক্টের নাম:</label>
+                            <input type="text" id="p-name" placeholder="যেমন: Free Fire 115 Diamonds" required>
+                        </div>
+                        <div class="form-group">
+                            <label>দাম (৳):</label>
+                            <input type="number" id="p-price" placeholder="যেমন: 85" required>
+                        </div>
+                        <div class="form-group">
+                            <label>ছবির লিংক (URL):</label>
+                            <input type="text" id="p-img" placeholder="https://example.com/image.jpg" required>
+                        </div>
+                        <div class="form-group">
+                            <label>ক্যাটাগরি:</label>
+                            <select id="p-category">
+                                <option value="topup">Topup</option>
+                                <option value="subscription">Subscription</option>
+                                <option value="card">Gift Card</option>
+                                <option value="panel">Panel / SMM</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="submit-btn" id="product-submit-btn">প্রোডাক্ট সেভ করুন</button>
+                        <button type="button" class="submit-btn" id="cancel-edit-btn" style="background:#7f8c8d; margin-top:10px; display:none;" onclick="cancelEdit()">এডিট বাতিল করুন</button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h3>আপনার সকল প্রোডাক্ট</h3>
+                    <div id="product-list-container"><p>লোড হচ্ছে...</p></div>
+                </div>
+            </div>
+
+            <!-- 🌟 Manage Orders Section -->
+            <div id="orders" class="section">
+                <div class="card">
+                    <h3>গ্রাহকদের অর্ডারসমূহ</h3>
+                    <button class="submit-btn" style="width: auto; margin-bottom: 15px; background: #3498db;" onclick="loadOrders()">🔄 তালিকা রিফ্রেশ করুন</button>
+                    <div id="order-list-container">
+                        <p>লোড হচ্ছে...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 🌟 Deposit Requests Section (নতুন যোগ করা হয়েছে) -->
+            <div id="deposits" class="section">
+                <div class="card">
+                    <h3>গ্রাহকদের ডিপোজিট রিকোয়েস্ট</h3>
+                    <button class="submit-btn" style="width: auto; margin-bottom: 15px; background: #3498db;" onclick="loadDeposits()">🔄 তালিকা রিফ্রেশ করুন</button>
+                    <div id="deposit-list-container">
+                        <p>লোড হচ্ছে...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Balance Section -->
+            <div id="users" class="section">
+                <div class="card">
+                    <h3>ইউজার অ্যাকাউন্টে টাকা অ্যাড করুন (ম্যানুয়ালি)</h3>
+                    <form id="add-balance-form">
+                        <div class="form-group">
+                            <label>কাস্টমারের ইমেইল:</label>
+                            <input type="email" id="u-email" placeholder="যেমন: customer@gmail.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label>টাকার পরিমাণ (৳):</label>
+                            <input type="number" id="u-amount" placeholder="যেমন: 500" required>
+                        </div>
+                        <button type="submit" class="submit-btn" id="balance-btn">টাকা পাঠিয়ে দিন</button>
+                    </form>
+                    <div id="balance-msg" style="margin-top: 15px; font-weight: bold; display: none; padding: 10px; border-radius: 4px;"></div>
+                </div>
+            </div>
+
         </div>
     </div>
 
-    <!-- Firebase Setup & Logic -->
+    <!-- Firebase & JavaScript -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-        import { getFirestore, collection, getDocs, doc, updateDoc, getDoc, setDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, setDoc, getDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBZNrrK7MLGIZoPakMgj2yFEX7iCVYYhlg",
@@ -117,157 +205,317 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        const db = getFirestore(app);
+        const db = getFirestore(app); 
 
-        // অ্যাডমিন ইমেইল চেক (আপনার অ্যাডমিন ইমেইলটি এখানে দিন)
         const ADMIN_EMAIL = "sakibbinsalam.admin@gmail.com"; 
+        
+        let editingProductId = null; 
 
         onAuthStateChanged(auth, (user) => {
+            const overlay = document.getElementById("protection-overlay");
             if (user && user.email === ADMIN_EMAIL) {
-                loadDeposits();
-                loadOrders();
+                overlay.style.display = "none";
+                document.getElementById("admin-email-display").innerText = user.email;
+                
+                loadProducts();
+                loadOrders(); 
+                loadDeposits(); // 🌟 লগইন করলে ডিপোজিটও লোড হবে
             } else {
-                alert("আপনার অ্যাডমিন প্যানেলে ঢোকার অনুমতি নেই!");
+                alert("দুঃখিত! এই পেজে ঢোকার পারমিশন আপনার নেই।");
                 window.location.href = "index.html";
             }
         });
 
-        // Tab Switcher
-        window.switchTab = function(tabName) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.table-container').forEach(tab => tab.classList.remove('active'));
-            
-            if(tabName === 'deposits') {
-                document.querySelectorAll('.tab-btn')[0].classList.add('active');
-                document.getElementById('deposits-tab').classList.add('active');
-                document.getElementById('page-title').innerText = "ডিপোজিট রিকোয়েস্ট";
-            } else {
-                document.querySelectorAll('.tab-btn')[1].classList.add('active');
-                document.getElementById('orders-tab').classList.add('active');
-                document.getElementById('page-title').innerText = "পেন্ডিং অর্ডার";
-            }
+        document.getElementById('admin-logout').addEventListener('click', () => {
+            signOut(auth).then(() => { window.location.href = "login.html"; });
+        });
+
+        window.showSection = function(sectionId) {
+            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
         };
 
-        // Load Deposits
-        async function loadDeposits() {
-            const depositsList = document.getElementById("deposits-list");
+        /* ================= PRODUCTS LOGIC ================= */
+        async function loadProducts() {
+            const listDiv = document.getElementById("product-list-container");
             try {
-                // Fetch all deposits
-                const q = query(collection(db, "deposits"), orderBy("timestamp", "desc"));
-                const querySnapshot = await getDocs(q);
-                
-                let html = "";
-                querySnapshot.forEach((docSnap) => {
-                    const data = docSnap.data();
-                    if(data.status === "Pending") {
-                        html += `
-                            <tr>
-                                <td>${data.userEmail}</td>
-                                <td><span style="font-weight:bold; color:#007bff;">${data.paymentMethod}</span></td>
-                                <td>${data.senderNumber}</td>
-                                <td style="font-family:monospace; color:#e74c3c;">${data.trxId}</td>
-                                <td style="font-weight:bold; color:#28a745;">৳ ${data.amount}</td>
-                                <td><span class="status pending">Pending</span></td>
-                                <td>
-                                    <button class="approve-btn" onclick="approveDeposit('${docSnap.id}', '${data.userEmail}', ${data.amount})">✔ Approve (Add Fund)</button>
-                                    <button class="reject-btn" onclick="rejectDeposit('${docSnap.id}')">✖ Reject</button>
-                                </td>
-                            </tr>
-                        `;
-                    }
-                });
+                const querySnapshot = await getDocs(collection(db, "products"));
+                document.getElementById("dash-products").innerText = querySnapshot.size; 
 
-                if(html === "") depositsList.innerHTML = "<tr><td colspan='7' class='empty-msg'>কোনো পেন্ডিং ডিপোজিট রিকোয়েস্ট নেই!</td></tr>";
-                else depositsList.innerHTML = html;
-
-            } catch (error) {
-                console.error("Error loading deposits: ", error);
-                depositsList.innerHTML = "<tr><td colspan='7' class='empty-msg' style='color:red;'>ডাটা লোড করতে সমস্যা হচ্ছে!</td></tr>";
-            }
-        }
-
-        // Load Orders
-        async function loadOrders() {
-            const ordersList = document.getElementById("orders-list");
-            try {
-                const q = query(collection(db, "orders"), orderBy("timestamp", "desc"));
-                const querySnapshot = await getDocs(q);
-                
-                let html = "";
-                querySnapshot.forEach((docSnap) => {
-                    const data = docSnap.data();
-                    if(data.status === "Pending") {
-                        html += `
-                            <tr>
-                                <td>${data.customerName}<br><small>${data.userEmail}</small></td>
-                                <td>${data.paymentMethod}</td>
-                                <td>${data.trxId}</td>
-                                <td style="font-weight:bold; color:#f85606;">৳ ${data.totalAmount}</td>
-                                <td><span class="status pending">Pending</span></td>
-                                <td>
-                                    <button class="approve-btn" onclick="completeOrder('${docSnap.id}')">✔ Complete</button>
-                                </td>
-                            </tr>
-                        `;
-                    }
-                });
-
-                if(html === "") ordersList.innerHTML = "<tr><td colspan='6' class='empty-msg'>কোনো পেন্ডিং অর্ডার নেই!</td></tr>";
-                else ordersList.innerHTML = html;
-
-            } catch (error) {
-                console.error("Error loading orders: ", error);
-            }
-        }
-
-        // Approve Deposit & Add Balance Logic
-        window.approveDeposit = async function(docId, userEmail, amount) {
-            if(!confirm(`আপনি কি নিশ্চিত যে পেমেন্ট পেয়েছেন এবং এই ইউজারের অ্যাকাউন্টে ৳${amount} যোগ করতে চান?`)) return;
-
-            try {
-                // 1. Update deposit status to Approved
-                await updateDoc(doc(db, "deposits", docId), { status: "Approved" });
-
-                // 2. Fetch User's current balance
-                const userRef = doc(db, "users", userEmail);
-                const userSnap = await getDoc(userRef);
-
-                let currentBalance = 0;
-                if(userSnap.exists()) {
-                    currentBalance = userSnap.data().balance || 0;
+                if (querySnapshot.empty) {
+                    listDiv.innerHTML = "<p style='color:#777;'>এখনও কোনো প্রোডাক্ট যোগ করা হয়নি।</p>";
+                    return;
                 }
 
-                // 3. Add new amount to current balance and save
-                const newBalance = currentBalance + amount;
-                await setDoc(userRef, { balance: newBalance }, { merge: true });
+                let html = `<table><tr><th>ছবি</th><th>নাম</th><th>ক্যাটাগরি</th><th>দাম</th><th>অ্যাকশন</th></tr>`;
+                querySnapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    const id = docSnap.id;
+                    const safeName = data.name.replace(/'/g, "\\'");
+                    html += `
+                    <tr>
+                        <td><img src="${data.img}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;"></td>
+                        <td>${data.name}</td>
+                        <td style="text-transform: capitalize;">${data.category}</td>
+                        <td>৳ ${data.price}</td>
+                        <td>
+                            <button class="action-btn edit-btn" onclick="editProduct('${id}', '${safeName}', '${data.price}', '${data.img}', '${data.category}')">Edit</button>
+                            <button class="action-btn delete-btn" onclick="deleteProduct('${id}')">Delete</button>
+                        </td>
+                    </tr>`;
+                });
+                html += `</table>`;
+                listDiv.innerHTML = html;
+            } catch (error) {
+                listDiv.innerHTML = "<p style='color:red;'>প্রোডাক্ট লোড করতে সমস্যা হয়েছে!</p>";
+            }
+        }
 
-                alert("✅ ব্যালেন্স সফলভাবে অ্যাড করা হয়েছে!");
-                loadDeposits(); // Reload table
-            } catch(error) {
-                console.error("Error approving deposit: ", error);
-                alert("সমস্যা হয়েছে! আবার চেষ্টা করুন।");
+        document.getElementById("add-product-form").addEventListener("submit", async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById("product-submit-btn");
+            btn.innerText = "সেভ হচ্ছে...";
+            btn.disabled = true;
+
+            const name = document.getElementById("p-name").value.trim();
+            const price = document.getElementById("p-price").value;
+            const img = document.getElementById("p-img").value.trim();
+            const category = document.getElementById("p-category").value;
+
+            try {
+                if (editingProductId) {
+                    await updateDoc(doc(db, "products", editingProductId), { name, price, img, category });
+                    alert("✔ প্রোডাক্ট সফলভাবে আপডেট হয়েছে!");
+                    cancelEdit();
+                } else {
+                    await addDoc(collection(db, "products"), { name, price, img, category });
+                    alert("✔ নতুন প্রোডাক্ট যোগ করা হয়েছে!");
+                    document.getElementById("add-product-form").reset();
+                }
+                loadProducts(); 
+            } catch (error) { alert("❌ ডাটাবেস পারমিশন চেক করুন।"); }
+            
+            btn.innerText = editingProductId ? "প্রোডাক্ট আপডেট করুন" : "প্রোডাক্ট সেভ করুন";
+            btn.disabled = false;
+        });
+
+        window.editProduct = function(id, name, price, img, category) {
+            editingProductId = id;
+            document.getElementById("p-name").value = name;
+            document.getElementById("p-price").value = price;
+            document.getElementById("p-img").value = img;
+            document.getElementById("p-category").value = category;
+            document.getElementById("form-title").innerText = "প্রোডাক্ট আপডেট করুন";
+            document.getElementById("product-submit-btn").innerText = "প্রোডাক্ট আপডেট করুন";
+            document.getElementById("cancel-edit-btn").style.display = "block";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        window.cancelEdit = function() {
+            editingProductId = null;
+            document.getElementById("add-product-form").reset();
+            document.getElementById("form-title").innerText = "নতুন প্রোডাক্ট যোগ করুন";
+            document.getElementById("product-submit-btn").innerText = "প্রোডাক্ট সেভ করুন";
+            document.getElementById("cancel-edit-btn").style.display = "none";
+        };
+
+        window.deleteProduct = async function(id) {
+            if (confirm("আপনি কি নিশ্চিত যে এই প্রোডাক্টটি ডিলিট করতে চান?")) {
+                await deleteDoc(doc(db, "products", id));
+                loadProducts();
             }
         };
 
-        // Reject Deposit
-        window.rejectDeposit = async function(docId) {
-            if(!confirm("আপনি কি এই রিকোয়েস্টটি বাতিল করতে চান?")) return;
+        /* ================= ORDERS LOGIC ================= */
+        window.loadOrders = async function() {
+            const listDiv = document.getElementById("order-list-container");
             try {
-                await updateDoc(doc(db, "deposits", docId), { status: "Rejected" });
-                alert("রিকোয়েস্ট বাতিল করা হয়েছে।");
-                loadDeposits();
-            } catch(error) { console.error(error); }
+                const querySnapshot = await getDocs(collection(db, "orders"));
+                document.getElementById("dash-orders").innerText = querySnapshot.size;
+
+                if (querySnapshot.empty) {
+                    listDiv.innerHTML = "<p style='color:#777; padding: 20px 0;'>এখনও কোনো অর্ডার আসেনি।</p>";
+                    return;
+                }
+
+                let html = `<table>
+                    <tr>
+                        <th>কাস্টমার ইমেইল</th>
+                        <th>প্রোডাক্ট</th>
+                        <th>দাম</th>
+                        <th>স্ট্যাটাস</th>
+                        <th>অ্যাকশন</th>
+                    </tr>`;
+                
+                querySnapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    const id = docSnap.id;
+                    const isCompleted = data.status === 'Completed';
+                    
+                    html += `
+                    <tr>
+                        <td>${data.userEmail || "Unknown"}</td>
+                        <td>${data.productName || "Product"}</td>
+                        <td>৳ ${data.price || "0"}</td>
+                        <td>
+                            <span class="status-badge ${isCompleted ? 'status-completed' : 'status-pending'}">
+                                ${isCompleted ? 'কমপ্লিট' : 'পেন্ডিং'}
+                            </span>
+                        </td>
+                        <td>
+                            ${!isCompleted 
+                                ? `<button class="action-btn complete-btn" onclick="completeOrder('${id}')">✔ Complete</button>` 
+                                : `<span style="color: #28a745; font-weight: bold;">✔ Done</span>`
+                            }
+                        </td>
+                    </tr>`;
+                });
+                html += `</table>`;
+                listDiv.innerHTML = html;
+            } catch (error) {
+                listDiv.innerHTML = "<p style='color:red;'>অর্ডার লোড করতে সমস্যা হয়েছে!</p>";
+                console.error(error);
+            }
         };
 
-        // Complete Order
-        window.completeOrder = async function(docId) {
-            if(!confirm("অর্ডারটি কি ডেলিভারি সম্পন্ন হয়েছে?")) return;
-            try {
-                await updateDoc(doc(db, "orders", docId), { status: "Completed" });
-                alert("অর্ডার কমপ্লিট করা হয়েছে।");
-                loadOrders();
-            } catch(error) { console.error(error); }
+        window.completeOrder = async function(orderId) {
+            if(confirm("আপনি কি নিশ্চিত যে এই অর্ডারটি কমপ্লিট হয়ে গেছে? (ইউজার তার প্রোফাইলে এটি কমপ্লিট দেখতে পাবে)")) {
+                try {
+                    await updateDoc(doc(db, "orders", orderId), { status: "Completed" });
+                    alert("✔ অর্ডারটি সফলভাবে কমপ্লিট করা হয়েছে!");
+                    loadOrders(); // লিস্ট রিফ্রেশ
+                } catch (error) {
+                    alert("❌ অর্ডার কমপ্লিট করতে সমস্যা হয়েছে!");
+                    console.error(error);
+                }
+            }
         };
+
+        /* ================= DEPOSITS LOGIC (নতুন যোগ করা হয়েছে) ================= */
+        window.loadDeposits = async function() {
+            const listDiv = document.getElementById("deposit-list-container");
+            try {
+                const querySnapshot = await getDocs(collection(db, "deposits"));
+                
+                let html = `<table>
+                    <tr>
+                        <th>ইউজার ইমেইল</th>
+                        <th>মেথড</th>
+                        <th>সেন্ডার নাম্বার</th>
+                        <th>TrxID</th>
+                        <th>পরিমাণ</th>
+                        <th>অ্যাকশন</th>
+                    </tr>`;
+                
+                let count = 0;
+                querySnapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    const id = docSnap.id;
+                    
+                    if(data.status === "Pending") {
+                        count++;
+                        html += `
+                        <tr>
+                            <td>${data.userEmail}</td>
+                            <td style="color:#007bff; font-weight:bold;">${data.paymentMethod}</td>
+                            <td>${data.senderNumber}</td>
+                            <td style="font-family:monospace; color:#e74c3c; font-weight:bold;">${data.trxId}</td>
+                            <td style="font-weight:bold; color:#28a745;">৳ ${data.amount}</td>
+                            <td>
+                                <button class="action-btn complete-btn" onclick="approveDeposit('${id}', '${data.userEmail}', ${data.amount})">✔ Approve</button>
+                                <button class="action-btn delete-btn" onclick="rejectDeposit('${id}')">✖ Reject</button>
+                            </td>
+                        </tr>`;
+                    }
+                });
+                html += `</table>`;
+
+                if (count === 0) {
+                    listDiv.innerHTML = "<p style='color:#777; padding: 20px 0;'>কোনো পেন্ডিং ডিপোজিট রিকোয়েস্ট নেই।</p>";
+                } else {
+                    listDiv.innerHTML = html;
+                }
+            } catch (error) {
+                listDiv.innerHTML = "<p style='color:red;'>ডিপোজিট রিকোয়েস্ট লোড করতে সমস্যা হয়েছে!</p>";
+                console.error(error);
+            }
+        };
+
+        window.approveDeposit = async function(docId, userEmail, amount) {
+            if(!confirm(`আপনি কি নিশ্চিত যে ৳${amount} রিসিভ করেছেন এবং ইউজারের ব্যালেন্সে অ্যাড করবেন?`)) return;
+            
+            try {
+                // ১. স্ট্যাটাস আপডেট
+                await updateDoc(doc(db, "deposits", docId), { status: "Approved" });
+                
+                // ২. ইউজারের আগের ব্যালেন্স নিয়ে আসা এবং নতুন টাকা যোগ করা
+                const userRef = doc(db, "users", userEmail);
+                const userSnap = await getDoc(userRef);
+                
+                let currentBalance = 0;
+                if(userSnap.exists()) { 
+                    currentBalance = userSnap.data().balance || 0; 
+                }
+                const newBalance = currentBalance + amount;
+                
+                // ৩. ব্যালেন্স সেভ করা
+                await setDoc(userRef, { balance: newBalance }, { merge: true });
+                
+                alert("✔ ইউজারের অ্যাকাউন্টে সফলভাবে টাকা যোগ করা হয়েছে!");
+                loadDeposits(); // লিস্ট রিফ্রেশ
+            } catch (error) {
+                alert("❌ সমস্যা হয়েছে! আবার চেষ্টা করুন।");
+                console.error(error);
+            }
+        };
+
+        window.rejectDeposit = async function(docId) {
+            if(!confirm("আপনি কি এই রিকোয়েস্টটি বাতিল করতে চান?")) return;
+            try {
+                await updateDoc(doc(db, "deposits", docId), { status: "Rejected" });
+                alert("❌ রিকোয়েস্ট বাতিল করা হয়েছে!");
+                loadDeposits(); // লিস্ট রিফ্রেশ
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        /* ================= MANUAL BALANCE LOGIC ================= */
+        document.getElementById("add-balance-form").addEventListener("submit", async function(e) {
+            e.preventDefault();
+            const email = document.getElementById("u-email").value.trim().toLowerCase();
+            const amount = parseFloat(document.getElementById("u-amount").value);
+            const btn = document.getElementById("balance-btn");
+            const msgBox = document.getElementById("balance-msg");
+
+            btn.innerText = "টাকা পাঠানো হচ্ছে...";
+            btn.disabled = true;
+
+            try {
+                const userRef = doc(db, "users", email);
+                const docSnap = await getDoc(userRef);
+                let newBalance = amount;
+                if (docSnap.exists()) { newBalance = (docSnap.data().balance || 0) + amount; }
+                await setDoc(userRef, { balance: newBalance }, { merge: true });
+
+                msgBox.innerText = `✔ সফল! ${email} আইডিতে ৳${amount} যোগ করা হয়েছে।`;
+                msgBox.style.color = "#28a745";
+                msgBox.style.backgroundColor = "#e8f5e9";
+                msgBox.style.border = "1px solid #28a745";
+                msgBox.style.display = "block";
+                document.getElementById("add-balance-form").reset();
+            } catch (error) {
+                msgBox.innerText = "❌ টাকা পাঠাতে সমস্যা হয়েছে!";
+                msgBox.style.color = "#e74c3c";
+                msgBox.style.backgroundColor = "#fdecep";
+                msgBox.style.border = "1px solid #e74c3c";
+                msgBox.style.display = "block";
+            }
+            btn.innerText = "টাকা পাঠিয়ে দিন";
+            btn.disabled = false;
+        });
     </script>
 </body>
 </html>
