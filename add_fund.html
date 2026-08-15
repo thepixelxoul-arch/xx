@@ -15,13 +15,13 @@
         label { font-weight: bold; font-size: 14px; color: #333; display: block; margin-top: 15px; margin-bottom: 5px; }
         input[type="number"], input[type="text"] { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 15px; }
         
-        /* Payment Methods - লোগো বড় করা হয়েছে */
-        .payment-methods { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; justify-content: center;}
+        /* Payment Methods - লোগো স্মুথ ও ক্লিয়ার করা হয়েছে */
+        .payment-methods { display: flex; gap: 12px; margin-top: 15px; flex-wrap: wrap; justify-content: center;}
         .pay-btn { 
             flex: 1; 
             min-width: 80px;
-            max-width: 120px; 
-            height: 65px; /* বক্সের সাইজ একটু বড় করা হয়েছে */
+            max-width: 110px; 
+            height: 60px; 
             border: 2px solid #eaeaea; 
             background: white; 
             cursor: pointer; 
@@ -30,15 +30,12 @@
             justify-content: center; 
             align-items: center; 
             transition: 0.3s; 
-            padding: 4px; /* ভেতরের ফাঁকা জায়গা কমানো হয়েছে */
+            padding: 8px 12px; /* লোগো যেন বক্সের সাথে লেগে না যায় */
         }
         .pay-btn img { 
+            width: 100%; 
             height: 100%; 
-            max-height: 50px; /* লোগোর সাইজ লিমিট বাড়ানো হয়েছে */
-            max-width: 100%; 
-            object-fit: contain; 
-            image-rendering: -webkit-optimize-contrast; 
-            image-rendering: crisp-edges;
+            object-fit: contain; /* ছবিকে না ফাটিয়ে বক্সে মানানসই করবে */
         }
         
         .pay-btn:hover { border-color: #ccc; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
