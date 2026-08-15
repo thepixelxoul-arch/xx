@@ -59,7 +59,7 @@
     <div class="profile-container">
         <div class="profile-card">
             
-            <!-- 🌟 Tabs -->
+            <!-- 🌟 Tabs (শুধু ২টি রাখা হলো) -->
             <div class="profile-tabs">
                 <button class="tab-btn active" onclick="switchTab('info')">👤 Profile</button>
                 <button class="tab-btn" onclick="switchTab('deposits')">💳 Deposit History</button>
@@ -106,8 +106,12 @@
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 document.getElementById("user-email").innerText = user.email;
+                
+                // 🌟 FIX: Only Admin sees Admin Panel in Profile
                 if (user.email === "sakibbinsalam.admin@gmail.com") {
                     document.getElementById("admin-panel-btn").style.display = "block";
+                } else {
+                    document.getElementById("admin-panel-btn").style.display = "none";
                 }
 
                 try {
