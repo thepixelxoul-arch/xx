@@ -44,7 +44,6 @@
         .close-btn:hover { color: #f85606; }
         .modal-img { width: 100%; max-height: 200px; object-fit: cover; margin-bottom: 10px; border-radius: 5px; }
         .modal-price { color: #f85606; font-size: 20px; font-weight: bold; margin: 5px 0 15px 0; }
-        /* 🌟 Description style */
         .modal-desc { font-size: 13px; color: #666; margin-bottom: 15px; text-align: left; background: #fafafa; padding: 10px; border-radius: 4px; border: 1px dashed #ddd; display: none; line-height: 1.4;}
         
         .dynamic-input-box { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; outline: none; margin-bottom: 15px; }
@@ -138,7 +137,6 @@
 </head>
 <body>
 
-    <!-- 🌟 Toast Notification Div -->
     <div id="toast" class="toast-notification">Notification text</div>
 
     <!-- Navigation Bar -->
@@ -175,11 +173,9 @@
                 </div>
             </div>
 
-            <!-- Balance & Order History Link -->
             <a href="add_fund.html" id="balance-link" style="display: none;">💰 Balance: ৳ 0</a>
             <a href="order_history.html">🛒 Order History</a>
             
-            <!-- Profile with Add Fund Option -->
             <div class="profile-menu" id="profile-menu-container">
                 <a href="login.html" id="auth-link">Login / Signup</a>
                 
@@ -255,19 +251,18 @@
         </div>
     </footer>
 
-    <!-- 🌟 Dynamic Quick View Modal -->
+    <!-- Dynamic Quick View Modal -->
     <div class="modal-overlay" id="quickViewModal">
         <div class="modal-content">
             <span class="close-btn" id="closeModal">&times;</span>
             <img src="" id="modalImg" class="modal-img">
             <h3 id="modalTitle">Product Name</h3>
             
-            <!-- 🌟 Description Area Added Here -->
+            <!-- Description Area Added Here -->
             <div id="modalDesc" class="modal-desc"></div>
 
             <div class="modal-price" id="modalPrice">৳ 0</div>
             
-            <!-- Dynamic Input Group -->
             <div id="extra-info-group" style="display: none; text-align: left;">
                 <label id="extra-info-label" style="font-size: 13px; color: #555; font-weight: bold; margin-bottom: 5px; display: block;">তথ্য দিন:</label>
                 <input type="text" id="extra-info-input" class="dynamic-input-box" required>
@@ -359,8 +354,11 @@
                     balanceLink.innerText = `💰 Balance: ৳ ${currentBalance}`;
                 } catch(e) { console.error("Balance fetch error:", e); }
 
+                // 🌟 FIX: Only Admin sees Admin Panel
                 if(user.email === "sakibbinsalam.admin@gmail.com") {
                     adminMenuLink.style.display = "block";
+                } else {
+                    adminMenuLink.style.display = "none";
                 }
 
                 authLink.onclick = function(e) {
@@ -416,7 +414,6 @@
                 });
                 renderProducts("all"); 
             } catch (error) {
-                console.error("Error fetching products: ", error);
                 productGrid.innerHTML = "<p style='text-align:center; width:100%; color:red;'>প্রোডাক্ট লোড করতে সমস্যা হচ্ছে! আপনার ইন্টারনেট কানেকশন চেক করুন।</p>";
             }
         }
@@ -455,14 +452,12 @@
             }
         }
 
-        // 🌟 Added data-desc to the rendered HTML
         function renderCustomProducts(productsArray) {
             let htmlContent = "";
             if(productsArray.length === 0) {
                 htmlContent = "<p style='text-align:center; width:100%; color:#777; margin-top:30px;'>দুঃখিত, কোনো প্রোডাক্ট পাওয়া যায়নি!</p>";
             } else {
                 productsArray.forEach((product) => {
-                    // Safe encoding for description so it doesn't break HTML attributes
                     const safeDesc = product.desc ? product.desc.replace(/"/g, '&quot;').replace(/'/g, '&#39;') : "";
                     htmlContent += `
                         <div class="product-card" data-category="${product.category}" data-desc="${safeDesc}">
@@ -545,14 +540,12 @@
                     const price = productCard.querySelector(".product-price").innerText.replace("৳ ", "");
                     const img = productCard.querySelector("img").src;
                     const category = productCard.getAttribute("data-category");
-                    // 🌟 Extract Description
                     const desc = productCard.getAttribute("data-desc");
                     
                     document.getElementById("modalImg").src = img;
                     document.getElementById("modalTitle").innerText = name;
                     document.getElementById("modalPrice").innerText = `৳ ${price}`;
                     
-                    // 🌟 Display Description if available
                     const modalDescBox = document.getElementById("modalDesc");
                     if(desc && desc.trim() !== "") {
                         modalDescBox.innerText = desc;
