@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>অ্যাডমিন প্যানেল - আমার দারাজ</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f6; margin: 0; display: flex; }
+        
+        /* Sidebar */
+        .sidebar { width: 250px; background: #fff; height: 100vh; padding: 20px 0; box-shadow: 2px 0 10px rgba(0,0,0,0.1); position: fixed; }
+        .sidebar h2 { color: #f85606; text-align: center; margin-bottom: 30px; }
+        .tab-btn { display: block; width: 100%; padding: 15px 20px; border: none; background: none; text-align: left; font-size: 16px; font-weight: bold; color: #555; cursor: pointer; border-left: 4px solid transparent; transition: 0.3s; }
+        .tab-btn:hover { background: #fff3ed; color: #f85606; }
+        .tab-btn.active { background: #fff3ed; color: #f85606; border-left-color: #f85606; }
+
+        /* Main Content */
+        .main-content { margin-left: 250px; padding: 30px; width: calc(100% - 250px); box-sizing: border-box; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .header h1 { margin: 0; color: #333; }
+        .back-home { padding: 10px 20px; background: #333; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; transition: 0.3s; }
+        .back-home:hover { background: #f85606; }
+
+        /* Tables */
+        .table-container { background: white; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow: hidden; display: none; }
+        .table-container.active { display: block; animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; font-size: 14px; }
+        th { background: #f8f9fa; color: #333; font-weight: bold; }
+        tr:hover { background: #fafafa; }
+        
+        /* Badges & Buttons */
+        .status { padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+        .status.pending { background: #fff3cd; color: #856404; }
+        .status.approved { background: #d4edda; color: #155724; }
+
+        .approve-btn { padding: 8px 12px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.3s; font-size: 13px; }
+        .approve-btn:hover { background: #218838; }
+        .reject-btn { padding: 8px 12px; background: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.3s; font-size: 13px; margin-left: 5px;}
+        .reject-btn:hover { background: #c82333; }
+        
+        .empty-msg { text-align: center; padding: 40px; color: #777; font-size: 16px; }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>⚙️ Admin Panel</h2>
+        <button class="tab-btn active" onclick="switchTab('deposits')">💰 ডিপোজিট রিকোয়েস্ট</button>
+        <button class="tab-btn" onclick="switchTab('orders')">🛒 পেন্ডিং অর্ডার</button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <h1 id="page-title">ডিপোজিট রিকোয়েস্ট</h1>
+            <a href="index.html" class="back-home">হোম পেজ</a>
+        </div>
+
+        <!-- Deposits Table -->
+        <div id="deposits-tab" class="table-container active">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ইউজার ইমেইল</th>
+                        <th>মেথড</th>
+                        <th>সেন্ডার নাম্বার</th>
+                        <th>TrxID</th>
+                        <th>টাকার পরিমাণ</th>
+                        <th>স্ট্যাটাস</th>
+                        <th>অ্যাকশন</th>
+                    </tr>
+                </thead>
+                <tbody id="deposits-list">
+                    <tr><td colspan="7" class="empty-msg">লোড হচ্ছে...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Orders Table (Future use) -->
+        <div id="orders-tab" class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>কাস্টমার নাম</th>
+                        <th>মেথড</th>
+                        <th>TrxID</th>
+                        <th>টাকার পরিমাণ</th>
+                        <th>স্ট্যাটাস</th>
+                        <th>অ্যাকশন</th>
+                    </tr>
+                </thead>
+                <tbody id="orders-list">
+                    <tr><td colspan="6" class="empty-msg">লোড হচ্ছে...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Firebase Setup & Logic -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+        import { getFirestore, collection, getDocs, doc, updateDoc, getDoc, setDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBZNrrK7MLGIZoPakMgj2yFEX7iCVYYhlg",
+            authDomain: "amrdraz-d0682.firebaseapp.com",
+            projectId: "amrdraz-d0682",
+            storageBucket: "amrdraz-d0682.firebasestorage.app",
+            messagingSenderId: "690289096145",
+            appId: "1:690289096145:web:dbebaa4e60203a7922dcf0"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // অ্যাডমিন ইমেইল চেক (আপনার অ্যাডমিন ইমেইলটি এখানে দিন)
+        const ADMIN_EMAIL = "sakibbinsalam.admin@gmail.com"; 
+
+        onAuthStateChanged(auth, (user) => {
+            if (user && user.email === ADMIN_EMAIL) {
+                loadDeposits();
+                loadOrders();
+            } else {
+                alert("আপনার অ্যাডমিন প্যানেলে ঢোকার অনুমতি নেই!");
+                window.location.href = "index.html";
+            }
+        });
+
+        // Tab Switcher
+        window.switchTab = function(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.table-container').forEach(tab => tab.classList.remove('active'));
+            
+            if(tabName === 'deposits') {
+                document.querySelectorAll('.tab-btn')[0].classList.add('active');
+                document.getElementById('deposits-tab').classList.add('active');
+                document.getElementById('page-title').innerText = "ডিপোজিট রিকোয়েস্ট";
+            } else {
+                document.querySelectorAll('.tab-btn')[1].classList.add('active');
+                document.getElementById('orders-tab').classList.add('active');
+                document.getElementById('page-title').innerText = "পেন্ডিং অর্ডার";
+            }
+        };
+
+        // Load Deposits
+        async function loadDeposits() {
+            const depositsList = document.getElementById("deposits-list");
+            try {
+                // Fetch all deposits
+                const q = query(collection(db, "deposits"), orderBy("timestamp", "desc"));
+                const querySnapshot = await getDocs(q);
+                
+                let html = "";
+                querySnapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    if(data.status === "Pending") {
+                        html += `
+                            <tr>
+                                <td>${data.userEmail}</td>
+                                <td><span style="font-weight:bold; color:#007bff;">${data.paymentMethod}</span></td>
+                                <td>${data.senderNumber}</td>
+                                <td style="font-family:monospace; color:#e74c3c;">${data.trxId}</td>
+                                <td style="font-weight:bold; color:#28a745;">৳ ${data.amount}</td>
+                                <td><span class="status pending">Pending</span></td>
+                                <td>
+                                    <button class="approve-btn" onclick="approveDeposit('${docSnap.id}', '${data.userEmail}', ${data.amount})">✔ Approve (Add Fund)</button>
+                                    <button class="reject-btn" onclick="rejectDeposit('${docSnap.id}')">✖ Reject</button>
+                                </td>
+                            </tr>
+                        `;
+                    }
+                });
+
+                if(html === "") depositsList.innerHTML = "<tr><td colspan='7' class='empty-msg'>কোনো পেন্ডিং ডিপোজিট রিকোয়েস্ট নেই!</td></tr>";
+                else depositsList.innerHTML = html;
+
+            } catch (error) {
+                console.error("Error loading deposits: ", error);
+                depositsList.innerHTML = "<tr><td colspan='7' class='empty-msg' style='color:red;'>ডাটা লোড করতে সমস্যা হচ্ছে!</td></tr>";
+            }
+        }
+
+        // Load Orders
+        async function loadOrders() {
+            const ordersList = document.getElementById("orders-list");
+            try {
+                const q = query(collection(db, "orders"), orderBy("timestamp", "desc"));
+                const querySnapshot = await getDocs(q);
+                
+                let html = "";
+                querySnapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    if(data.status === "Pending") {
+                        html += `
+                            <tr>
+                                <td>${data.customerName}<br><small>${data.userEmail}</small></td>
+                                <td>${data.paymentMethod}</td>
+                                <td>${data.trxId}</td>
+                                <td style="font-weight:bold; color:#f85606;">৳ ${data.totalAmount}</td>
+                                <td><span class="status pending">Pending</span></td>
+                                <td>
+                                    <button class="approve-btn" onclick="completeOrder('${docSnap.id}')">✔ Complete</button>
+                                </td>
+                            </tr>
+                        `;
+                    }
+                });
+
+                if(html === "") ordersList.innerHTML = "<tr><td colspan='6' class='empty-msg'>কোনো পেন্ডিং অর্ডার নেই!</td></tr>";
+                else ordersList.innerHTML = html;
+
+            } catch (error) {
+                console.error("Error loading orders: ", error);
+            }
+        }
+
+        // Approve Deposit & Add Balance Logic
+        window.approveDeposit = async function(docId, userEmail, amount) {
+            if(!confirm(`আপনি কি নিশ্চিত যে পেমেন্ট পেয়েছেন এবং এই ইউজারের অ্যাকাউন্টে ৳${amount} যোগ করতে চান?`)) return;
+
+            try {
+                // 1. Update deposit status to Approved
+                await updateDoc(doc(db, "deposits", docId), { status: "Approved" });
+
+                // 2. Fetch User's current balance
+                const userRef = doc(db, "users", userEmail);
+                const userSnap = await getDoc(userRef);
+
+                let currentBalance = 0;
+                if(userSnap.exists()) {
+                    currentBalance = userSnap.data().balance || 0;
+                }
+
+                // 3. Add new amount to current balance and save
+                const newBalance = currentBalance + amount;
+                await setDoc(userRef, { balance: newBalance }, { merge: true });
+
+                alert("✅ ব্যালেন্স সফলভাবে অ্যাড করা হয়েছে!");
+                loadDeposits(); // Reload table
+            } catch(error) {
+                console.error("Error approving deposit: ", error);
+                alert("সমস্যা হয়েছে! আবার চেষ্টা করুন।");
+            }
+        };
+
+        // Reject Deposit
+        window.rejectDeposit = async function(docId) {
+            if(!confirm("আপনি কি এই রিকোয়েস্টটি বাতিল করতে চান?")) return;
+            try {
+                await updateDoc(doc(db, "deposits", docId), { status: "Rejected" });
+                alert("রিকোয়েস্ট বাতিল করা হয়েছে।");
+                loadDeposits();
+            } catch(error) { console.error(error); }
+        };
+
+        // Complete Order
+        window.completeOrder = async function(docId) {
+            if(!confirm("অর্ডারটি কি ডেলিভারি সম্পন্ন হয়েছে?")) return;
+            try {
+                await updateDoc(doc(db, "orders", docId), { status: "Completed" });
+                alert("অর্ডার কমপ্লিট করা হয়েছে।");
+                loadOrders();
+            } catch(error) { console.error(error); }
+        };
+    </script>
+</body>
+</html>
