@@ -19,12 +19,13 @@
         label { font-weight: bold; font-size: 14px; color: #333; display: block; margin-top: 15px; margin-bottom: 5px; }
         input[type="text"], input[type="number"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
         
-        /* Payment Methods - লোগো বড় করা হয়েছে */
-        .payment-methods { display: flex; gap: 12px; margin-top: 15px; flex-wrap: wrap; justify-content: center;}
+        /* Payment Methods - বক্স এবং লোগো ফিক্স করা হয়েছে */
+        .payment-methods { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; justify-content: center;}
         .pay-btn { 
             flex: 1; 
-            min-width: 90px;
-            height: 75px; 
+            min-width: 80px;
+            max-width: 120px; /* বক্স যেন বেশি বড় না হয় */
+            height: 55px; /* আগের মতো সুন্দর আয়তাকার শেপ */
             border: 2px solid #eaeaea; 
             background: white; 
             cursor: pointer; 
@@ -33,13 +34,14 @@
             justify-content: center; 
             align-items: center; 
             transition: 0.3s; 
-            padding: 8px; 
+            padding: 5px; 
         }
         .pay-btn img { 
-            height: 100%; 
-            width: 100%; 
+            max-height: 32px; /* লোগো যেন ফেটে না যায় */
+            max-width: 100%; 
             object-fit: contain; 
-            transform: scale(1.1); 
+            image-rendering: -webkit-optimize-contrast; /* ছবি ক্লিয়ার দেখানোর কোড */
+            image-rendering: crisp-edges;
         }
         
         .pay-btn:hover { border-color: #ccc; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
