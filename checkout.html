@@ -3,28 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>চেকআউট - আমার দারাজ</title>
+    <title>অ্যাড ফান্ড - আমার দারাজ</title>
     <style>
         body { font-family: Arial, sans-serif; background-color: #f4f4f6; margin: 0; padding: 20px; }
-        .checkout-container { max-width: 800px; margin: auto; display: flex; flex-wrap: wrap; gap: 20px; }
-        .box { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); flex: 1; min-width: 300px; }
+        .fund-container { max-width: 500px; margin: 40px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         
-        h2 { color: #f85606; margin-top: 0; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-        
-        /* Cart Summary */
-        .cart-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 14px; }
-        .cart-total { display: flex; justify-content: space-between; font-weight: bold; font-size: 18px; color: #f85606; margin-top: 15px; }
+        h2 { color: #f85606; margin-top: 0; text-align: center; border-bottom: 2px solid #eee; padding-bottom: 15px; }
+        .balance-display { text-align: center; font-size: 18px; color: #333; margin-bottom: 20px; font-weight: bold; background: #f9f9f9; padding: 10px; border-radius: 5px;}
+        .balance-display span { color: #2ecc71; font-size: 22px; }
 
-        /* Form Styling */
         label { font-weight: bold; font-size: 14px; color: #333; display: block; margin-top: 15px; margin-bottom: 5px; }
-        input[type="text"], input[type="number"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
+        input[type="number"], input[type="text"] { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 15px; }
         
-        /* Payment Methods (Updated Logos & Sizes) */
-        .payment-methods { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
+        /* Payment Methods (Fixed Logos, Added Rocket) */
+        .payment-methods { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; justify-content: center;}
         .pay-btn { 
             flex: 1; 
-            min-width: 90px;
-            height: 60px; 
+            min-width: 80px;
+            height: 55px; 
             border: 2px solid #eaeaea; 
             background: white; 
             cursor: pointer; 
@@ -35,91 +31,82 @@
             transition: 0.3s; 
             padding: 5px 10px;
         }
-        .pay-btn img { max-height: 38px; max-width: 100%; object-fit: contain; }
-        .Binance img { max-height: 45px; transform: scale(1.15); } /* বাইনান্স লোগো বড় করা হয়েছে */
+        .pay-btn img { max-height: 35px; max-width: 100%; object-fit: contain; }
         
         .pay-btn:hover { border-color: #ccc; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .bKash.active { border-color: #e2136e; background: #fff9fb; box-shadow: 0 0 8px rgba(226, 19, 110, 0.2); }
         .Nagad.active { border-color: #f7931e; background: #fffcf8; box-shadow: 0 0 8px rgba(247, 147, 30, 0.2); }
+        .Rocket.active { border-color: #8c1596; background: #fdf2ff; box-shadow: 0 0 8px rgba(140, 21, 150, 0.2); }
         .Upay.active { border-color: #0063a6; background: #f4fafe; box-shadow: 0 0 8px rgba(0, 99, 166, 0.2); }
         .Binance.active { border-color: #f3ba2f; background: #fffde7; box-shadow: 0 0 8px rgba(243, 186, 47, 0.2); }
 
-        /* Payment Instruction Box */
-        .instruction-box { background: #e8f4fd; padding: 15px; border-radius: 5px; margin-top: 15px; font-size: 14px; color: #333; display: none; border-left: 4px solid #007bff; line-height: 1.5; }
-        .account-number { font-size: 18px; font-weight: bold; color: #e74c3c; user-select: all; }
+        /* Instruction Box */
+        .instruction-box { background: #e8f4fd; padding: 15px; border-radius: 5px; margin-top: 15px; font-size: 14px; color: #333; display: none; border-left: 4px solid #007bff; line-height: 1.5; text-align: center;}
+        .account-number { font-size: 20px; font-weight: bold; color: #e74c3c; user-select: all; letter-spacing: 1px; display: block; margin-top: 5px;}
 
-        .submit-btn { width: 100%; padding: 12px; background: #f85606; color: white; border: none; border-radius: 4px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px; transition: 0.3s; }
-        .submit-btn:hover { background: #d84a05; }
+        .submit-btn { width: 100%; padding: 14px; background: #28a745; color: white; border: none; border-radius: 4px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 25px; transition: 0.3s; }
+        .submit-btn:hover { background: #218838; }
         
-        .empty-cart { text-align: center; color: #777; padding: 20px; }
-        .back-home { display: block; text-align: center; margin-top: 15px; color: #555; text-decoration: none; font-weight: bold; }
-        .back-home:hover { color: #f85606; }
+        .back-link { display: block; text-align: center; margin-top: 20px; color: #777; text-decoration: none; font-size: 14px; font-weight: bold;}
+        .back-link:hover { color: #f85606; }
     </style>
 </head>
 <body>
 
-    <div class="checkout-container">
-        <!-- Order Summary Box -->
-        <div class="box">
-            <h2>🛒 আপনার অর্ডার</h2>
-            <div id="cart-items-container"></div>
-            <div class="cart-total">
-                <span>মোট বিল:</span>
-                <span id="total-amount">৳ 0</span>
-            </div>
-            <a href="index.html" class="back-home">⬅ হোম পেজে ফিরে যান</a>
+    <div class="fund-container">
+        <h2>💰 ব্যালেন্স অ্যাড করুন</h2>
+        
+        <div class="balance-display">
+            বর্তমান ব্যালেন্স: <span id="current-balance">৳ 0</span>
         </div>
 
-        <!-- Payment Form Box -->
-        <div class="box">
-            <h2>💳 পেমেন্ট করুন</h2>
-            <p style="font-size: 13px; color: #666; margin-top: -10px;">আপনার পছন্দের পেমেন্ট মেথড সিলেক্ট করুন</p>
-            
-            <div class="payment-methods">
-                <!-- bKash -->
-                <div class="pay-btn bKash" onclick="selectPayment('bKash')">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/BKash_logo.svg/512px-BKash_logo.svg.png" alt="bKash">
-                </div>
-                <!-- Nagad -->
-                <div class="pay-btn Nagad" onclick="selectPayment('Nagad')">
-                    <img src="https://upload.wikimedia.org/wikipedia/bn/thumb/6/64/Nagad_Logo_2024.svg/512px-Nagad_Logo_2024.svg.png" onerror="this.src='https://download.logo.wine/logo/Nagad/Nagad-Logo.wine.png';" alt="Nagad">
-                </div>
-                <!-- Upay -->
-                <div class="pay-btn Upay" onclick="selectPayment('Upay')">
-                    <img src="https://smartpay.com.bd/wp-content/uploads/2021/11/upay.png" onerror="this.src='https://wiki.bdthemes.com/images/1/13/Upay_Logo.png';" alt="Upay">
-                </div>
-                <!-- Binance -->
-                <div class="pay-btn Binance" onclick="selectPayment('Binance')">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Binance_Logo.svg/512px-Binance_Logo.svg.png" alt="Binance">
-                </div>
+        <label>কত টাকা অ্যাড করতে চান? (৳)</label>
+        <input type="number" id="deposit-amount" placeholder="যেমন: 500" required>
+
+        <label>পেমেন্ট মেথড সিলেক্ট করুন:</label>
+        <div class="payment-methods">
+            <div class="pay-btn bKash" onclick="selectPayment('bKash')">
+                <img src="https://freelogopng.com/images/all_img/1656227150bkash-logo-png.png" onerror="this.outerHTML='<span style=\'color:#e2136e;font-weight:900;font-size:20px;\'>bKash</span>'" alt="bKash">
             </div>
-
-            <!-- Instruction Box -->
-            <div id="instruction-box" class="instruction-box">
-                <span id="instruction-text"></span><br>
-                <span class="account-number" id="account-number"></span>
+            <div class="pay-btn Nagad" onclick="selectPayment('Nagad')">
+                <img src="https://freelogopng.com/images/all_img/1679248787Nagad-Logo.png" onerror="this.outerHTML='<span style=\'color:#f7931e;font-weight:900;font-size:20px;\'>Nagad</span>'" alt="Nagad">
             </div>
-
-            <form id="checkout-form" style="display: none;">
-                <label>আপনার নাম:</label>
-                <input type="text" id="cus-name" placeholder="আপনার নাম লিখুন" required>
-
-                <label>যে নাম্বার থেকে টাকা পাঠিয়েছেন (Sender Number):</label>
-                <input type="text" id="sender-number" placeholder="যেমন: 01XXXXXXXXX" required>
-
-                <label>Transaction ID (TrxID):</label>
-                <input type="text" id="trx-id" placeholder="টাকা পাঠানোর পর মেসেজে থাকা TrxID" required>
-
-                <button type="submit" class="submit-btn" id="place-order-btn">অর্ডার কনফার্ম করুন</button>
-            </form>
+            <div class="pay-btn Rocket" onclick="selectPayment('Rocket')">
+                <img src="https://freelogopng.com/images/all_img/1679248828Rocket-Logo.png" onerror="this.outerHTML='<span style=\'color:#8c1596;font-weight:900;font-size:20px;\'>Rocket</span>'" alt="Rocket">
+            </div>
+            <div class="pay-btn Upay" onclick="selectPayment('Upay')">
+                <img src="https://freelogopng.com/images/all_img/1679248881upay-logo.png" onerror="this.outerHTML='<span style=\'color:#0063a6;font-weight:900;font-size:22px;\'>upay</span>'" alt="Upay">
+            </div>
+            <div class="pay-btn Binance" onclick="selectPayment('Binance')">
+                <img src="https://cryptologos.cc/logos/binance-coin-bnb-logo.png" style="max-height: 40px;" onerror="this.outerHTML='<span style=\'color:#f3ba2f;font-weight:900;font-size:18px;\'>Binance</span>'" alt="Binance">
+            </div>
         </div>
+
+        <!-- Instruction Box -->
+        <div id="instruction-box" class="instruction-box">
+            <span id="instruction-text"></span>
+            <span class="account-number" id="account-number"></span>
+            <small style="color: #666; display: block; margin-top: 5px;">(অবশ্যই Send Money করবেন)</small>
+        </div>
+
+        <form id="deposit-form" style="display: none;">
+            <label>যে নাম্বার থেকে টাকা পাঠিয়েছেন:</label>
+            <input type="number" id="sender-number" placeholder="যেমন: 01XXXXXXXXX" required>
+
+            <label>Transaction ID (TrxID):</label>
+            <input type="text" id="trx-id" placeholder="টাকা পাঠানোর মেসেজে থাকা TrxID" required>
+
+            <button type="submit" class="submit-btn" id="submit-deposit-btn">ডিপোজিট রিকোয়েস্ট পাঠান</button>
+        </form>
+
+        <a href="profile.html" class="back-link">⬅ প্রোফাইলে ফিরে যান</a>
     </div>
 
     <!-- Firebase Setup -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBZNrrK7MLGIZoPakMgj2yFEX7iCVYYhlg",
@@ -135,44 +122,38 @@
         const db = getFirestore(app);
 
         let currentUserEmail = null;
-        let finalAmount = 0;
         let selectedGateway = "";
 
-        // Check Auth
-        onAuthStateChanged(auth, (user) => {
+        // Check Auth & Load Balance
+        onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUserEmail = user.email;
+                try {
+                    const userDoc = await getDoc(doc(db, "users", user.email));
+                    if(userDoc.exists()) {
+                        document.getElementById("current-balance").innerText = `৳ ${userDoc.data().balance || 0}`;
+                    }
+                } catch(e) { console.log("Error loading balance"); }
             } else {
-                alert("অর্ডার করতে হলে আপনাকে প্রথমে লগইন করতে হবে!");
+                alert("ডিপোজিট করতে হলে আপনাকে প্রথমে লগইন করতে হবে!");
                 window.location.href = "login.html";
             }
         });
 
-        // Load Cart
-        let cart = JSON.parse(localStorage.getItem("amarDarazCart")) || [];
-        const cartContainer = document.getElementById("cart-items-container");
-        const totalAmountEl = document.getElementById("total-amount");
-
-        if (cart.length === 0) {
-            cartContainer.innerHTML = "<div class='empty-cart'>আপনার কার্টে কোনো প্রোডাক্ট নেই!</div>";
-        } else {
-            let html = "";
-            cart.forEach((item) => {
-                html += `<div class="cart-item"><span>${item.name}</span><span>৳ ${item.price}</span></div>`;
-                finalAmount += parseInt(item.price);
-            });
-            cartContainer.innerHTML = html;
-            totalAmountEl.innerText = `৳ ${finalAmount}`;
-        }
-
         // Payment Selection Logic
         window.selectPayment = function(method) {
+            const amount = document.getElementById("deposit-amount").value;
+            if(!amount || amount <= 0) {
+                alert("প্রথমে টাকার পরিমাণ লিখুন!");
+                return;
+            }
+
             document.querySelectorAll('.pay-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelector(`.${method}`).classList.add('active');
             selectedGateway = method;
 
             const instBox = document.getElementById("instruction-box");
-            const form = document.getElementById("checkout-form");
+            const form = document.getElementById("deposit-form");
             const instText = document.getElementById("instruction-text");
             const accNum = document.getElementById("account-number");
 
@@ -180,15 +161,19 @@
             form.style.display = "block";
 
             if(method === 'bKash') {
-                instText.innerHTML = `নিচের পার্সোনাল বিকাশ নাম্বারে <b>৳ ${finalAmount}</b> Send Money করুন:`;
+                instText.innerHTML = `নিচের পার্সোনাল বিকাশ নাম্বারে <b>৳ ${amount}</b> Send Money করুন:`;
                 accNum.innerText = "01XXXXXXXXX"; // ⚠️ আপনার বিকাশ নাম্বার
                 instBox.style.borderLeftColor = "#e2136e";
             } else if(method === 'Nagad') {
-                instText.innerHTML = `নিচের পার্সোনাল নগদ নাম্বারে <b>৳ ${finalAmount}</b> Send Money করুন:`;
+                instText.innerHTML = `নিচের পার্সোনাল নগদ নাম্বারে <b>৳ ${amount}</b> Send Money করুন:`;
                 accNum.innerText = "01XXXXXXXXX"; // ⚠️ আপনার নগদ নাম্বার
                 instBox.style.borderLeftColor = "#f7931e";
+            } else if(method === 'Rocket') {
+                instText.innerHTML = `নিচের পার্সোনাল রকেট নাম্বারে <b>৳ ${amount}</b> Send Money করুন:`;
+                accNum.innerText = "01XXXXXXXXX"; // ⚠️ আপনার রকেট নাম্বার
+                instBox.style.borderLeftColor = "#8c1596";
             } else if(method === 'Upay') {
-                instText.innerHTML = `নিচের পার্সোনাল উপায় নাম্বারে <b>৳ ${finalAmount}</b> Send Money করুন:`;
+                instText.innerHTML = `নিচের পার্সোনাল উপায় নাম্বারে <b>৳ ${amount}</b> Send Money করুন:`;
                 accNum.innerText = "01XXXXXXXXX"; // ⚠️ আপনার উপায় নাম্বার
                 instBox.style.borderLeftColor = "#0063a6";
             } else if(method === 'Binance') {
@@ -198,37 +183,33 @@
             }
         };
 
-        // Submit Order
-        document.getElementById("checkout-form").addEventListener("submit", async (e) => {
+        // Submit Deposit Request
+        document.getElementById("deposit-form").addEventListener("submit", async (e) => {
             e.preventDefault();
             if(!currentUserEmail) return alert("দয়া করে লগইন করুন!");
-            if(cart.length === 0) return alert("আপনার কার্ট খালি!");
 
-            const submitBtn = document.getElementById("place-order-btn");
-            submitBtn.innerText = "অর্ডার সাবমিট হচ্ছে...";
+            const submitBtn = document.getElementById("submit-deposit-btn");
+            submitBtn.innerText = "রিকোয়েস্ট পাঠানো হচ্ছে...";
             submitBtn.disabled = true;
 
-            const orderData = {
+            const depositData = {
                 userEmail: currentUserEmail,
-                customerName: document.getElementById("cus-name").value,
+                amount: parseInt(document.getElementById("deposit-amount").value),
+                paymentMethod: selectedGateway,
                 senderNumber: document.getElementById("sender-number").value,
                 trxId: document.getElementById("trx-id").value,
-                paymentMethod: selectedGateway,
-                items: cart,
-                totalAmount: finalAmount,
                 status: "Pending", 
                 timestamp: new Date().toISOString()
             };
 
             try {
-                await addDoc(collection(db, "orders"), orderData);
-                alert("আপনার অর্ডারটি সফলভাবে গ্রহণ করা হয়েছে! আমরা পেমেন্ট ভেরিফাই করে দ্রুত ডেলিভারি দিব।");
-                localStorage.removeItem("amarDarazCart"); 
+                await addDoc(collection(db, "deposits"), depositData);
+                alert("আপনার ডিপোজিট রিকোয়েস্ট সফলভাবে পাঠানো হয়েছে!");
                 window.location.href = "profile.html"; 
             } catch (error) {
-                console.error("Error placing order: ", error);
-                alert("অর্ডার সাবমিট করতে সমস্যা হচ্ছে!");
-                submitBtn.innerText = "অর্ডার কনফার্ম করুন";
+                console.error("Error submitting deposit: ", error);
+                alert("রিকোয়েস্ট পাঠাতে সমস্যা হচ্ছে!");
+                submitBtn.innerText = "ডিপোজিট রিকোয়েস্ট পাঠান";
                 submitBtn.disabled = false;
             }
         });
