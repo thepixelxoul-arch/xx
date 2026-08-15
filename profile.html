@@ -10,21 +10,9 @@
         .navbar .logo { font-size: 24px; font-weight: bold; text-decoration: none; color: white; }
         .navbar .home-link { color: white; text-decoration: none; font-size: 20px; }
         
-        .profile-container { display: flex; justify-content: center; align-items: flex-start; min-height: 80vh; padding: 20px; margin-top: 20px;}
-        .profile-card { background: white; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 600px; overflow: hidden; }
+        .profile-container { display: flex; justify-content: center; align-items: flex-start; min-height: 80vh; padding: 20px; margin-top: 40px;}
+        .profile-card { background: white; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 500px; padding: 40px 30px; box-sizing: border-box; }
         
-        /* 🌟 Tab Navigation (এখন শুধু ২টি ট্যাব) */
-        .profile-tabs { display: flex; background: #2c3e50; }
-        .tab-btn { flex: 1; padding: 15px; border: none; background: transparent; color: white; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 15px; }
-        .tab-btn:hover { background: #34495e; }
-        .tab-btn.active { background: #f85606; border-bottom: 3px solid #d84a05; }
-
-        /* 🌟 Tab Content */
-        .tab-content { padding: 30px; display: none; animation: fadeIn 0.3s; }
-        .tab-content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* 🌟 Info Tab Design */
         .profile-icon { font-size: 60px; color: #5c7c99; margin-bottom: 10px; text-align: center; }
         .info-box { border: 1px dashed #ccc; padding: 15px; border-radius: 5px; margin-bottom: 15px; background: #fafafa; text-align: center;}
         .info-box p { margin: 0 0 5px 0; color: #555; font-weight: bold; font-size: 14px; }
@@ -36,18 +24,6 @@
         
         .admin-btn { background-color: #2c3e50; color: white; border: none; padding: 12px; width: 100%; border-radius: 4px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; display: none; margin-top: 10px; }
         .admin-btn:hover { background-color: #1a252f; }
-
-        /* 🌟 Lists (Orders) */
-        .list-item { border: 1px solid #eee; padding: 15px; border-radius: 8px; margin-bottom: 15px; background: #fafafa; }
-        .list-item h4 { margin: 0 0 5px 0; color: #333; }
-        .list-item p { margin: 0; color: #666; font-size: 14px; line-height: 1.4; }
-        .list-item small { display: block; margin-top: 8px; color: #999; font-size: 12px; }
-        
-        .status-badge { padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; float: right;}
-        .status-pending { background-color: #fff3cd; color: #856404; }
-        .status-completed { background-color: #d4edda; color: #155724; }
-        
-        .loading-text { text-align: center; color: #777; font-weight: bold; padding: 20px 0; }
     </style>
 </head>
 <body>
@@ -59,40 +35,21 @@
 
     <div class="profile-container">
         <div class="profile-card">
+            <div class="profile-icon">👤</div>
+            <h3 style="text-align: center; color: #333; margin-top: 0; margin-bottom: 25px;">আপনার ড্যাশবোর্ড</h3>
             
-            <!-- 🌟 Tabs (Only Two Options Now) -->
-            <div class="profile-tabs">
-                <button class="tab-btn active" onclick="switchTab('info')">👤 Profile</button>
-                <button class="tab-btn" onclick="switchTab('orders')">🛒 Order History</button>
+            <div class="info-box">
+                <p>লগইন করা ইমেইল:</p>
+                <h4 id="user-email">লোড হচ্ছে...</h4>
             </div>
 
-            <!-- 1. Profile Info Tab -->
-            <div id="tab-info" class="tab-content active">
-                <div class="profile-icon">👤</div>
-                <h3 style="text-align: center; color: #333; margin-top: 0;">আপনার ড্যাশবোর্ড</h3>
-                
-                <div class="info-box">
-                    <p>লগইন করা ইমেইল:</p>
-                    <h4 id="user-email">লোড হচ্ছে...</h4>
-                </div>
-
-                <div class="info-box">
-                    <p>আপনার বর্তমান ব্যালেন্স:</p>
-                    <h4 class="balance-amount" id="user-balance">৳ 0</h4>
-                </div>
-                
-                <button class="admin-btn" id="admin-panel-btn" onclick="window.location.href='admin.html'">⚙️ অ্যাডমিন প্যানেলে যান</button>
-                <button class="logout-btn" id="logout-btn">লগআউট করুন</button>
+            <div class="info-box">
+                <p>আপনার বর্তমান ব্যালেন্স:</p>
+                <h4 class="balance-amount" id="user-balance">৳ 0</h4>
             </div>
-
-            <!-- 2. Orders Tab -->
-            <div id="tab-orders" class="tab-content">
-                <h3 style="margin-top: 0; color: #333;">আপনার অর্ডারসমূহ</h3>
-                <div id="orders-container">
-                    <div class="loading-text">অর্ডার লোড হচ্ছে...</div>
-                </div>
-            </div>
-
+            
+            <button class="admin-btn" id="admin-panel-btn" onclick="window.location.href='admin.html'">⚙️ অ্যাডমিন প্যানেলে যান</button>
+            <button class="logout-btn" id="logout-btn">লগআউট করুন</button>
         </div>
     </div>
 
@@ -100,7 +57,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBZNrrK7MLGIZoPakMgj2yFEX7iCVYYhlg",
@@ -115,11 +72,8 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        let currentUserEmail = "";
-
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                currentUserEmail = user.email;
                 document.getElementById("user-email").innerText = user.email;
                 
                 if (user.email === "sakibbinsalam.admin@gmail.com") {
@@ -134,9 +88,6 @@
                     }
                 } catch(e) { console.log(e); }
 
-                // অর্ডার লোড করা
-                loadUserOrders(user.email);
-
             } else {
                 window.location.href = "login.html";
             }
@@ -145,48 +96,6 @@
         document.getElementById("logout-btn").addEventListener("click", () => {
             signOut(auth).then(() => { window.location.href = "login.html"; });
         });
-
-        // 🌟 Tab Switching Logic
-        window.switchTab = function(tabName) {
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            
-            document.getElementById('tab-' + tabName).classList.add('active');
-            event.target.classList.add('active');
-        };
-
-        // 🌟 Load User Orders
-        async function loadUserOrders(email) {
-            const container = document.getElementById("orders-container");
-            try {
-                const q = query(collection(db, "orders"), where("userEmail", "==", email));
-                const querySnapshot = await getDocs(q);
-                
-                if (querySnapshot.empty) {
-                    container.innerHTML = "<p style='color:#777; text-align:center;'>আপনি এখনও কোনো অর্ডার করেননি।</p>";
-                    return;
-                }
-
-                let html = "";
-                querySnapshot.forEach((docSnap) => {
-                    const data = docSnap.data();
-                    const isCompleted = data.status === 'Completed';
-                    html += `
-                        <div class="list-item">
-                            <span class="status-badge ${isCompleted ? 'status-completed' : 'status-pending'}">
-                                ${isCompleted ? 'কমপ্লিট' : 'পেন্ডিং'}
-                            </span>
-                            <h4>📦 ${data.productName || "Product"}</h4>
-                            <p><strong>দাম:</strong> ৳ ${data.price || 0}</p>
-                            <small>অর্ডার আইডি: ${docSnap.id}</small>
-                        </div>
-                    `;
-                });
-                container.innerHTML = html;
-            } catch(e) {
-                container.innerHTML = "<p style='color:red; text-align:center;'>অর্ডার লোড করতে সমস্যা হয়েছে।</p>";
-            }
-        }
     </script>
 </body>
 </html>
