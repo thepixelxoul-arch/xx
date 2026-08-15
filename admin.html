@@ -24,11 +24,13 @@
         .card { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
         .card h3 { margin-top: 0; color: #333; border-bottom: 2px solid #eee; padding-bottom: 10px; }
 
-        /* Form Design - ব্যাকগ্রাউন্ড সাদা করা হয়েছে */
+        /* Form Design */
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 5px; color: #555; font-weight: bold; }
-        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; outline: none; background-color: #ffffff; }
-        .form-group input:focus, .form-group select:focus { border-color: #f85606; box-shadow: 0 0 5px rgba(248, 86, 6, 0.3); }
+        /* 🌟 Textarea styling added */
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; outline: none; background-color: #ffffff; font-family: inherit;}
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #f85606; box-shadow: 0 0 5px rgba(248, 86, 6, 0.3); }
+        .form-group textarea { resize: vertical; min-height: 80px; }
         
         .submit-btn { background: #f85606; color: white; padding: 12px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold; width: 100%; transition: 0.3s; }
         .submit-btn:hover { background: #d84a05; }
@@ -123,6 +125,11 @@
                         <div class="form-group">
                             <label>ছবির লিংক (URL):</label>
                             <input type="text" id="p-img" placeholder="https://example.com/image.jpg" required>
+                        </div>
+                        <!-- 🌟 New Description Field -->
+                        <div class="form-group">
+                            <label>প্রোডাক্টের বিবরণ (Description):</label>
+                            <textarea id="p-desc" placeholder="প্রোডাক্ট সম্পর্কে বিস্তারিত বা কোনো নিয়মকানুন থাকলে এখানে লিখুন..."></textarea>
                         </div>
                         <div class="form-group">
                             <label>ক্যাটাগরি:</label>
@@ -254,6 +261,8 @@
                     const data = docSnap.data();
                     const id = docSnap.id;
                     const safeName = data.name.replace(/'/g, "\\'");
+                    // 🌟 Added safeDesc
+                    const safeDesc = data.desc ? data.desc.replace(/'/g, "\\'").replace(/\n/g, "\\n") : "";
                     html += `
                     <tr>
                         <td><img src="${data.img}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;"></td>
@@ -261,7 +270,8 @@
                         <td style="text-transform: capitalize;">${data.category}</td>
                         <td>৳ ${data.price}</td>
                         <td>
-                            <button class="action-btn edit-btn" onclick="editProduct('${id}', '${safeName}', '${data.price}', '${data.img}', '${data.category}')">Edit</button>
+                            <!-- 🌟 Added desc to edit function -->
+                            <button class="action-btn edit-btn" onclick="editProduct('${id}', '${safeName}', '${data.price}', '${data.img}', '${data.category}', '${safeDesc}')">Edit</button>
                             <button class="action-btn delete-btn" onclick="deleteProduct('${id}')">Delete</button>
                         </td>
                     </tr>`;
@@ -283,14 +293,18 @@
             const price = document.getElementById("p-price").value;
             const img = document.getElementById("p-img").value.trim();
             const category = document.getElementById("p-category").value;
+            // 🌟 Get Description
+            const desc = document.getElementById("p-desc").value.trim();
 
             try {
                 if (editingProductId) {
-                    await updateDoc(doc(db, "products", editingProductId), { name, price, img, category });
+                    // 🌟 Update with desc
+                    await updateDoc(doc(db, "products", editingProductId), { name, price, img, category, desc });
                     alert("✔ প্রোডাক্ট সফলভাবে আপডেট হয়েছে!");
                     cancelEdit();
                 } else {
-                    await addDoc(collection(db, "products"), { name, price, img, category });
+                    // 🌟 Add with desc
+                    await addDoc(collection(db, "products"), { name, price, img, category, desc });
                     alert("✔ নতুন প্রোডাক্ট যোগ করা হয়েছে!");
                     document.getElementById("add-product-form").reset();
                 }
@@ -301,12 +315,14 @@
             btn.disabled = false;
         });
 
-        window.editProduct = function(id, name, price, img, category) {
+        // 🌟 Added desc parameter
+        window.editProduct = function(id, name, price, img, category, desc) {
             editingProductId = id;
             document.getElementById("p-name").value = name;
             document.getElementById("p-price").value = price;
             document.getElementById("p-img").value = img;
             document.getElementById("p-category").value = category;
+            document.getElementById("p-desc").value = desc; // Set Description
             document.getElementById("form-title").innerText = "প্রোডাক্ট আপডেট করুন";
             document.getElementById("product-submit-btn").innerText = "প্রোডাক্ট আপডেট করুন";
             document.getElementById("cancel-edit-btn").style.display = "block";
@@ -349,11 +365,16 @@
                         <th>অ্যাকশন</th>
                     </tr>`;
                 
+                let ordersArray = [];
                 querySnapshot.forEach((docSnap) => {
-                    const data = docSnap.data();
-                    const id = docSnap.id;
+                    ordersArray.push({ id: docSnap.id, ...docSnap.data() });
+                });
+                
+                // Sort to show newest first
+                ordersArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                
+                ordersArray.forEach((data) => {
                     const isCompleted = data.status === 'Completed';
-                    
                     html += `
                     <tr>
                         <td>${data.userEmail || "Unknown"}</td>
@@ -366,7 +387,7 @@
                         </td>
                         <td>
                             ${!isCompleted 
-                                ? `<button class="action-btn complete-btn" onclick="completeOrder('${id}')">✔ Complete</button>` 
+                                ? `<button class="action-btn complete-btn" onclick="completeOrder('${data.id}')">✔ Complete</button>` 
                                 : `<span style="color: #28a745; font-weight: bold;">✔ Done</span>`
                             }
                         </td>
@@ -410,10 +431,15 @@
                     </tr>`;
                 
                 let count = 0;
+                let depositsArray = [];
                 querySnapshot.forEach((docSnap) => {
-                    const data = docSnap.data();
-                    const id = docSnap.id;
-                    
+                    depositsArray.push({ id: docSnap.id, ...docSnap.data() });
+                });
+                
+                // Sort to show newest first
+                depositsArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                
+                depositsArray.forEach((data) => {
                     if(data.status === "Pending") {
                         count++;
                         html += `
@@ -424,8 +450,8 @@
                             <td style="font-family:monospace; color:#e74c3c; font-weight:bold;">${data.trxId}</td>
                             <td style="font-weight:bold; color:#28a745;">৳ ${data.amount}</td>
                             <td>
-                                <button class="action-btn complete-btn" onclick="approveDeposit('${id}', '${data.userEmail}', ${data.amount})">✔ Approve</button>
-                                <button class="action-btn delete-btn" onclick="rejectDeposit('${id}')">✖ Reject</button>
+                                <button class="action-btn complete-btn" onclick="approveDeposit('${data.id}', '${data.userEmail}', ${data.amount})">✔ Approve</button>
+                                <button class="action-btn delete-btn" onclick="rejectDeposit('${data.id}')">✖ Reject</button>
                             </td>
                         </tr>`;
                     }
