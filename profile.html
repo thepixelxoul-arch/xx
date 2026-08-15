@@ -15,7 +15,7 @@
         
         /* 🌟 Tab Navigation */
         .profile-tabs { display: flex; background: #2c3e50; }
-        .tab-btn { flex: 1; padding: 15px; border: none; background: transparent; color: white; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 15px; }
+        .tab-btn { flex: 1; padding: 15px 5px; border: none; background: transparent; color: white; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 14px; text-align: center;}
         .tab-btn:hover { background: #34495e; }
         .tab-btn.active { background: #f85606; border-bottom: 3px solid #d84a05; }
 
@@ -37,17 +37,14 @@
         .admin-btn { background-color: #2c3e50; color: white; border: none; padding: 12px; width: 100%; border-radius: 4px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; display: none; margin-top: 10px; }
         .admin-btn:hover { background-color: #1a252f; }
 
-        /* 🌟 Lists (Deposits) */
+        /* 🌟 Lists */
         .list-item { border: 1px solid #eee; padding: 15px; border-radius: 8px; margin-bottom: 15px; background: #fafafa; }
         .list-item h4 { margin: 0 0 5px 0; color: #333; display: flex; justify-content: space-between; align-items: center;}
         .list-item p { margin: 5px 0; color: #666; font-size: 14px; line-height: 1.4; }
-        .list-item .method { color: #007bff; font-weight: bold; }
-        .list-item .trx { font-family: monospace; color: #e74c3c; font-weight: bold; }
         
         .status-badge { padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; }
         .status-pending { background-color: #fff3cd; color: #856404; }
-        .status-approved { background-color: #d4edda; color: #155724; }
-        .status-rejected { background-color: #f8d7da; color: #721c24; }
+        .status-completed { background-color: #d4edda; color: #155724; }
         
         .loading-text { text-align: center; color: #777; font-weight: bold; padding: 20px 0; }
     </style>
@@ -66,33 +63,29 @@
             <div class="profile-tabs">
                 <button class="tab-btn active" onclick="switchTab('info')">👤 Profile</button>
                 <button class="tab-btn" onclick="switchTab('deposits')">💳 Deposit History</button>
+                <button class="tab-btn" onclick="switchTab('orders')">🛒 Order History</button>
             </div>
 
-            <!-- 1. Profile Info Tab -->
+            <!-- 1. Profile Info -->
             <div id="tab-info" class="tab-content active">
                 <div class="profile-icon">👤</div>
                 <h3 style="text-align: center; color: #333; margin-top: 0;">আপনার ড্যাশবোর্ড</h3>
-                
-                <div class="info-box">
-                    <p>লগইন করা ইমেইল:</p>
-                    <h4 id="user-email">লোড হচ্ছে...</h4>
-                </div>
-
-                <div class="info-box">
-                    <p>আপনার বর্তমান ব্যালেন্স:</p>
-                    <h4 class="balance-amount" id="user-balance">৳ 0</h4>
-                </div>
-                
+                <div class="info-box"><p>লগইন করা ইমেইল:</p><h4 id="user-email">লোড হচ্ছে...</h4></div>
+                <div class="info-box"><p>আপনার বর্তমান ব্যালেন্স:</p><h4 class="balance-amount" id="user-balance">৳ 0</h4></div>
                 <button class="admin-btn" id="admin-panel-btn" onclick="window.location.href='admin.html'">⚙️ অ্যাডমিন প্যানেলে যান</button>
                 <button class="logout-btn" id="logout-btn">লগআউট করুন</button>
             </div>
 
-            <!-- 2. Deposit History Tab -->
+            <!-- 2. Deposit History -->
             <div id="tab-deposits" class="tab-content">
                 <h3 style="margin-top: 0; color: #333; text-align: center; margin-bottom: 20px;">আপনার ডিপোজিট হিস্ট্রি</h3>
-                <div id="deposits-container">
-                    <div class="loading-text">লোড হচ্ছে...</div>
-                </div>
+                <div id="deposits-container"><div class="loading-text">লোড হচ্ছে...</div></div>
+            </div>
+
+            <!-- 3. Order History (নতুন যোগ করা হয়েছে) -->
+            <div id="tab-orders" class="tab-content">
+                <h3 style="margin-top: 0; color: #333; text-align: center; margin-bottom: 20px;">আপনার অর্ডার হিস্ট্রি</h3>
+                <div id="orders-container"><div class="loading-text">লোড হচ্ছে...</div></div>
             </div>
 
         </div>
@@ -117,18 +110,13 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        let currentUserEmail = "";
-
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                currentUserEmail = user.email;
                 document.getElementById("user-email").innerText = user.email;
-                
                 if (user.email === "sakibbinsalam.admin@gmail.com") {
                     document.getElementById("admin-panel-btn").style.display = "block";
                 }
 
-                // 🌟 ব্যালেন্স ফেচ করা
                 try {
                     const userDoc = await getDoc(doc(db, "users", user.email));
                     if(userDoc.exists()) {
@@ -136,8 +124,8 @@
                     }
                 } catch(e) { console.log(e); }
 
-                // ডিপোজিট হিস্ট্রি লোড করা
                 loadUserDeposits(user.email);
+                loadUserOrders(user.email);
 
             } else {
                 window.location.href = "login.html";
@@ -148,62 +136,63 @@
             signOut(auth).then(() => { window.location.href = "login.html"; });
         });
 
-        // 🌟 Tab Switching Logic
         window.switchTab = function(tabName) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            
             document.getElementById('tab-' + tabName).classList.add('active');
             event.target.classList.add('active');
         };
 
-        // 🌟 Load User Deposits
         async function loadUserDeposits(email) {
             const container = document.getElementById("deposits-container");
             try {
-                // Firebase থেকে ইউজারের সব ডিপোজিট আনা হচ্ছে
                 const q = query(collection(db, "deposits"), where("userEmail", "==", email));
                 const querySnapshot = await getDocs(q);
-                
                 if (querySnapshot.empty) {
-                    container.innerHTML = "<p style='color:#777; text-align:center;'>আপনি এখনও কোনো ডিপোজিট রিকোয়েস্ট করেননি।</p>";
+                    container.innerHTML = "<p style='color:#777; text-align:center;'>আপনি এখনও কোনো ডিপোজিট করেননি।</p>";
                     return;
                 }
-
                 let html = "";
                 querySnapshot.forEach((docSnap) => {
                     const data = docSnap.data();
-                    
-                    let statusClass = "status-pending";
-                    let statusText = "Pending";
-                    
-                    if (data.status === "Approved") {
-                        statusClass = "status-approved";
-                        statusText = "Approved";
-                    } else if (data.status === "Rejected") {
-                        statusClass = "status-rejected";
-                        statusText = "Rejected";
-                    }
-
+                    let statusClass = data.status === "Approved" ? "status-completed" : (data.status === "Rejected" ? "status-pending" : "status-pending");
                     html += `
                         <div class="list-item">
-                            <h4>
-                                <span>৳ ${data.amount}</span>
-                                <span class="status-badge ${statusClass}">${statusText}</span>
-                            </h4>
-                            <p><strong>মেথড:</strong> <span class="method">${data.paymentMethod}</span></p>
-                            <p><strong>TrxID:</strong> <span class="trx">${data.trxId}</span></p>
-                            <p><strong>নাম্বার:</strong> ${data.senderNumber}</p>
+                            <h4><span>৳ ${data.amount}</span><span class="status-badge ${statusClass}">${data.status}</span></h4>
+                            <p><strong>মেথড:</strong> ${data.paymentMethod} | <strong>TrxID:</strong> ${data.trxId}</p>
                         </div>
                     `;
                 });
-                
-                // সবচেয়ে নতুন রিকোয়েস্টগুলো আগে দেখানোর জন্য লিস্ট উল্টে দেওয়া হলো (Optional)
                 container.innerHTML = html;
-            } catch(e) {
-                console.error(e);
-                container.innerHTML = "<p style='color:red; text-align:center;'>হিস্ট্রি লোড করতে সমস্যা হয়েছে।</p>";
-            }
+            } catch(e) { container.innerHTML = "<p style='color:red;'>হিস্ট্রি লোড করতে সমস্যা হয়েছে।</p>"; }
+        }
+
+        async function loadUserOrders(email) {
+            const container = document.getElementById("orders-container");
+            try {
+                const q = query(collection(db, "orders"), where("userEmail", "==", email));
+                const querySnapshot = await getDocs(q);
+                if (querySnapshot.empty) {
+                    container.innerHTML = "<p style='color:#777; text-align:center;'>আপনি এখনও কোনো অর্ডার করেননি।</p>";
+                    return;
+                }
+                let html = "";
+                querySnapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    const isCompleted = data.status === 'Completed';
+                    html += `
+                        <div class="list-item">
+                            <h4>
+                                <span style="font-size: 15px;">📦 ${data.productName}</span>
+                                <span class="status-badge ${isCompleted ? 'status-completed' : 'status-pending'}">${isCompleted ? 'কমপ্লিট' : 'পেন্ডিং'}</span>
+                            </h4>
+                            <p><strong>দাম:</strong> ৳ ${data.price}</p>
+                            <p><small style="color: #999;">অর্ডার আইডি: ${docSnap.id}</small></p>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            } catch(e) { container.innerHTML = "<p style='color:red;'>অর্ডার লোড করতে সমস্যা হয়েছে।</p>"; }
         }
     </script>
 </body>
