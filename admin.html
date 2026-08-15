@@ -24,11 +24,11 @@
         .card { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
         .card h3 { margin-top: 0; color: #333; border-bottom: 2px solid #eee; padding-bottom: 10px; }
 
-        /* Form Design */
+        /* Form Design - ব্যাকগ্রাউন্ড সাদা করা হয়েছে */
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 5px; color: #555; font-weight: bold; }
-        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; outline: none; }
-        .form-group input:focus { border-color: #f85606; box-shadow: 0 0 5px rgba(248, 86, 6, 0.3); }
+        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; outline: none; background-color: #ffffff; }
+        .form-group input:focus, .form-group select:focus { border-color: #f85606; box-shadow: 0 0 5px rgba(248, 86, 6, 0.3); }
         
         .submit-btn { background: #f85606; color: white; padding: 12px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold; width: 100%; transition: 0.3s; }
         .submit-btn:hover { background: #d84a05; }
@@ -74,7 +74,7 @@
         <button class="nav-btn active" onclick="showSection('dashboard')">📊 Dashboard</button>
         <button class="nav-btn" onclick="showSection('manage-products')">📦 Manage Products</button>
         <button class="nav-btn" onclick="showSection('orders')">🛒 Manage Orders</button>
-        <button class="nav-btn" onclick="showSection('deposits')">💳 Deposit Requests</button> <!-- নতুন বাটন -->
+        <button class="nav-btn" onclick="showSection('deposits')">💳 Deposit Requests</button>
         <button class="nav-btn" onclick="showSection('users')">💰 Add Balance (Manual)</button>
         
         <button class="logout-btn" id="admin-logout">🚪 Logout</button>
@@ -127,10 +127,10 @@
                         <div class="form-group">
                             <label>ক্যাটাগরি:</label>
                             <select id="p-category">
-                                <option value="topup">Topup</option>
+                                <option value="card">Card</option>
                                 <option value="subscription">Subscription</option>
-                                <option value="card">Gift Card</option>
-                                <option value="panel">Panel / SMM</option>
+                                <option value="topup">Topup</option>
+                                <option value="panel">Panel</option>
                             </select>
                         </div>
                         <button type="submit" class="submit-btn" id="product-submit-btn">প্রোডাক্ট সেভ করুন</button>
@@ -144,7 +144,7 @@
                 </div>
             </div>
 
-            <!-- 🌟 Manage Orders Section -->
+            <!-- Manage Orders Section -->
             <div id="orders" class="section">
                 <div class="card">
                     <h3>গ্রাহকদের অর্ডারসমূহ</h3>
@@ -155,7 +155,7 @@
                 </div>
             </div>
 
-            <!-- 🌟 Deposit Requests Section (নতুন যোগ করা হয়েছে) -->
+            <!-- Deposit Requests Section -->
             <div id="deposits" class="section">
                 <div class="card">
                     <h3>গ্রাহকদের ডিপোজিট রিকোয়েস্ট</h3>
@@ -219,7 +219,7 @@
                 
                 loadProducts();
                 loadOrders(); 
-                loadDeposits(); // 🌟 লগইন করলে ডিপোজিটও লোড হবে
+                loadDeposits();
             } else {
                 alert("দুঃখিত! এই পেজে ঢোকার পারমিশন আপনার নেই।");
                 window.location.href = "index.html";
@@ -385,7 +385,7 @@
                 try {
                     await updateDoc(doc(db, "orders", orderId), { status: "Completed" });
                     alert("✔ অর্ডারটি সফলভাবে কমপ্লিট করা হয়েছে!");
-                    loadOrders(); // লিস্ট রিফ্রেশ
+                    loadOrders(); 
                 } catch (error) {
                     alert("❌ অর্ডার কমপ্লিট করতে সমস্যা হয়েছে!");
                     console.error(error);
@@ -393,7 +393,7 @@
             }
         };
 
-        /* ================= DEPOSITS LOGIC (নতুন যোগ করা হয়েছে) ================= */
+        /* ================= DEPOSITS LOGIC ================= */
         window.loadDeposits = async function() {
             const listDiv = document.getElementById("deposit-list-container");
             try {
@@ -447,10 +447,8 @@
             if(!confirm(`আপনি কি নিশ্চিত যে ৳${amount} রিসিভ করেছেন এবং ইউজারের ব্যালেন্সে অ্যাড করবেন?`)) return;
             
             try {
-                // ১. স্ট্যাটাস আপডেট
                 await updateDoc(doc(db, "deposits", docId), { status: "Approved" });
                 
-                // ২. ইউজারের আগের ব্যালেন্স নিয়ে আসা এবং নতুন টাকা যোগ করা
                 const userRef = doc(db, "users", userEmail);
                 const userSnap = await getDoc(userRef);
                 
@@ -460,11 +458,10 @@
                 }
                 const newBalance = currentBalance + amount;
                 
-                // ৩. ব্যালেন্স সেভ করা
                 await setDoc(userRef, { balance: newBalance }, { merge: true });
                 
                 alert("✔ ইউজারের অ্যাকাউন্টে সফলভাবে টাকা যোগ করা হয়েছে!");
-                loadDeposits(); // লিস্ট রিফ্রেশ
+                loadDeposits(); 
             } catch (error) {
                 alert("❌ সমস্যা হয়েছে! আবার চেষ্টা করুন।");
                 console.error(error);
@@ -476,7 +473,7 @@
             try {
                 await updateDoc(doc(db, "deposits", docId), { status: "Rejected" });
                 alert("❌ রিকোয়েস্ট বাতিল করা হয়েছে!");
-                loadDeposits(); // লিস্ট রিফ্রেশ
+                loadDeposits(); 
             } catch (error) {
                 console.error(error);
             }
