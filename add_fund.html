@@ -20,7 +20,7 @@
         .pay-btn { 
             flex: 1; 
             min-width: 80px;
-            height: 55px; 
+            height: 60px; 
             border: 2px solid #eaeaea; 
             background: white; 
             cursor: pointer; 
@@ -31,7 +31,7 @@
             transition: 0.3s; 
             padding: 5px 10px;
         }
-        .pay-btn img { max-height: 35px; max-width: 100%; object-fit: contain; }
+        .pay-btn img { max-height: 40px; max-width: 100%; object-fit: contain; }
         
         .pay-btn:hover { border-color: #ccc; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .bKash.active { border-color: #e2136e; background: #fff9fb; box-shadow: 0 0 8px rgba(226, 19, 110, 0.2); }
@@ -66,19 +66,19 @@
         <label>পেমেন্ট মেথড সিলেক্ট করুন:</label>
         <div class="payment-methods">
             <div class="pay-btn bKash" onclick="selectPayment('bKash')">
-                <img src="https://freelogopng.com/images/all_img/1656227150bkash-logo-png.png" onerror="this.outerHTML='<span style=\'color:#e2136e;font-weight:900;font-size:20px;\'>bKash</span>'" alt="bKash">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/e/e0/BKash_logo.svg" onerror="this.outerHTML='<span style=\'color:#e2136e;font-weight:bold;font-size:22px;\'>bKash</span>'" alt="bKash">
             </div>
             <div class="pay-btn Nagad" onclick="selectPayment('Nagad')">
-                <img src="https://freelogopng.com/images/all_img/1679248787Nagad-Logo.png" onerror="this.outerHTML='<span style=\'color:#f7931e;font-weight:900;font-size:20px;\'>Nagad</span>'" alt="Nagad">
+                <img src="https://upload.wikimedia.org/wikipedia/bn/6/64/Nagad_Logo_2024.svg" onerror="this.outerHTML='<span style=\'color:#f7931e;font-weight:bold;font-size:22px;\'>নগদ</span>'" alt="Nagad">
             </div>
             <div class="pay-btn Rocket" onclick="selectPayment('Rocket')">
-                <img src="https://freelogopng.com/images/all_img/1679248828Rocket-Logo.png" onerror="this.outerHTML='<span style=\'color:#8c1596;font-weight:900;font-size:20px;\'>Rocket</span>'" alt="Rocket">
+                <img src="https://wsrv.nl/?url=seeklogo.com/images/D/dutch-bangla-rocket-logo-B4D104711D-seeklogo.com.png" onerror="this.outerHTML='<div style=\'background:#8c1596;color:white;padding:5px 12px;border-radius:20px;font-weight:bold;font-style:italic;\'>Rocket</div>'" alt="Rocket">
             </div>
             <div class="pay-btn Upay" onclick="selectPayment('Upay')">
-                <img src="https://freelogopng.com/images/all_img/1679248881upay-logo.png" onerror="this.outerHTML='<span style=\'color:#0063a6;font-weight:900;font-size:22px;\'>upay</span>'" alt="Upay">
+                <img src="https://wsrv.nl/?url=seeklogo.com/images/U/upay-logo-940B79B5BD-seeklogo.com.png" onerror="this.outerHTML='<span style=\'color:#0063a6;font-weight:900;font-size:24px;\'>upay</span>'" alt="Upay">
             </div>
             <div class="pay-btn Binance" onclick="selectPayment('Binance')">
-                <img src="https://cryptologos.cc/logos/binance-coin-bnb-logo.png" style="max-height: 40px;" onerror="this.outerHTML='<span style=\'color:#f3ba2f;font-weight:900;font-size:18px;\'>Binance</span>'" alt="Binance">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/e/e8/Binance_Logo.svg" style="max-height: 45px; transform: scale(1.15);" onerror="this.outerHTML='<span style=\'color:#f3ba2f;font-weight:bold;font-size:18px;\'>BINANCE</span>'" alt="Binance">
             </div>
         </div>
 
