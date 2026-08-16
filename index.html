@@ -74,11 +74,11 @@
         
         #balance-link { color: #ffcc00 !important; font-weight: bold; }
 
-        /* Profile Dropdown Menu */
+        /* Profile Dropdown Menu - !important সরানো হয়েছে */
         .profile-menu { position: relative; display: flex; align-items: center; }
         .profile-dropdown { display: none; position: absolute; right: 0; top: 100%; background: white; min-width: 150px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); border-radius: 5px; overflow: hidden; z-index: 2000; margin-top: 15px; border: 1px solid #eee; }
-        .profile-dropdown a { display: block !important; color: #333 !important; padding: 12px 15px !important; font-size: 14px !important; font-weight: normal !important; text-align: left; border-bottom: 1px solid #f1f1f1; margin: 0 !important; }
-        .profile-dropdown a:hover { background-color: #f9f9f9; color: #f85606 !important; }
+        .profile-dropdown a { display: block; color: #333; padding: 12px 15px; font-size: 14px; font-weight: normal; text-align: left; border-bottom: 1px solid #f1f1f1; margin: 0; }
+        .profile-dropdown a:hover { background-color: #f9f9f9; color: #f85606; }
         .profile-dropdown.show { display: block; }
 
         /* Notification Design */
@@ -105,7 +105,7 @@
         
         .loading-products { text-align: center; width: 100%; padding: 40px 0; color: #f85606; font-size: 18px; font-weight: bold; }
 
-        /* 🌟 Modern Toast Notification */
+        /* Modern Toast Notification */
         .toast-notification {
             visibility: hidden;
             min-width: 280px;
@@ -173,9 +173,11 @@
                 </div>
             </div>
 
+            <!-- Balance & Order History Link -->
             <a href="add_fund.html" id="balance-link" style="display: none;">💰 Balance: ৳ 0</a>
             <a href="order_history.html">🛒 Order History</a>
             
+            <!-- Profile with Add Fund Option -->
             <div class="profile-menu" id="profile-menu-container">
                 <a href="login.html" id="auth-link">Login / Signup</a>
                 
@@ -258,7 +260,7 @@
             <img src="" id="modalImg" class="modal-img">
             <h3 id="modalTitle">Product Name</h3>
             
-            <!-- Description Area Added Here -->
+            <!-- Description Area -->
             <div id="modalDesc" class="modal-desc"></div>
 
             <div class="modal-price" id="modalPrice">৳ 0</div>
@@ -354,11 +356,11 @@
                     balanceLink.innerText = `💰 Balance: ৳ ${currentBalance}`;
                 } catch(e) { console.error("Balance fetch error:", e); }
 
-                // 🌟 FIX: Only Admin sees Admin Panel
+                // 🌟 FIX: !important দিয়ে জোড় করে Hide করা হলো
                 if(user.email === "sakibbinsalam.admin@gmail.com") {
-                    adminMenuLink.style.display = "block";
+                    adminMenuLink.style.setProperty("display", "block", "important");
                 } else {
-                    adminMenuLink.style.display = "none";
+                    adminMenuLink.style.setProperty("display", "none", "important");
                 }
 
                 authLink.onclick = function(e) {
@@ -414,6 +416,7 @@
                 });
                 renderProducts("all"); 
             } catch (error) {
+                console.error("Error fetching products: ", error);
                 productGrid.innerHTML = "<p style='text-align:center; width:100%; color:red;'>প্রোডাক্ট লোড করতে সমস্যা হচ্ছে! আপনার ইন্টারনেট কানেকশন চেক করুন।</p>";
             }
         }
