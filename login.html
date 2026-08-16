@@ -152,7 +152,7 @@
             messageBox.style.display = "block";
         }
 
-        // 🌟 Login Handler (নতুন ইমেইল দিয়ে আপডেট করা হলো)
+        // 🌟 Login Handler
         document.getElementById("login-form").addEventListener("submit", (e) => {
             e.preventDefault();
             const email = document.getElementById("login-email").value;
@@ -164,19 +164,15 @@
 
             signInWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
-                    // নতুন অ্যাডমিন ইমেইল চেক
-                    if(email === "sakibbinsalam.admin@gmail.com") {
-                        window.location.href = "admin.html";
-                    } else {
-                        window.location.href = "index.html";
-                    }
+                    // 🌟 এখন সবাই লগইন করার পর হোম পেজে (index.html) যাবে
+                    window.location.href = "index.html";
                 })
                 .catch((error) => {
                     btn.innerText = "লগইন করুন";
                     btn.disabled = false;
-                    let errorMsg = "লগইন ব্যর্থ হয়েছে!";
+                    let errorMsg = "লগইন ব্যর্থ হয়েছে!";
                     if(error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
-                        errorMsg = "ইমেইল অথবা পাসওয়ার্ড ভুল হয়েছে!";
+                        errorMsg = "ইমেইল অথবা পাসওয়ার্ড ভুল হয়েছে!";
                     }
                     showMessage(errorMsg, true);
                 });
@@ -194,7 +190,7 @@
 
             createUserWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
-                    showMessage("✔ অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে!", false);
+                    showMessage("✔ অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে!", false);
                     setTimeout(() => {
                         window.location.href = "index.html";
                     }, 1000);
@@ -202,7 +198,7 @@
                 .catch((error) => {
                     btn.innerText = "অ্যাকাউন্ট খুলুন";
                     btn.disabled = false;
-                    let errorMsg = "অ্যাকাউন্ট তৈরি করা যায়নি!";
+                    let errorMsg = "অ্যাকাউন্ট তৈরি করা যায়নি!";
                     if(error.code === 'auth/email-already-in-use') {
                         errorMsg = "এই ইমেইলটি আগে থেকেই ব্যবহৃত হচ্ছে!";
                     } else if(error.code === 'auth/weak-password') {
