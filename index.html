@@ -13,7 +13,12 @@
         .buy-btn:hover { background-color: #d84a05; }
         .buy-btn:disabled { background-color: #ccc; cursor: not-allowed; }
         
+        /* 🌟 Product Grid & Card Styling (Added for proper control) */
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; padding: 20px; max-width: 1200px; margin: 0 auto; }
+        .product-card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: center; transition: 0.3s; }
+        .product-card:hover { box-shadow: 0 8px 20px rgba(0,0,0,0.1); transform: translateY(-3px); }
         .product-card img, .product-card h3 { cursor: pointer; transition: 0.3s; }
+        .product-card img { width: 100%; height: 160px; object-fit: cover; border-radius: 6px; margin-bottom: 10px; }
         .product-card img:hover { opacity: 0.8; }
         .product-card h3:hover { color: #f85606; }
         .product-card h3 { font-size: 15px; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -49,7 +54,7 @@
         .dynamic-input-box { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; outline: none; margin-bottom: 15px; }
         .dynamic-input-box:focus { border-color: #f85606; }
 
-        /* Footer Design Updated */
+        /* Footer Design */
         .footer { background-color: #eaeaea; padding: 40px 20px 20px; margin-top: 50px; color: #0f136d; }
         .footer-top { display: flex; flex-wrap: wrap; justify-content: space-between; max-width: 1200px; margin: 0 auto; padding-bottom: 20px; }
         .footer-bottom { display: flex; flex-wrap: wrap; justify-content: space-between; max-width: 1200px; margin: 20px auto 0; border-top: 1px solid #ddd; padding-top: 20px; text-align: left;}
@@ -66,8 +71,10 @@
         .payment-logos img { height: 35px; background: white; padding: 5px 12px; border: 1px solid #ddd; border-radius: 4px; object-fit: contain; }
 
         /* Navbar Alignment Fixes */
+        .navbar { background-color: #f85606; padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; color: white; }
+        .logo { font-size: 24px; font-weight: bold; color: white; text-decoration: none; }
         .nav-links { display: flex; align-items: center; gap: 20px; } 
-        .nav-links a { text-decoration: none; font-weight: bold; font-size: 15px; display: flex; align-items: center; gap: 6px; color: inherit; }
+        .nav-links a { text-decoration: none; font-weight: bold; font-size: 15px; display: flex; align-items: center; gap: 6px; color: white; }
         
         #balance-link { color: #ffcc00 !important; font-weight: bold; }
 
@@ -81,7 +88,7 @@
         /* Notification Design */
         .notif-menu { position: relative; display: flex; align-items: center; }
         .notif-icon-wrapper { position: relative; display: flex; align-items: center; }
-        .notif-badge { position: absolute; top: -8px; right: -8px; background: #e74c3c; color: white; border-radius: 50%; padding: 2px 5px; font-size: 11px; font-weight: bold; display: none; line-height: 1; border: 1px solid #fff; }
+        .notif-badge { position: absolute; top: -8px; right: -8px; background: #fff; color: #e74c3c; border-radius: 50%; padding: 2px 5px; font-size: 11px; font-weight: bold; display: none; line-height: 1; }
         
         .notif-dropdown { display: none; position: absolute; right: -80px; top: 100%; background: white; width: 300px; max-height: 350px; overflow-y: auto; box-shadow: 0 8px 20px rgba(0,0,0,0.15); border-radius: 8px; z-index: 2000; margin-top: 15px; border: 1px solid #eee; }
         .notif-dropdown.show { display: block; animation: fadeIn 0.2s ease-in-out; }
@@ -104,32 +111,41 @@
 
         /* Modern Toast Notification */
         .toast-notification {
-            visibility: hidden;
-            min-width: 280px;
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            border-radius: 6px;
-            padding: 16px;
-            position: fixed;
-            z-index: 4000;
-            left: 50%;
-            top: 30px;
-            transform: translateX(-50%);
-            font-size: 16px;
-            font-weight: bold;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            opacity: 0;
-            transition: opacity 0.3s, top 0.3s;
+            visibility: hidden; min-width: 280px; background-color: #333; color: #fff; text-align: center; border-radius: 6px; padding: 16px; position: fixed; z-index: 4000; left: 50%; top: 30px; transform: translateX(-50%); font-size: 16px; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.2); opacity: 0; transition: opacity 0.3s, top 0.3s;
         }
-        .toast-notification.show {
-            visibility: visible;
-            opacity: 1;
-            top: 50px;
-        }
+        .toast-notification.show { visibility: visible; opacity: 1; top: 50px; }
         .toast-success { background-color: #28a745; }
         .toast-error { background-color: #e74c3c; }
         .toast-warning { background-color: #f39c12; color: #fff; }
+
+        /* 📱 🌟 RESPONSIVE DESIGN FOR MOBILE & TABLETS 🌟 📱 */
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; padding: 15px 10px; gap: 15px; }
+            .search-bar { width: 100%; margin: 0; }
+            .nav-links { width: 100%; justify-content: space-between; font-size: 13px; gap: 10px; flex-wrap: wrap; }
+            .nav-links a { font-size: 13px; }
+            
+            .banner { height: 180px !important; }
+            .banner h2 { font-size: 20px !important; }
+            .banner p { font-size: 13px !important; margin-top: 10px !important;}
+            
+            /* Mobile Category Scrolling */
+            .category-nav { flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start; padding-bottom: 10px; margin: 10px; }
+            .cat-btn { white-space: nowrap; font-size: 12px; padding: 8px 16px; }
+            
+            /* 📱 Mobile Product Grid (2 Items Per Row) */
+            .product-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; }
+            .product-card { padding: 10px; }
+            .product-card img { height: 120px; }
+            .product-card h3 { font-size: 13px; }
+            .buy-btn { font-size: 12px; padding: 8px 0; }
+            
+            /* Mobile Footer Center Alignment */
+            .footer-top { flex-direction: column; text-align: center; }
+            .store-logos { align-items: center; }
+            .footer-bottom { flex-direction: column; text-align: center; }
+            .payment-logos { justify-content: center; margin-top: 10px; }
+        }
     </style>
 </head>
 <body>
@@ -138,12 +154,12 @@
 
     <!-- Navigation Bar -->
     <nav class="navbar">
-        <div class="logo">AmarDaraz</div>
+        <a href="#" class="logo">AmarDaraz</a>
         
         <div class="search-bar">
             <input type="text" id="search-input" placeholder="Search in Daraz">
             <button id="search-btn">
-                <svg style="width: 26px !important; height: 26px !important; transform: scale(1.4); display: block;" viewBox="0 0 24 24" fill="none" stroke="#f85606" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <svg style="width: 24px !important; height: 24px !important; display: block;" viewBox="0 0 24 24" fill="none" stroke="#f85606" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="11" cy="11" r="8"></circle>
                     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                 </svg>
@@ -152,32 +168,26 @@
         </div>
 
         <div class="nav-links">
-            
             <!-- Notification Menu -->
             <div class="notif-menu" id="notif-menu-container" style="display: none;">
                 <a href="#" id="notif-icon-btn">
                     <div class="notif-icon-wrapper">
                         🔔 <span class="notif-badge" id="notif-badge">0</span>
                     </div>
-                    <span>Notification</span>
+                    <span class="desktop-only">Notification</span>
                 </a>
-                
                 <div class="notif-dropdown" id="notif-dropdown">
                     <div class="notif-header">Your Notifications</div>
-                    <div id="notif-list-box">
-                        <div style="padding: 15px; text-align: center; color: #777; font-size: 13px;">লোড হচ্ছে...</div>
-                    </div>
+                    <div id="notif-list-box"><div style="padding: 15px; text-align: center; color: #777; font-size: 13px;">লোড হচ্ছে...</div></div>
                 </div>
             </div>
 
-            <!-- Balance & Order History Link -->
-            <a href="add_fund.html" id="balance-link" style="display: none;">💰 Balance: ৳ 0</a>
-            <a href="order_history.html">🛒 Order History</a>
+            <a href="add_fund.html" id="balance-link" style="display: none;">💰 <span id="bal-amount">0</span></a>
+            <a href="order_history.html">🛒 <span class="desktop-only">History</span></a>
             
             <!-- Profile Menu -->
             <div class="profile-menu" id="profile-menu-container">
-                <a href="login.html" id="auth-link">Login / Signup</a>
-                
+                <a href="login.html" id="auth-link">Login</a>
                 <div class="profile-dropdown" id="profile-dropdown">
                     <a href="profile.html">👤 Profile</a>
                     <a href="add_fund.html">💰 Add Fund</a>
@@ -219,7 +229,7 @@
         </div>
     </div>
 
-    <!-- 🌟 Footer Section Updated -->
+    <!-- Footer Section -->
     <footer class="footer">
         <div class="footer-top">
             <div class="footer-col">
@@ -233,7 +243,6 @@
             <div class="footer-col">
                 <h4>Download App</h4>
                 <div class="store-logos">
-                    <!-- Only Google Play Store kept -->
                     <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Google Play">
                 </div>
             </div>
@@ -241,7 +250,6 @@
         <div class="footer-bottom">
             <div class="footer-col" style="flex: 2; margin-bottom: 0;">
                 <h4 style="margin-bottom: 15px;">Payment Methods</h4>
-                <!-- 🌟 Deposit Methods Images updated to use local files and aligned left -->
                 <div class="payment-logos">
                     <img src="bkash.png" alt="bKash">
                     <img src="nagad.png" alt="Nagad">
@@ -259,7 +267,6 @@
             <img src="" id="modalImg" class="modal-img">
             <h3 id="modalTitle">Product Name</h3>
             
-            <!-- Description Area -->
             <div id="modalDesc" class="modal-desc"></div>
 
             <div class="modal-price" id="modalPrice">৳ 0</div>
@@ -301,6 +308,7 @@
 
         const authLink = document.getElementById("auth-link");
         const balanceLink = document.getElementById("balance-link");
+        const balAmount = document.getElementById("bal-amount");
         const profileMenuContainer = document.getElementById("profile-menu-container");
         const profileDropdown = document.getElementById("profile-dropdown");
         const adminMenuLink = document.getElementById("admin-menu-link");
@@ -342,7 +350,7 @@
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUserEmail = user.email;
-                authLink.innerText = "👤 Profile ▾";
+                authLink.innerHTML = "👤 <span class='desktop-only'>Profile</span>";
                 authLink.href = "#"; 
                 
                 try {
@@ -352,7 +360,7 @@
                         currentBalance = userDoc.data().balance || 0;
                     }
                     balanceLink.style.display = "flex";
-                    balanceLink.innerText = `💰 Balance: ৳ ${currentBalance}`;
+                    balAmount.innerText = currentBalance;
                 } catch(e) { console.error("Balance fetch error:", e); }
 
                 if(user.email === "sakibbinsalam.admin@gmail.com") {
@@ -379,7 +387,7 @@
 
             } else {
                 currentUserEmail = null;
-                authLink.innerText = "Login / Signup";
+                authLink.innerText = "Login";
                 authLink.href = "login.html";
                 authLink.onclick = null; 
                 balanceLink.style.display = "none";
@@ -638,7 +646,7 @@
                         showToast("✅ আপনার অর্ডারটি সফলভাবে প্লেস হয়েছে!");
                         modal.style.display = 'none';
                         
-                        document.getElementById("balance-link").innerText = `💰 Balance: ৳ ${newBalance}`;
+                        balAmount.innerText = newBalance;
                     } else {
                         showToast("❌ আপনার অ্যাকাউন্টে পর্যাপ্ত ব্যালেন্স নেই!", "error");
                     }
