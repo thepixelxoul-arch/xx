@@ -52,7 +52,7 @@
         /* Footer Design Updated */
         .footer { background-color: #eaeaea; padding: 40px 20px 20px; margin-top: 50px; color: #0f136d; }
         .footer-top { display: flex; flex-wrap: wrap; justify-content: space-between; max-width: 1200px; margin: 0 auto; padding-bottom: 20px; }
-        .footer-bottom { display: flex; flex-wrap: wrap; justify-content: center; max-width: 1200px; margin: 20px auto 0; border-top: 1px solid #ddd; padding-top: 20px; text-align: center;}
+        .footer-bottom { display: flex; flex-wrap: wrap; justify-content: space-between; max-width: 1200px; margin: 20px auto 0; border-top: 1px solid #ddd; padding-top: 20px; text-align: left;}
         .footer-col { flex: 1; min-width: 200px; margin-bottom: 20px; }
         .footer-col h4 { font-size: 16px; margin-bottom: 15px; color: #0f136d; font-weight: normal;}
         .footer-col ul { list-style: none; padding: 0; margin: 0; }
@@ -60,9 +60,9 @@
         .footer-col ul li a { text-decoration: none; color: #0f136d; font-size: 13px; transition: 0.3s; }
         .footer-col ul li a:hover { text-decoration: underline; color: #f85606; }
         .store-logos { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
-        .store-logos img { height: 55px; cursor: pointer; transition: 0.3s; } /* Play store size increased to 55px */
+        .store-logos img { height: 55px; cursor: pointer; transition: 0.3s; }
         .store-logos img:hover { transform: scale(1.05); }
-        .payment-logos { display: flex; gap: 15px; justify-content: center; align-items: center; }
+        .payment-logos { display: flex; gap: 15px; justify-content: flex-start; align-items: center; flex-wrap: wrap; }
         .payment-logos img { height: 35px; background: white; padding: 5px 12px; border: 1px solid #ddd; border-radius: 4px; object-fit: contain; }
 
         /* Navbar Alignment Fixes */
@@ -219,7 +219,7 @@
         </div>
     </div>
 
-    <!-- 🌟 Footer Section (Updated as requested) -->
+    <!-- 🌟 Footer Section Updated -->
     <footer class="footer">
         <div class="footer-top">
             <div class="footer-col">
@@ -233,18 +233,20 @@
             <div class="footer-col">
                 <h4>Download App</h4>
                 <div class="store-logos">
-                    <!-- 🌟 Only Google Play Store is kept, size increased to 55px -->
+                    <!-- Only Google Play Store kept -->
                     <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Google Play">
                 </div>
             </div>
         </div>
         <div class="footer-bottom">
-            <div class="footer-col" style="width: 100%;">
+            <div class="footer-col" style="flex: 2; margin-bottom: 0;">
                 <h4 style="margin-bottom: 15px;">Payment Methods</h4>
-                <!-- 🌟 Deposit Methods Images (bKash & Nagad) -->
+                <!-- 🌟 Deposit Methods Images updated to use local files and aligned left -->
                 <div class="payment-logos">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Bkash_logo.svg/512px-Bkash_logo.svg.png" alt="bKash">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Nagad_Logo.svg/512px-Nagad_Logo.svg.png" alt="Nagad">
+                    <img src="bkash.png" alt="bKash">
+                    <img src="nagad.png" alt="Nagad">
+                    <img src="roket.png" alt="Rocket">
+                    <img src="upay.png" alt="Upay">
                 </div>
             </div>
         </div>
