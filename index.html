@@ -49,24 +49,21 @@
         .dynamic-input-box { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; outline: none; margin-bottom: 15px; }
         .dynamic-input-box:focus { border-color: #f85606; }
 
-        /* Footer Design */
-        .footer { background-color: #eaeaea; padding: 40px 20px; margin-top: 50px; color: #0f136d; }
-        .footer-top { display: flex; flex-wrap: wrap; justify-content: space-between; max-width: 1200px; margin: 0 auto; padding-bottom: 30px; border-bottom: 1px solid #ddd; }
-        .footer-bottom { display: flex; flex-wrap: wrap; justify-content: space-between; max-width: 1200px; margin: 30px auto 0; }
+        /* Footer Design Updated */
+        .footer { background-color: #eaeaea; padding: 40px 20px 20px; margin-top: 50px; color: #0f136d; }
+        .footer-top { display: flex; flex-wrap: wrap; justify-content: space-between; max-width: 1200px; margin: 0 auto; padding-bottom: 20px; }
+        .footer-bottom { display: flex; flex-wrap: wrap; justify-content: center; max-width: 1200px; margin: 20px auto 0; border-top: 1px solid #ddd; padding-top: 20px; text-align: center;}
         .footer-col { flex: 1; min-width: 200px; margin-bottom: 20px; }
         .footer-col h4 { font-size: 16px; margin-bottom: 15px; color: #0f136d; font-weight: normal;}
         .footer-col ul { list-style: none; padding: 0; margin: 0; }
         .footer-col ul li { margin-bottom: 10px; }
         .footer-col ul li a { text-decoration: none; color: #0f136d; font-size: 13px; transition: 0.3s; }
         .footer-col ul li a:hover { text-decoration: underline; color: #f85606; }
-        .app-download-box { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
-        .app-icon { background: #f85606; color: white; width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; border-radius: 8px; font-size: 20px; font-weight: bold;}
-        .app-text { font-size: 14px; }
-        .app-text span { color: #f85606; font-size: 15px; }
-        .store-logos { display: flex; flex-direction: column; gap: 10px; }
-        .store-logos img { height: 35px; cursor: pointer; }
-        .payment-logos { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-        .payment-logos span { background: white; padding: 5px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; font-weight: bold; color: #333; }
+        .store-logos { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+        .store-logos img { height: 55px; cursor: pointer; transition: 0.3s; } /* Play store size increased to 55px */
+        .store-logos img:hover { transform: scale(1.05); }
+        .payment-logos { display: flex; gap: 15px; justify-content: center; align-items: center; }
+        .payment-logos img { height: 35px; background: white; padding: 5px 12px; border: 1px solid #ddd; border-radius: 4px; object-fit: contain; }
 
         /* Navbar Alignment Fixes */
         .nav-links { display: flex; align-items: center; gap: 20px; } 
@@ -74,11 +71,11 @@
         
         #balance-link { color: #ffcc00 !important; font-weight: bold; }
 
-        /* Profile Dropdown Menu - !important সরানো হয়েছে */
+        /* Profile Dropdown Menu */
         .profile-menu { position: relative; display: flex; align-items: center; }
         .profile-dropdown { display: none; position: absolute; right: 0; top: 100%; background: white; min-width: 150px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); border-radius: 5px; overflow: hidden; z-index: 2000; margin-top: 15px; border: 1px solid #eee; }
-        .profile-dropdown a { display: block; color: #333; padding: 12px 15px; font-size: 14px; font-weight: normal; text-align: left; border-bottom: 1px solid #f1f1f1; margin: 0; }
-        .profile-dropdown a:hover { background-color: #f9f9f9; color: #f85606; }
+        .profile-dropdown a { display: block !important; color: #333 !important; padding: 12px 15px !important; font-size: 14px !important; font-weight: normal !important; text-align: left; border-bottom: 1px solid #f1f1f1; margin: 0 !important; }
+        .profile-dropdown a:hover { background-color: #f9f9f9; color: #f85606 !important; }
         .profile-dropdown.show { display: block; }
 
         /* Notification Design */
@@ -177,7 +174,7 @@
             <a href="add_fund.html" id="balance-link" style="display: none;">💰 Balance: ৳ 0</a>
             <a href="order_history.html">🛒 Order History</a>
             
-            <!-- Profile with Add Fund Option -->
+            <!-- Profile Menu -->
             <div class="profile-menu" id="profile-menu-container">
                 <a href="login.html" id="auth-link">Login / Signup</a>
                 
@@ -222,7 +219,7 @@
         </div>
     </div>
 
-    <!-- Footer Section -->
+    <!-- 🌟 Footer Section (Updated as requested) -->
     <footer class="footer">
         <div class="footer-top">
             <div class="footer-col">
@@ -231,25 +228,25 @@
             </div>
             <div class="footer-col">
                 <h4>AmarDaraz</h4>
-                <ul><li><a href="#">About Us</a></li><li><a href="#">Digital Payments</a></li><li><a href="#">Privacy Policy</a></li><li><a href="#">AmarDaraz App</a></li></ul>
+                <ul><li><a href="#">About Us</a></li><li><a href="#">Digital Payments</a></li><li><a href="#">Privacy Policy</a></li></ul>
             </div>
             <div class="footer-col">
-                <div class="app-download-box"><div class="app-icon">A</div><div class="app-text"><span>Happy Shopping</span><br>Download App</div></div>
-            </div>
-            <div class="footer-col">
+                <h4>Download App</h4>
                 <div class="store-logos">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg" alt="App Store">
+                    <!-- 🌟 Only Google Play Store is kept, size increased to 55px -->
                     <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Google Play">
                 </div>
             </div>
         </div>
         <div class="footer-bottom">
-            <div class="footer-col" style="flex: 2;">
-                <h4>Payment Methods</h4>
-                <div class="payment-logos"><span>💳 Visa</span><span>💳 MasterCard</span><span>📱 bKash</span><span>📱 Nagad</span><span>💵 Cash on Delivery</span></div>
+            <div class="footer-col" style="width: 100%;">
+                <h4 style="margin-bottom: 15px;">Payment Methods</h4>
+                <!-- 🌟 Deposit Methods Images (bKash & Nagad) -->
+                <div class="payment-logos">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Bkash_logo.svg/512px-Bkash_logo.svg.png" alt="bKash">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Nagad_Logo.svg/512px-Nagad_Logo.svg.png" alt="Nagad">
+                </div>
             </div>
-            <div class="footer-col"><h4>Verified by</h4><p style="font-size: 13px; font-weight: bold; color: #28a745;">✅ PCI DSS Compliant</p></div>
-            <div class="footer-col"><h4>DBID</h4><p style="font-size: 13px; color: #777;">Registration ID : <br> 123456789</p></div>
         </div>
     </footer>
 
@@ -356,7 +353,6 @@
                     balanceLink.innerText = `💰 Balance: ৳ ${currentBalance}`;
                 } catch(e) { console.error("Balance fetch error:", e); }
 
-                // 🌟 FIX: !important দিয়ে জোড় করে Hide করা হলো
                 if(user.email === "sakibbinsalam.admin@gmail.com") {
                     adminMenuLink.style.setProperty("display", "block", "important");
                 } else {
