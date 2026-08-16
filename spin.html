@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>লাকি স্পিন - আমার দারাজ</title>
+    
+    <style>
+        body { margin: 0; padding: 0; background-color: #f4f4f6; font-family: Arial, sans-serif; }
+        
+        /* Navbar */
+        .navbar { background-color: #f85606; padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .logo { font-size: 24px; font-weight: bold; color: white; text-decoration: none; }
+        .nav-links { display: flex; align-items: center; gap: 20px; }
+        .nav-links a { text-decoration: none; font-weight: bold; font-size: 15px; color: white; display: flex; align-items: center; gap: 5px; }
+        
+        /* Game Container */
+        .game-wrapper { display: flex; justify-content: center; padding: 40px 20px; min-height: calc(100vh - 150px); align-items: center; }
+        .game-board { background-color: #1e2024; border-radius: 12px; width: 100%; max-width: 900px; display: flex; box-shadow: 0 10px 30px rgba(0,0,0,0.3); overflow: hidden; flex-wrap: wrap; }
+        
+        /* Left Panel - Controls */
+        .controls-panel { padding: 30px; flex: 1; min-width: 300px; background-color: #26292e; color: #fff; border-right: 1px solid #333; }
+        .controls-panel h3 { color: #f85606; margin-top: 0; margin-bottom: 25px; font-size: 22px; text-transform: uppercase; letter-spacing: 1px;}
+        
+        .input-group { margin-bottom: 25px; }
+        .input-group label { display: block; margin-bottom: 8px; font-size: 13px; color: #aaa; text-transform: uppercase; font-weight: bold;}
+        .input-box { display: flex; background: #16181b; border-radius: 6px; overflow: hidden; border: 1px solid #3d4046; transition: 0.3s; }
+        .input-box:focus-within { border-color: #f85606; }
+        .currency-tag { background: #3d4046; padding: 12px 15px; color: #fff; font-weight: bold; }
+        .input-box input { flex: 1; background: transparent; border: none; color: #fff; padding: 12px; font-size: 16px; outline: none; font-weight: bold;}
+        
+        /* Custom Slider */
+        .slider-wrapper { position: relative; margin-top: 35px; margin-bottom: 30px; }
+        .slider { -webkit-appearance: none; width: 100%; height: 8px; border-radius: 5px; background: #3d4046; outline: none; }
+        .slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 24px; height: 24px; border-radius: 50%; background: #f85606; cursor: pointer; border: 3px solid #fff; box-shadow: 0 0 10px rgba(248,86,6,0.5); }
+        .slider-labels { display: flex; justify-content: space-between; margin-top: 10px; color: #888; font-size: 12px; font-weight: bold; }
+        
+        /* Action Button */
+        .roll-btn { width: 100%; background: linear-gradient(135deg, #f85606, #d84a05); border: none; color: white; padding: 18px; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; box-shadow: 0 5px 15px rgba(248,86,6,0.3); text-transform: uppercase; letter-spacing: 1px;}
+        .roll-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(248,86,6,0.5); }
+        .roll-btn:disabled { background: #555; box-shadow: none; cursor: not-allowed; transform: none; color: #999;}
+        
+        /* Right Panel - Visuals & Stats */
+        .visual-panel { flex: 1.5; padding: 30px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; min-width: 300px;}
+        
+        .wheel-container { position: relative; width: 280px; height: 280px; margin-bottom: 30px; }
+        .wheel { width: 100%; height: 100%; border-radius: 50%; background: conic-gradient(#2ecc71 0% 50%, #e74c3c 50% 100%); transition: background 0.2s ease; box-shadow: 0 0 30px rgba(0,0,0,0.5); position: relative; display: flex; justify-content: center; align-items: center;}
+        .wheel-inner { width: 130px; height: 130px; background: #16181b; border-radius: 50%; box-shadow: inset 0 5px 15px rgba(0,0,0,0.8), 0 0 15px rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 10; border: 4px solid #26292e;}
+        
+        .roll-result { font-size: 36px; font-weight: bold; color: #fff; font-family: monospace; }
+        .pointer { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid #fff; z-index: 20; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.3));}
+
+        /* Stats Boxes */
+        .stats-container { display: flex; gap: 15px; width: 100%; max-width: 400px;}
+        .stat-box { flex: 1; background: #26292e; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #333;}
+        .stat-label { font-size: 12px; color: #aaa; text-transform: uppercase; font-weight: bold; margin-bottom: 5px; }
+        .stat-value { font-size: 18px; color: #fff; font-weight: bold; }
+        .text-green { color: #2ecc71; }
+        .text-orange { color: #f85606; }
+
+        /* Toast Notification */
+        .toast-notification { visibility: hidden; min-width: 280px; background-color: #333; color: #fff; text-align: center; border-radius: 6px; padding: 16px; position: fixed; z-index: 4000; left: 50%; top: 30px; transform: translateX(-50%); font-size: 16px; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.2); opacity: 0; transition: opacity 0.3s, top 0.3s; }
+        .toast-notification.show { visibility: visible; opacity: 1; top: 50px; }
+        .toast-success { background-color: #28a745; }
+        .toast-error { background-color: #e74c3c; }
+        .toast-warning { background-color: #f39c12; color: #fff; }
+
+        @media (max-width: 768px) {
+            .game-board { flex-direction: column-reverse; }
+            .visual-panel { border-bottom: 1px solid #333; }
+            .controls-panel { border-right: none; }
+            .wheel-container { width: 220px; height: 220px; }
+            .wheel-inner { width: 100px; height: 100px; }
+            .roll-result { font-size: 28px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="toast" class="toast-notification">Notification text</div>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="index.html" class="logo">AmarDaraz</a>
+        <div class="nav-links">
+            <a href="#" id="balance-display">💰 ব্যালেন্স: ৳ 0</a>
+            <a href="index.html" style="background: white; color: #f85606; padding: 8px 15px; border-radius: 20px;">হোমে ফিরুন</a>
+        </div>
+    </nav>
+
+    <!-- Game Area -->
+    <div class="game-wrapper">
+        <div class="game-board">
+            
+            <!-- Left Panel (Controls) -->
+            <div class="controls-panel">
+                <h3>🎲 Roll & Win</h3>
+                
+                <div class="input-group">
+                    <label>বেটের পরিমাণ (Bet Amount)</label>
+                    <div class="input-box">
+                        <div class="currency-tag">৳</div>
+                        <input type="number" id="bet-amount" value="10" min="1" step="1">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>জেতার সম্ভাবনা (Win Chance): <span id="chance-text" class="text-green">50%</span></label>
+                    <div class="slider-wrapper">
+                        <input type="range" min="5" max="95" value="50" class="slider" id="chance-slider">
+                        <div class="slider-labels">
+                            <span>Hard (5%)</span>
+                            <span>Easy (95%)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="roll-btn" id="roll-btn">Roll Under <span id="roll-target">50</span></button>
+            </div>
+
+            <!-- Right Panel (Visuals) -->
+            <div class="visual-panel">
+                <div class="pointer"></div>
+                <div class="wheel-container">
+                    <div class="wheel" id="visual-wheel">
+                        <div class="wheel-inner">
+                            <span class="roll-result" id="roll-result">0.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-container">
+                    <div class="stat-box">
+                        <div class="stat-label">মাল্টিপ্লায়ার</div>
+                        <div class="stat-value text-orange" id="multiplier-text">x1.96</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">সম্ভাব্য লাভ (Payout)</div>
+                        <div class="stat-value text-green" id="payout-text">৳ 19.60</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Firebase & JavaScript -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBZNrrK7MLGIZoPakMgj2yFEX7iCVYYhlg",
+            authDomain: "amrdraz-d0682.firebaseapp.com",
+            projectId: "amrdraz-d0682",
+            storageBucket: "amrdraz-d0682.firebasestorage.app",
+            messagingSenderId: "690289096145",
+            appId: "1:690289096145:web:dbebaa4e60203a7922dcf0"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Elements
+        const balanceDisplay = document.getElementById("balance-display");
+        const betInput = document.getElementById("bet-amount");
+        const chanceSlider = document.getElementById("chance-slider");
+        const chanceText = document.getElementById("chance-text");
+        const rollTarget = document.getElementById("roll-target");
+        const multiplierText = document.getElementById("multiplier-text");
+        const payoutText = document.getElementById("payout-text");
+        const visualWheel = document.getElementById("visual-wheel");
+        const rollBtn = document.getElementById("roll-btn");
+        const rollResult = document.getElementById("roll-result");
+
+        let currentUserEmail = null;
+        let currentBalance = 0;
+        let isRolling = false;
+
+        // House Edge (2%)
+        const HOUSE_EDGE = 0.98; 
+
+        function showToast(message, type = "success") {
+            const toast = document.getElementById("toast");
+            toast.innerText = message;
+            toast.className = "toast-notification show";
+            if(type === "error") toast.classList.add("toast-error");
+            else if (type === "warning") toast.classList.add("toast-warning");
+            else toast.classList.add("toast-success");
+
+            setTimeout(() => { toast.className = "toast-notification"; }, 3000);
+        }
+
+        // Authentication Check
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUserEmail = user.email;
+                fetchBalance();
+            } else {
+                showToast("আপনাকে প্রথমে লগইন করতে হবে!", "warning");
+                setTimeout(() => { window.location.href = "login.html"; }, 1500);
+            }
+        });
+
+        async function fetchBalance() {
+            try {
+                const userDoc = await getDoc(doc(db, "users", currentUserEmail));
+                if (userDoc.exists()) {
+                    currentBalance = userDoc.data().balance || 0;
+                    balanceDisplay.innerText = `💰 ব্যালেন্স: ৳ ${currentBalance.toFixed(2)}`;
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        // Update UI logic
+        function updateUI() {
+            let bet = parseFloat(betInput.value) || 0;
+            if (bet < 0) { bet = 0; betInput.value = 0; }
+            
+            let chance = parseInt(chanceSlider.value);
+            
+            // Calculate Multiplier (100 / chance * house_edge)
+            let multiplier = (100 / chance) * HOUSE_EDGE;
+            let payout = bet * multiplier;
+
+            chanceText.innerText = `${chance}%`;
+            rollTarget.innerText = chance;
+            multiplierText.innerText = `x${multiplier.toFixed(2)}`;
+            payoutText.innerText = `৳ ${payout.toFixed(2)}`;
+
+            // Update Wheel Gradient (Green for win area, Red/Dark for loss)
+            // Roll Under means 0 to chance is win (Green)
+            visualWheel.style.background = `conic-gradient(#2ecc71 0% ${chance}%, #e74c3c ${chance}% 100%)`;
+        }
+
+        betInput.addEventListener('input', updateUI);
+        chanceSlider.addEventListener('input', updateUI);
+
+        // Initial setup
+        updateUI();
+
+        // Roll Game Logic
+        rollBtn.addEventListener('click', async () => {
+            if (isRolling) return;
+            
+            let betAmount = parseFloat(betInput.value) || 0;
+            let targetChance = parseInt(chanceSlider.value);
+            let multiplier = (100 / targetChance) * HOUSE_EDGE;
+            let payout = betAmount * multiplier;
+
+            if (betAmount <= 0) {
+                showToast("দয়া করে সঠিক বেট অ্যামাউন্ট দিন!", "warning");
+                return;
+            }
+            if (betAmount > currentBalance) {
+                showToast("❌ আপনার অ্যাকাউন্টে পর্যাপ্ত ব্যালেন্স নেই!", "error");
+                return;
+            }
+
+            isRolling = true;
+            rollBtn.disabled = true;
+            rollBtn.innerText = "Rolling...";
+            
+            try {
+                // Deduct Bet Instantly
+                currentBalance -= betAmount;
+                balanceDisplay.innerText = `💰 ব্যালেন্স: ৳ ${currentBalance.toFixed(2)}`;
+                const userRef = doc(db, "users", currentUserEmail);
+                await updateDoc(userRef, { balance: currentBalance });
+
+                // Animation Phase
+                let counter = 0;
+                let finalRoll = (Math.random() * 100).toFixed(2);
+                
+                let interval = setInterval(() => {
+                    rollResult.innerText = (Math.random() * 100).toFixed(2);
+                    visualWheel.style.transform = `rotate(${Math.random() * 360}deg)`; // Spin effect
+                    counter++;
+                    if (counter > 20) {
+                        clearInterval(interval);
+                        
+                        // Set Final Result
+                        rollResult.innerText = finalRoll;
+                        
+                        // Reset visual wheel rotation so it accurately shows the green/red zone
+                        visualWheel.style.transform = `rotate(0deg)`;
+
+                        // Check Win or Loss (Roll Under)
+                        if (parseFloat(finalRoll) < targetChance) {
+                            // WON
+                            rollResult.style.color = "#2ecc71"; // Green text
+                            showToast(`🎉 অভিনন্দন! আপনি ৳${payout.toFixed(2)} জিতেছেন!`, "success");
+                            
+                            // Add Payout to DB
+                            currentBalance += payout;
+                            balanceDisplay.innerText = `💰 ব্যালেন্স: ৳ ${currentBalance.toFixed(2)}`;
+                            updateDoc(userRef, { balance: currentBalance });
+                        } else {
+                            // LOST
+                            rollResult.style.color = "#e74c3c"; // Red text
+                            showToast(`😢 আপনি হেরে গেছেন! পরের বার আবার চেষ্টা করুন।`, "error");
+                        }
+
+                        // Reset Button
+                        setTimeout(() => {
+                            isRolling = false;
+                            rollBtn.disabled = false;
+                            rollBtn.innerText = `Roll Under ${targetChance}`;
+                            rollResult.style.color = "#fff";
+                        }, 1500);
+                    }
+                }, 50); // 50ms interval for animation
+                
+            } catch(e) {
+                console.error(e);
+                showToast("সার্ভার এরর! গেম খেলা যাচ্ছে না।", "error");
+                isRolling = false;
+                rollBtn.disabled = false;
+                rollBtn.innerText = `Roll Under ${targetChance}`;
+            }
+        });
+    </script>
+</body>
+</html>
