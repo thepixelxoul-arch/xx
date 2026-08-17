@@ -13,7 +13,7 @@
         .profile-container { display: flex; justify-content: center; align-items: flex-start; min-height: 80vh; padding: 20px; margin-top: 20px;}
         .profile-card { background: white; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 600px; overflow: hidden; }
         
-        /* 🌟 Tab Navigation (শুধু ২টি ট্যাব) */
+        /* 🌟 Tab Navigation */
         .profile-tabs { display: flex; background: #2c3e50; }
         .tab-btn { flex: 1; padding: 15px 5px; border: none; background: transparent; color: white; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 14px; text-align: center;}
         .tab-btn:hover { background: #34495e; }
@@ -59,7 +59,7 @@
     <div class="profile-container">
         <div class="profile-card">
             
-            <!-- 🌟 Tabs (শুধু ২টি রাখা হলো) -->
+            <!-- 🌟 Tabs -->
             <div class="profile-tabs">
                 <button class="tab-btn active" onclick="switchTab('info')">👤 Profile</button>
                 <button class="tab-btn" onclick="switchTab('deposits')">💳 Deposit History</button>
@@ -107,7 +107,6 @@
             if (user) {
                 document.getElementById("user-email").innerText = user.email;
                 
-                // 🌟 FIX: Only Admin sees Admin Panel in Profile
                 if (user.email === "sakibbinsalam.admin@gmail.com") {
                     document.getElementById("admin-panel-btn").style.display = "block";
                 } else {
@@ -117,7 +116,9 @@
                 try {
                     const userDoc = await getDoc(doc(db, "users", user.email));
                     if(userDoc.exists()) {
-                        document.getElementById("user-balance").innerText = `৳ ${userDoc.data().balance || 0}`;
+                        // 🌟 এখানে parseFloat এবং toFixed(2) অ্যাড করা হয়েছে
+                        const currentBalance = userDoc.data().balance || 0;
+                        document.getElementById("user-balance").innerText = `৳ ${parseFloat(currentBalance).toFixed(2)}`;
                     }
                 } catch(e) { console.log(e); }
 
@@ -149,13 +150,11 @@
                     return;
                 }
                 let html = "";
-                // ডাটাবেস থেকে সব ডিপোজিট নিয়ে লিস্ট তৈরি
                 let deposits = [];
                 querySnapshot.forEach((docSnap) => {
                     deposits.push({ id: docSnap.id, ...docSnap.data() });
                 });
                 
-                // নতুন ডিপোজিটগুলো যেন আগে দেখায়
                 deposits.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)); 
 
                 deposits.forEach((data) => {
