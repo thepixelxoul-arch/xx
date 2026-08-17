@@ -16,57 +16,63 @@
         
         /* Game Container - Light Theme */
         .game-wrapper { display: flex; justify-content: center; padding: 40px 20px; min-height: calc(100vh - 150px); align-items: center; }
-        .game-board { background-color: #ffffff; border-radius: 12px; width: 100%; max-width: 900px; display: flex; box-shadow: 0 8px 25px rgba(0,0,0,0.08); overflow: hidden; flex-wrap: wrap; border: 1px solid #eee;}
+        .game-board { background-color: #ffffff; border-radius: 12px; width: 100%; max-width: 950px; display: flex; box-shadow: 0 8px 25px rgba(0,0,0,0.08); overflow: hidden; flex-wrap: wrap; border: 1px solid #eee;}
         
         /* Left Panel - Flat Clean Wheel */
         .wheel-panel { flex: 1.5; padding: 40px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; min-width: 320px; background-color: #ffffff; border-right: 1px solid #eee;}
         
         /* 🌟 Cute Orange Wheel Border */
-        .wheel-container { position: relative; width: 320px; height: 320px; margin-bottom: 20px; border-radius: 50%; padding: 10px; background: #f85606; box-shadow: 0 8px 20px rgba(248,86,6,0.2); }
-        
-        /* Bulb Dots Effect */
+        .wheel-container { position: relative; width: 340px; height: 340px; margin-bottom: 20px; border-radius: 50%; padding: 10px; background: #f85606; box-shadow: 0 8px 20px rgba(248,86,6,0.2); }
         .wheel-container::before { content: ''; position: absolute; top: 6px; left: 6px; right: 6px; bottom: 6px; border-radius: 50%; border: 3px dotted #ffd1b3; opacity: 0.8; pointer-events: none; }
 
-        /* Clean Pointer */
-        .pointer { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 18px solid transparent; border-right: 18px solid transparent; border-top: 35px solid #333; z-index: 25; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.2));}
-        .pointer::after { content: ''; position: absolute; top: -35px; left: -8px; width: 16px; height: 16px; background: #fff; border-radius: 50%; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);}
-
-        /* 🌟 Bright Colorful Slices */
+        /* 🌟 Bright Colorful Slices (12 Slices) */
         .wheel {
             width: 100%; height: 100%; border-radius: 50%; position: relative; overflow: hidden;
             box-shadow: 0 0 15px rgba(0,0,0,0.1);
-            background: conic-gradient(from -22.5deg,
-                #ff4d4f 0deg 45deg,    
-                #2ed573 45deg 90deg,   
-                #ff7f50 90deg 135deg,  
-                #1e90ff 135deg 180deg, 
-                #eccc68 180deg 225deg, 
-                #9b59b6 225deg 270deg, 
-                #ff6b81 270deg 315deg, 
-                #1abc9c 315deg 360deg  
+            /* 12 Slices - 30 deg each (Starting from -15deg so top is perfectly centered) */
+            background: conic-gradient(from -15deg,
+                #ff4d4f 0deg 30deg,    /* 0x */
+                #2ed573 30deg 60deg,   /* 1.5x */
+                #ff4d4f 60deg 90deg,   /* 0x */
+                #1e90ff 90deg 120deg,  /* 2x */
+                #ff4d4f 120deg 150deg, /* 0x */
+                #eccc68 150deg 180deg, /* 0.5x */
+                #ff4d4f 180deg 210deg, /* 0x */
+                #9b59b6 210deg 240deg, /* 3x */
+                #ff4d4f 240deg 270deg, /* 0x */
+                #1abc9c 270deg 300deg, /* 1.2x */
+                #ff4d4f 300deg 330deg, /* 0x */
+                #ffa502 330deg 360deg  /* 5x */
             );
             transition: transform 5s cubic-bezier(0.2, 0.8, 0.2, 1);
             transform: rotate(0deg);
         }
 
         /* Clean White Lines */
-        .wheel-lines { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; background: repeating-conic-gradient(from -22.5deg, rgba(255,255,255,0) 0deg, rgba(255,255,255,0) calc(45deg - 3px), rgba(255,255,255,0.7) calc(45deg - 3px), rgba(255,255,255,0.7) 45deg); z-index: 2; }
+        .wheel-lines { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; background: repeating-conic-gradient(from -15deg, rgba(255,255,255,0) 0deg, rgba(255,255,255,0) calc(30deg - 2px), rgba(255,255,255,0.7) calc(30deg - 2px), rgba(255,255,255,0.7) 30deg); z-index: 2; pointer-events: none;}
 
-        /* Clean Hub */
-        .wheel-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; background: #fff; border-radius: 50%; border: 4px solid #f85606; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 10; display: flex; justify-content: center; align-items: center; color: #f85606; font-weight: bold; font-size: 24px;}
-        
-        .label { position: absolute; top: 50%; left: 50%; width: 50%; height: 30px; margin-top: -15px; transform-origin: left center; text-align: right; padding-right: 25px; box-sizing: border-box; font-size: 18px; font-weight: bold; color: #fff; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); z-index: 3; display: flex; justify-content: flex-end; align-items: center; font-family: Arial, sans-serif;}
+        /* 🌟 Label Text Positions (12 labels) */
+        .label { position: absolute; top: 50%; left: 50%; width: 50%; height: 24px; margin-top: -12px; transform-origin: left center; text-align: right; padding-right: 20px; box-sizing: border-box; font-size: 16px; font-weight: bold; color: #fff; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); z-index: 3; display: flex; justify-content: flex-end; align-items: center; font-family: Arial, sans-serif;}
         .lbl-0 { transform: rotate(-90deg); }
-        .lbl-1 { transform: rotate(-45deg); }
-        .lbl-2 { transform: rotate(0deg); }
-        .lbl-3 { transform: rotate(45deg); }
-        .lbl-4 { transform: rotate(90deg); }
-        .lbl-5 { transform: rotate(135deg); }
-        .lbl-6 { transform: rotate(180deg); }
-        .lbl-7 { transform: rotate(225deg); }
+        .lbl-1 { transform: rotate(-60deg); }
+        .lbl-2 { transform: rotate(-30deg); }
+        .lbl-3 { transform: rotate(0deg); }
+        .lbl-4 { transform: rotate(30deg); }
+        .lbl-5 { transform: rotate(60deg); }
+        .lbl-6 { transform: rotate(90deg); }
+        .lbl-7 { transform: rotate(120deg); }
+        .lbl-8 { transform: rotate(150deg); }
+        .lbl-9 { transform: rotate(180deg); }
+        .lbl-10 { transform: rotate(210deg); }
+        .lbl-11 { transform: rotate(240deg); }
+
+        /* 🌟 Inner Pointer & Center Hub (Fixed in center) */
+        .wheel-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 65px; height: 65px; background: #fff; border-radius: 50%; border: 4px solid #f85606; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 10; display: flex; justify-content: center; align-items: center; color: #f85606; font-weight: bold; font-size: 24px;}
+        
+        .center-pointer { position: absolute; top: -28px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 14px solid transparent; border-right: 14px solid transparent; border-bottom: 28px solid #f85606; z-index: -1; filter: drop-shadow(0 -2px 3px rgba(0,0,0,0.3));}
 
         /* Right Panel - Controls (Light Theme) */
-        .controls-panel { padding: 40px 30px; flex: 1; min-width: 300px; background-color: #fafafa; color: #333; display: flex; flex-direction: column; justify-content: center; }
+        .controls-panel { padding: 40px 30px; flex: 1; min-width: 300px; background-color: #fafafa; color: #333; display: flex; flex-direction: column; justify-content: center; border-left: 1px solid #eee;}
         .controls-panel h3 { color: #f85606; margin-top: 0; margin-bottom: 30px; font-size: 24px; text-transform: uppercase; font-weight: bold; text-align: center; }
         
         .input-group { margin-bottom: 25px; }
@@ -89,7 +95,7 @@
         .result-title { font-size: 13px; color: #777; text-transform: uppercase; margin-bottom: 10px; font-weight: bold;}
         .result-amount { font-size: 28px; font-weight: bold; color: #f85606; }
         
-        /* 🌟 Light Modal for Withdraw */
+        /* Light Modal for Withdraw */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 5000; justify-content: center; align-items: center; }
         .modal-content { background: #fff; color: #333; padding: 30px; border-radius: 8px; max-width: 400px; width: 90%; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.2); text-align: left; animation: fadeIn 0.3s; }
         .modal-content h3 { text-align: center; color: #f85606; margin-top: 0; font-size: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 20px;}
@@ -109,9 +115,9 @@
         @media (max-width: 768px) {
             .game-board { flex-direction: column; }
             .wheel-panel { border-right: none; border-bottom: 1px solid #eee; padding: 30px 20px;}
-            .wheel-container { width: 280px; height: 280px; }
+            .wheel-container { width: 300px; height: 300px; }
             .controls-panel { padding: 30px 20px; }
-            .pointer { top: -20px; border-left-width: 15px; border-right-width: 15px; border-top-width: 25px; }
+            .label { font-size: 14px; padding-right: 15px;}
         }
     </style>
 </head>
@@ -119,7 +125,7 @@
 
     <div id="toast" class="toast-notification">Notification text</div>
 
-    <!-- 🌟 Withdraw Modal -->
+    <!-- Withdraw Modal -->
     <div class="modal-overlay" id="withdrawModal">
         <div class="modal-content">
             <span class="close-btn" id="closeWithdrawModal">&times;</span>
@@ -128,7 +134,7 @@
             <label>পেমেন্ট মেথড:</label>
             <select id="w-method">
                 <option value="bKash">bKash (বিকাশ)</option>
-                <option value="Nagad">Nagad (ন নগদ)</option>
+                <option value="Nagad">Nagad (নগদ)</option>
                 <option value="Rocket">Rocket (রকেট)</option>
                 <option value="Upay">Upay (উপায়)</option>
             </select>
@@ -159,22 +165,30 @@
             <!-- Left Panel (Flat E-commerce Wheel) -->
             <div class="wheel-panel">
                 <div class="wheel-container">
-                    <div class="pointer"></div>
                     
                     <div class="wheel" id="wheel">
                         <div class="wheel-lines"></div>
-                        <!-- Slices -->
+                        <!-- 🌟 12 Slices -->
                         <div class="label lbl-0">0x</div>
                         <div class="label lbl-1">1.5x</div>
                         <div class="label lbl-2">0x</div>
                         <div class="label lbl-3">2x</div>
-                        <div class="label lbl-4">0.5x</div>
-                        <div class="label lbl-5">5x</div>
+                        <div class="label lbl-4">0x</div>
+                        <div class="label lbl-5">0.5x</div>
                         <div class="label lbl-6">0x</div>
-                        <div class="label lbl-7">1.2x</div>
-                        
-                        <div class="wheel-center">৳</div>
+                        <div class="label lbl-7">3x</div>
+                        <div class="label lbl-8">0x</div>
+                        <div class="label lbl-9">1.2x</div>
+                        <div class="label lbl-10">0x</div>
+                        <div class="label lbl-11">5x</div>
                     </div>
+                    
+                    <!-- 🌟 Center Hub with Pointer Inside pointing Up -->
+                    <div class="wheel-center">
+                        <div class="center-pointer"></div>
+                        ৳
+                    </div>
+                    
                 </div>
             </div>
 
@@ -240,15 +254,20 @@
         let isSpinning = false;
         let currentRotation = 0;
 
+        // 🌟 12 Wheel Slices Data
         const slices = [
             { mult: 0,   name: "0x (Loss)" },
             { mult: 1.5, name: "1.5x (Win)" },
             { mult: 0,   name: "0x (Loss)" },
             { mult: 2.0, name: "2x (Win)" },
-            { mult: 0.5, name: "0.5x (Partial)" },
-            { mult: 5.0, name: "5x (JACKPOT!)" },
             { mult: 0,   name: "0x (Loss)" },
-            { mult: 1.2, name: "1.2x (Win)" }
+            { mult: 0.5, name: "0.5x (Partial)" },
+            { mult: 0,   name: "0x (Loss)" },
+            { mult: 3.0, name: "3x (Super Win)" },
+            { mult: 0,   name: "0x (Loss)" },
+            { mult: 1.2, name: "1.2x (Win)" },
+            { mult: 0,   name: "0x (Loss)" },
+            { mult: 5.0, name: "5x (JACKPOT!)" }
         ];
 
         function showToast(message, type = "success") {
@@ -343,7 +362,7 @@
             spinBtn.disabled = true;
             spinBtn.innerText = "SPINNING...";
             resultText.innerText = "ঘুরছে...";
-            resultText.style.color = "#777";
+            resultText.style.color = "#aaa";
             
             try {
                 currentBalance -= betAmount;
@@ -351,11 +370,12 @@
                 const userRef = doc(db, "users", currentUserEmail);
                 await updateDoc(userRef, { balance: currentBalance });
 
-                const randomSliceIndex = Math.floor(Math.random() * 8); 
+                // 🌟 12 Slice logic
+                const randomSliceIndex = Math.floor(Math.random() * 12); 
                 const targetSlice = slices[randomSliceIndex];
                 
-                const randomOffset = Math.floor(Math.random() * 30) - 15; 
-                const targetAngle = 360 - (randomSliceIndex * 45) + randomOffset;
+                const randomOffset = Math.floor(Math.random() * 20) - 10; 
+                const targetAngle = 360 - (randomSliceIndex * 30) + randomOffset;
                 
                 const spins = 360 * 6; 
                 const currentMod = currentRotation % 360;
